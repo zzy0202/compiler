@@ -117,10 +117,10 @@ public class test {
                                         }
                                         temp="";
                                     }
-                                    if(j+1<splited[i].length()){
+                                    if(j+1<splited[i].length()&&splited[i].charAt(j)=='='){
                                         if(splited[i].charAt(j+1)=='='){
                                             System.out.println(hashMap.get("=="));
-                                            j++;
+                                            j+=2;
                                         }
                                         else{
                                             System.out.println(hashMap.get(Character.toString(splited[i].charAt(j))));
