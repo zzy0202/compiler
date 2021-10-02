@@ -25,7 +25,7 @@ public class test {
     }
     public static void main(String[] args) throws IOException {
 //        FileReader fileReader = new FileReader("C:\\Users\\yung\\IdeaProjects\\compilers\\src\\test.txt");
-        FileReader fileReader = new FileReader("C:\\Users\\yung\\IdeaProjects\\compilers\\src\\test.txt");
+        FileReader fileReader = new FileReader(args[0]);
         BufferedReader bufferedReader = new BufferedReader(fileReader);
         initial();
         while(true){
