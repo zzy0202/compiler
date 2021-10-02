@@ -41,7 +41,7 @@ public class test {
                 if(!temp.equals("")){
                 }
                 if(splited[i].length()==1){
-                    if(Character.isAlphabetic(splited[i].charAt(0))){
+                    if(Character.isAlphabetic(splited[i].charAt(0))||splited[i].charAt(0)=='_'){
                         if(!temp.equals("")){
                             if(hashMap.get(temp)!=null){
                                 System.out.println(hashMap.get(temp));
