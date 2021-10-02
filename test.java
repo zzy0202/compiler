@@ -24,8 +24,8 @@ public class test {
         hashMap.put("==","Eq");
     }
     public static void main(String[] args) throws IOException {
-//        FileReader fileReader = new FileReader("C:\\Users\\yung\\IdeaProjects\\compilers\\src\\test.txt");
-        FileReader fileReader = new FileReader(args[0]);
+        FileReader fileReader = new FileReader("C:\\Users\\yung\\IdeaProjects\\compilers\\src\\test.txt");
+//        FileReader fileReader = new FileReader(args[0]);
         BufferedReader bufferedReader = new BufferedReader(fileReader);
         initial();
         while(true){
@@ -159,7 +159,7 @@ public class test {
                                 if(temp.matches("[0-9]+")){
                                     System.out.println("Number("+temp+")");
                                 }
-                                else if(temp.matches("[a-zA-Z0-9]+")){
+                                else if(temp.matches("[a-zA-Z0-9_]+")){
                                     System.out.println("Ident("+temp+")");
                                 }
                                 temp="";
