@@ -25,7 +25,7 @@ public class test {
     }
     public static void main(String[] args) throws IOException {
 //        FileReader fileReader = new FileReader("C:\\Users\\yung\\IdeaProjects\\compilers\\src\\test.txt");
-        FileReader fileReader = new FileReader(args[0]);
+        FileReader fileReader = new FileReader("C:\\Users\\yung\\IdeaProjects\\compilers\\src\\test.txt");
         BufferedReader bufferedReader = new BufferedReader(fileReader);
         initial();
         while(true){
@@ -99,7 +99,7 @@ public class test {
                         if(splited[i].matches("[0-9]+")){
                             System.out.println("Number("+splited[i]+")");
                         }
-                        else if(splited[i].matches("[a-zA-Z]+")){
+                        else if(splited[i].matches("[a-zA-Z_]+")){
                             System.out.println("Ident("+splited[i]+")");
                         }
                         else{
@@ -112,15 +112,26 @@ public class test {
                                         else if(temp.matches("[0-9]+")){
                                             System.out.println("Number("+temp+")");
                                         }
-                                        else if(temp.matches("[a-zA-Z0-9]+")){
+                                        else if(temp.matches("[a-zA-Z0-9_]+")){
                                             System.out.println("Ident("+temp+")");
                                         }
                                         temp="";
                                     }
-                                    System.out.println(hashMap.get(Character.toString(splited[i].charAt(j))));
+                                    if(j+1<splited[i].length()){
+                                        if(splited[i].charAt(j+1)=='='){
+                                            System.out.println(hashMap.get("=="));
+                                            j++;
+                                        }
+                                        else{
+                                            System.out.println(hashMap.get(Character.toString(splited[i].charAt(j))));
+                                        }
+                                    }
+                                    else{
+                                        System.out.println(hashMap.get(Character.toString(splited[i].charAt(j))));
+                                    }
                                 }
                                 else{
-                                    if(Character.isAlphabetic(splited[i].charAt(j))){
+                                    if(Character.isAlphabetic(splited[i].charAt(j))||splited[i].charAt(j)=='_'){
                                         if(temp.equals("")){
                                             temp+=splited[i].charAt(j);
                                         }
