@@ -41,7 +41,7 @@ public class test {
                 if(!temp.equals("")){
                 }
                 if(splited[i].length()==1){
-                    if(Character.isAlphabetic(splited[i].charAt(0))||splited[i].charAt(0)=='_'){
+                    if(Character.isAlphabetic(splited[i].charAt(0))){
                         if(!temp.equals("")){
                             if(hashMap.get(temp)!=null){
                                 System.out.println(hashMap.get(temp));
@@ -117,10 +117,10 @@ public class test {
                                         }
                                         temp="";
                                     }
-                                    if(j+1<splited[i].length()&&splited[i].charAt(j)=='='){
+                                    if(j+1<splited[i].length()){
                                         if(splited[i].charAt(j+1)=='='){
                                             System.out.println(hashMap.get("=="));
-                                            j+=2;
+                                            j++;
                                         }
                                         else{
                                             System.out.println(hashMap.get(Character.toString(splited[i].charAt(j))));
