@@ -1,4 +1,4 @@
-package lab1;
+//package lab1;
 
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
