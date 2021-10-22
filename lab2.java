@@ -13,10 +13,8 @@ import java.nio.charset.StandardCharsets;
 
 public class lab2 {
     public static void main(String[] args) throws IOException {
-//        FileInputStream fileInputStream = new FileInputStream("C:\\Users\\yung\\IdeaProjects\\compilers\\src\\lab2\\input.txt");
-//        FileOutputStream fileOutputStream = new FileOutputStream("C:\\Users\\yung\\IdeaProjects\\compilers\\src\\lab2\\output.txt");
-        FileInputStream fileInputStream = new FileInputStream(args[0]);
-        FileOutputStream fileOutputStream = new FileOutputStream(args[1]);
+        FileInputStream fileInputStream = new FileInputStream("C:\\Users\\yung\\IdeaProjects\\compilers\\src\\lab2\\input.txt");
+        FileOutputStream fileOutputStream = new FileOutputStream("C:\\Users\\yung\\IdeaProjects\\compilers\\src\\lab2\\output.txt");
         byte[] arr = new byte[100];
         String string = "";
         String finalString = "";    //没有注释的字符串变量
