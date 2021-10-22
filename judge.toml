@@ -1,4 +1,4 @@
-[jobs.lab2]
+[jobs.lab1]
 
 image = { source = "dockerfile", path = ".", tag = "pascal-lex-example" }
 
