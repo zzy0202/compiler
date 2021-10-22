@@ -1,4 +1,3 @@
-
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -57,7 +56,7 @@ public class calculator {
                     stack.push(exp.charAt(i));
                 }
                 else{
-                    if(exp.charAt(i)=='*'||exp.charAt(i)=='/'){
+                    if(exp.charAt(i)=='*'||exp.charAt(i)=='/'||exp.charAt(i)=='%'){
                         while(!stack.empty()){
                             if(stack.peek()=='('){
                                 stack.push(exp.charAt(i));
@@ -67,7 +66,7 @@ public class calculator {
                                 stack.push(exp.charAt(i));
                                 break;
                             }
-                            else if(stack.peek()=='*'||stack.peek()=='/'){
+                            else if(stack.peek()=='*'||stack.peek()=='/'||stack.peek()=='%'){
                                 list.add(stack.peek().toString());
                                 stack.pop();
                             }
@@ -131,7 +130,7 @@ public class calculator {
                 else if(s.equals("/")){
                     a=a/b;
                 }
-                else if(s.equals("%")){
+                else {
                     a=a%b;
                 }
                 counter.push(String.valueOf(a));
