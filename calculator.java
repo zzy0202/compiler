@@ -1,3 +1,4 @@
+
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -71,6 +72,9 @@ public class calculator {
                                 stack.pop();
                             }
                         }
+                        if(stack.empty()){
+                            stack.push(exp.charAt(i));
+                        }
                     }
                     else if(exp.charAt(i)=='+'||exp.charAt(i)=='-'){
                         while (true){
@@ -107,10 +111,12 @@ public class calculator {
         if(!number.equals("")){
             list.add(number);
         }
+        System.out.println(stack);
         while (!stack.empty()){
             list.add(stack.peek().toString());
             stack.pop();
         }
+        System.out.println(list);
         for (String s : list) {
             if (s.equals("+") || s.equals("-") || s.equals("*") || s.equals("/") || s.equals("%")) {
                 int a,b;
