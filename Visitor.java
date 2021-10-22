@@ -1,4 +1,3 @@
-package lab2;
 
 //        compUnit : funcDef;
 //        funcDef  : funcType ident '(' ')' block;
