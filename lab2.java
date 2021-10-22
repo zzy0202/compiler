@@ -1,3 +1,4 @@
+package lab2;
 
 import lab1.ThrowingErrorListener;
 import org.antlr.v4.runtime.CharStream;
@@ -95,7 +96,7 @@ public class lab2 {
         ParseTree tree = parser.compUnit();
         Visitor visitor = new Visitor();
         visitor.visit(tree);
-        fileOutputStream.write(lab1.Visitor.ans.getBytes(StandardCharsets.UTF_8));
+        fileOutputStream.write(Visitor.ans.getBytes(StandardCharsets.UTF_8));
 
         fileOutputStream.close();
         fileInputStream.close();
