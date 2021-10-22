@@ -1,4 +1,3 @@
-package lab2;// Generated from C:/Users/yung/IdeaProjects/untitled3\lab2.g4 by ANTLR 4.9.1
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
