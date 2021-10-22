@@ -1,7 +1,8 @@
-[jobs.lab1]
+[jobs.lab2]
 
 image = { source = "dockerfile", path = ".", tag = "pascal-lex-example" }
 
 run = [
-  "java lab1 $input $ir",
+  "export CLASSPATH='./antlr-4.9.2-complete.jar:$CLASSPATH'",
+  "java lab2 $input $ir",
 ]
