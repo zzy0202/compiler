@@ -1,4 +1,3 @@
-package lab2;
 
 import lab1.ThrowingErrorListener;
 import org.antlr.v4.runtime.CharStream;
