@@ -312,7 +312,6 @@ public class Visitor extends lab3BaseVisitor<Void> {
                     mark=var1.regID;
                 }
             }
-            reg++;
             Calculator.getAns(exp,false);
             exp="";
         }
