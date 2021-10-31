@@ -87,7 +87,7 @@ public class Visitor extends lab3BaseVisitor<Void> {
     @Override
     public Void visitConstDef(lab3Parser.ConstDefContext ctx) {
         System.out.println("\t%"+reg+" = alloca i32");
-        Var var = new Var(ctx.ident1().getText(),true, 0,false,reg);
+        Var var = new Var(ctx.ident1().getText(),true, 0,true,reg);
         mark=reg;
         reg++;
         visit(ctx.constInitVal());
