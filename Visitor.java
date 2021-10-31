@@ -238,6 +238,9 @@ public class Visitor extends lab3BaseVisitor<Void> {
                             System.exit(20);
                         }
                         visit(ctx.funcRParams());
+                        if(ctx.funcRParams().exp().size()>1){
+                            System.exit(22);
+                        }
                         Calculator.getAns(exp,true);
                         System.out.println("\tcall void @putint(i32 %"+(reg-1)+")");
                         exp="";
@@ -256,6 +259,9 @@ public class Visitor extends lab3BaseVisitor<Void> {
                         }
                         exp="";
                         visit(ctx.funcRParams());
+                        if(ctx.funcRParams().exp().size()>1){
+                            System.exit(22);
+                        }
                         Calculator.getAns(exp,true);
                         System.out.println("\tcall void @putch(i32 %"+(reg-1)+")");
                         exp="";
