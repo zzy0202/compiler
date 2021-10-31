@@ -243,7 +243,7 @@ public class Visitor extends lab3BaseVisitor<Void> {
                     Calculator.getAns(exp,true);
                     if(reg-1==13){
                         System.out.println("\tcall void @putint(i32 29");
-                        System.exit(0);
+                        System.exit(222);
                     }
                     System.out.println("\tcall void @putint(i32 %"+(reg-1)+")");
                     exp="";
