@@ -251,19 +251,35 @@ public class Calculator {
                 }
                 else {
                     if(flag1&&flag2){//两个都是变量
-                        System.out.println("\t%"+(Visitor.reg)+" = udiv i32 %"+(Visitor.reg-1)+", %"+(Visitor.reg-2));
+                        System.out.println("\t%"+(Visitor.reg)+" = sdiv i32 %"+(Visitor.reg-1)+", %"+(Visitor.reg-2));
+                        Visitor.reg++;
+                        System.out.println("\t%"+(Visitor.reg)+" = mul i32 %"+(Visitor.reg-1)+", %"+(Visitor.reg-3));
+                        Visitor.reg++;
+                        System.out.println("\t%"+(Visitor.reg)+" = sub i32 %"+(Visitor.reg-3)+", %"+(Visitor.reg-1));
                         Visitor.reg++;
                     }
                     else if(flag1 && !flag2){
-                        System.out.println("\t%"+(Visitor.reg)+" = udiv i32 "+b+", %"+(Visitor.reg-1));
+                        System.out.println("\t%"+(Visitor.reg)+" = sdiv i32 "+b+", %"+(Visitor.reg-1));
+                        Visitor.reg++;
+                        System.out.println("\t%"+(Visitor.reg)+" = mul i32 %"+(Visitor.reg-2)+", %"+(Visitor.reg-1));
+                        Visitor.reg++;
+                        System.out.println("\t%"+(Visitor.reg)+" = sub i32 "+b+", %"+(Visitor.reg-1));
                         Visitor.reg++;
                     }
                     else if(!flag1&&flag2){
-                        System.out.println("\t%"+(Visitor.reg)+" = udiv i32 %"+(Visitor.reg-1)+", "+a);
+                        System.out.println("\t%"+(Visitor.reg)+" = sdiv i32 %"+(Visitor.reg-1)+", "+a);
+                        Visitor.reg++;
+                        System.out.println("\t%"+(Visitor.reg)+" = mul i32 %"+(Visitor.reg-1)+", "+a);
+                        Visitor.reg++;
+                        System.out.println("\t%"+(Visitor.reg)+" = sub i32 %"+(Visitor.reg-3)+", %"+(Visitor.reg-1));
                         Visitor.reg++;
                     }
-                    else if(!flag1&&!flag2){//两个都是数字
-                        System.out.println("\t%"+(Visitor.reg)+" = udiv i32 "+b+", "+a);
+                    else if(!flag1&&!flag2){//两个都是数字//done
+                        System.out.println("\t%"+(Visitor.reg)+" = sdiv i32 "+b+", "+a);
+                        Visitor.reg++;
+                        System.out.println("\t%"+(Visitor.reg)+" = mul i32 %"+(Visitor.reg-1)+", "+a);
+                        Visitor.reg++;
+                        System.out.println("\t%"+(Visitor.reg)+" = sub i32 "+b+", %"+(Visitor.reg-1));
                         Visitor.reg++;
                     }
                 }
