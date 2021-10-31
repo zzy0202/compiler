@@ -8,6 +8,7 @@ public class Visitor extends lab3BaseVisitor<Void> {
     public static int reg=1;
     public static String exp="";
     public static int mark=1;
+    public static boolean isConstDef=false;
     public static ArrayList<Var> listVar = new ArrayList<>();
     // done
     @Override
@@ -90,7 +91,9 @@ public class Visitor extends lab3BaseVisitor<Void> {
         Var var = new Var(ctx.ident1().getText(),true, 0,true,reg);
         mark=reg;
         reg++;
+        isConstDef=true;
         Calculator.getAns(exp,false);
+        isConstDef=false;
         exp="";
         for(Var e : listVar){
             if(e.varName.equals(ctx.ident1().getText())){
