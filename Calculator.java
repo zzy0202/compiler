@@ -156,6 +156,7 @@ public class Calculator {
                         }
                     }
                     if(!exist){
+                        System.out.println("HERE1!");
                         System.exit(1);
                     }
                 }
@@ -170,6 +171,7 @@ public class Calculator {
                         }
                     }
                     if(!exist){
+                        System.out.println("HERE2!");
                         System.exit(1);
                     }
                 }
