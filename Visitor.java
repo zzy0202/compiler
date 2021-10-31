@@ -109,6 +109,7 @@ public class Visitor extends lab3BaseVisitor<Void> {
             Var var = new Var(ctx.ident1().getText(),false, 0,false,reg);
             listVar.add(var);
             mark=reg;
+            reg++;
         }
         else if(ctx.children.size()==3){
             System.out.println("\t%"+reg+" = alloca i32 ");
