@@ -226,18 +226,17 @@ public class Visitor extends lab3BaseVisitor<Void> {
             if(ctx.ident1()!=null){
                 if(ctx.ident1().getText()!=null){
                     if(ctx.ident1().getText().equals("getint")){
+                        System.out.println("\t%"+(reg+1)+" = call i32 @getint()");
+                        exp+='%'+String.valueOf(reg+1);
                         reg++;
-                        System.out.println("\t%"+(reg)+" = call i32 @getint()");
-                        exp+='%'+String.valueOf(reg);
                     }
                     else if(ctx.ident1().getText().equals("putint")){
                         if(ctx.funcRParams()==null){
-                            System.exit(21);
+                            System.exit(20);
                         }
-                        exp="";
                         visit(ctx.funcRParams());
                         Calculator.getAns(exp,true);
-                        System.out.println("\tcall void @putch(i32 %"+(reg-1)+")");
+                        System.out.println("\tcall void @putint(i32 %"+(reg-1)+")");
                         exp="";
                     }
                     if(ctx.ident1().getText().equals("getch")){
@@ -309,7 +308,6 @@ public class Visitor extends lab3BaseVisitor<Void> {
         }
         else if(ctx.children.size()==4){
             String var;
-            exp="";
             var=ctx.lVal().getText();
             for(Var test : listVar){
                 if(test.varName.equals(var)&&test.isConst==true){
