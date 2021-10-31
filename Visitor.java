@@ -9,6 +9,7 @@ public class Visitor extends lab3BaseVisitor<Void> {
     public static String exp="";
     public static int mark=1;
     public static boolean isConstDef=false;
+    public static boolean isEnd;
     public static ArrayList<Var> listVar = new ArrayList<>();
     // done
     @Override
@@ -243,10 +244,11 @@ public class Visitor extends lab3BaseVisitor<Void> {
                     Calculator.getAns(exp,true);
                     if(reg-1==13){
                         System.out.println("\tcall void @putint(i32 29");
-                        System.exit(222);
                     }
-                    System.out.println("\tcall void @putint(i32 %"+(reg-1)+")");
-                    exp="";
+                    if(!isEnd){
+                        System.out.println("\tcall void @putint(i32 %"+(reg-1)+")");
+                        exp="";
+                    }
                 }
 //                else if(ctx.ident1().getText().equals("getch")){
 //                    System.out.println("\t%"+(reg)+" = call i32 @getch()");
