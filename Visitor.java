@@ -226,9 +226,9 @@ public class Visitor extends lab3BaseVisitor<Void> {
             if(ctx.ident1()!=null){
                 if(ctx.ident1().getText()!=null){
                     if(ctx.ident1().getText().equals("getint")){
+                        reg++;
                         System.out.println("\t%"+(reg)+" = call i32 @getint()");
                         exp+='%'+String.valueOf(reg);
-                        reg++;
                     }
                     else if(ctx.ident1().getText().equals("putint")){
                         if(ctx.funcRParams()==null){
@@ -241,9 +241,9 @@ public class Visitor extends lab3BaseVisitor<Void> {
                         exp="";
                     }
                     if(ctx.ident1().getText().equals("getch")){
+                        reg++;
                         System.out.println("\t%"+(reg)+" = call i32 @getch()");
                         exp+='%'+String.valueOf(reg);
-                        reg++;
                     }
                     else if(ctx.ident1().getText().equals("putch")){
                         if(ctx.funcRParams()==null){
