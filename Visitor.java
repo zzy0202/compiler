@@ -244,6 +244,9 @@ public class Visitor extends lab3BaseVisitor<Void> {
                     }
                     if(ctx.ident1().getText().equals("getch")){
                         System.out.println("\t%"+(reg)+" = call i32 @getch()");
+                        if(ctx.funcRParams()!=null){
+                            System.exit(24);
+                        }
                         exp+='%'+String.valueOf(reg);
                         reg++;
                     }
