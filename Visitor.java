@@ -266,6 +266,9 @@ public class Visitor extends lab3BaseVisitor<Void> {
                         System.out.println("\tcall void @putch(i32 %"+(reg-1)+")");
                         exp="";
                     }
+                    else {
+                        System.exit(111);
+                    }
                 }
                 if(ctx.funcRParams()!=null){
                     visit(ctx.funcRParams());
