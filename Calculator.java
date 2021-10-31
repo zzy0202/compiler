@@ -156,8 +156,7 @@ public class Calculator {
                         }
                     }
                     if(!exist){
-                        System.out.println("NOT EXIST var");
-//                        System.exit(20);
+                        System.exit(0);
                     }
                 }
                 if(flag2){
@@ -171,7 +170,7 @@ public class Calculator {
                         }
                     }
                     if(!exist){
-//                        System.exit(30);
+                        System.exit(0);
                     }
                 }
                 if(s.equals("+")){
