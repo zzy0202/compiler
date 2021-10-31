@@ -227,6 +227,9 @@ public class Visitor extends lab3BaseVisitor<Void> {
                 if(ctx.ident1().getText()!=null){
                     if(ctx.ident1().getText().equals("getint")){
                         System.out.println("\t%"+(reg)+" = call i32 @getint()");
+                        if(ctx.funcRParams()!=null){
+                            System.exit(23);
+                        }
                         exp+='%'+String.valueOf(reg);
                         reg++;
                     }
