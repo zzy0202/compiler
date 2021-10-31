@@ -1,4 +1,4 @@
 FROM openjdk:16
 WORKDIR /app/
 COPY ./* ./
-RUN javac lab3.java
+RUN javac Lab3.java
