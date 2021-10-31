@@ -56,7 +56,7 @@ public class Calculator {
                     stack.push(exp.charAt(i));
                 }
                 else{
-                    if(exp.charAt(i)=='*'||exp.charAt(i)=='/'||exp.charAt(i)=='%'){
+                    if(exp.charAt(i)=='*'||exp.charAt(i)=='/'||exp.charAt(i)=='#'){
                         while(!stack.empty()){
                             if(stack.peek()=='('){
                                 stack.push(exp.charAt(i));
@@ -66,7 +66,7 @@ public class Calculator {
                                 stack.push(exp.charAt(i));
                                 break;
                             }
-                            else if(stack.peek()=='*'||stack.peek()=='/'||stack.peek()=='%'){
+                            else if(stack.peek()=='*'||stack.peek()=='/'||stack.peek()=='#'){
                                 list.add(stack.peek().toString());
                                 stack.pop();
                             }
@@ -128,7 +128,7 @@ public class Calculator {
             }
         }
         for (String s : list) {
-            if (s.equals("+") || s.equals("-") || s.equals("*") || s.equals("/") || s.equals("%")) {
+            if (s.equals("+") || s.equals("-") || s.equals("*") || s.equals("/") || s.equals("#")) {
                 boolean flag1=false,flag2=false;
                 String a,b;
                 for (int i = 0; i < counter.peek().length(); i++) {
