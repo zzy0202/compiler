@@ -198,7 +198,7 @@ public class Visitor extends lab3BaseVisitor<Void> {
                 exp+='*';
             }
             else if(ctx.Mod()!=null){
-                exp+='%';
+                exp+='#';
             }
             visit(ctx.unaryExp());
         }
