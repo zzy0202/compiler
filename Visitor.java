@@ -87,10 +87,10 @@ public class Visitor extends lab3BaseVisitor<Void> {
     @Override
     public Void visitConstDef(lab3Parser.ConstDefContext ctx) {
         System.out.println("\t%"+reg+" = alloca i32");
-        visit(ctx.constInitVal());
-        Var var = new Var(ctx.ident1().getText(),true, 0,true,reg);
+        Var var = new Var(ctx.ident1().getText(),true, 0,false,reg);
         mark=reg;
         reg++;
+        visit(ctx.constInitVal());
         isConstDef=true;
         Calculator.getAns(exp,false);
         isConstDef=false;
@@ -123,8 +123,8 @@ public class Visitor extends lab3BaseVisitor<Void> {
             System.out.println("\t%"+reg+" = alloca i32 ");
             Var var = new Var(ctx.ident1().getText(),true, 0,false,reg);
             mark=reg;
-            visit(ctx.initVal());
             reg++;
+            visit(ctx.initVal());
             Calculator.getAns(exp,false);
             exp="";
             for(Var e : listVar){
@@ -226,8 +226,8 @@ public class Visitor extends lab3BaseVisitor<Void> {
             if(ctx.ident1()!=null){
                 if(ctx.ident1().getText()!=null){
                     if(ctx.ident1().getText().equals("getint")){
-                        System.out.println("\t%"+(reg+1)+" = call i32 @getint()");
-                        exp+='%'+String.valueOf(reg+1);
+                        System.out.println("\t%"+(reg)+" = call i32 @getint()");
+                        exp+='%'+String.valueOf(reg);
                         reg++;
                     }
                     else if(ctx.ident1().getText().equals("putint")){
@@ -300,8 +300,8 @@ public class Visitor extends lab3BaseVisitor<Void> {
 
     @Override
     public Void visitStmt(lab3Parser.StmtContext ctx) {
-         if(ctx.children.size()==3){
-             exp="";
+        if(ctx.children.size()==3){
+            exp="";
             visit(ctx.exp());
             Calculator.getAns(exp,true);
             System.out.println("\tret i32 %"+(reg-1));
