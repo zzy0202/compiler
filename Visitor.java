@@ -108,6 +108,11 @@ public class Visitor extends lab3BaseVisitor<Void> {
             System.out.println("\t%"+reg+" = alloca i32");
             Var var = new Var(ctx.ident1().getText(),false, 0,false,reg);
             listVar.add(var);
+            for(Var var1 : listVar){
+                if(var1.varName.equals(var.varName)){
+                    System.exit(2);
+                }
+            }
             mark=reg;
             reg++;
         }
