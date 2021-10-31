@@ -118,6 +118,15 @@ public class Calculator {
             list.add("0");
             list.add("+");
         }
+        if(Visitor.isConstDef){
+            for (int i = 0; i < list.size(); i++) {
+                for (int j = 0; j < Visitor.listVar.size(); j++) {
+                    if(list.get(i).equals(Visitor.listVar.get(j).varName)&&!Visitor.listVar.get(j).isConst){
+                        System.exit(1);
+                    }
+                }
+            }
+        }
         for (String s : list) {
             if (s.equals("+") || s.equals("-") || s.equals("*") || s.equals("/") || s.equals("%")) {
                 boolean flag1=false,flag2=false;
@@ -162,7 +171,6 @@ public class Calculator {
                         }
                     }
                     if(!exist){
-                        System.out.println(list);
                         System.exit(30);
                     }
                 }
