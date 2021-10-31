@@ -152,6 +152,7 @@ public class Calculator {
                             System.out.println("\t%"+Visitor.reg+" = load i32, i32* %"+var.regID);
                             Visitor.reg++;
                             exist=true;
+                            flag1=false;
                             break;
                         }
                     }
@@ -166,6 +167,7 @@ public class Calculator {
                             System.out.println("\t%"+Visitor.reg+" = load i32, i32* %"+var.regID);
                             Visitor.reg++;
                             exist=true;
+                            flag1=false;
                             break;
                         }
                     }
