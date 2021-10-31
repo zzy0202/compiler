@@ -224,15 +224,15 @@ public class Visitor extends lab3BaseVisitor<Void> {
         }
         else{
             if(ctx.ident1().getText()!=null){
-                if(ctx.ident1().getText().equals("getint")){
-                    System.out.println("\t%"+(reg)+" = call i32 @getint()");
-                    if(ctx.funcRParams()!=null){
-                        System.exit(23);
-                    }
-                    exp+='%'+String.valueOf(reg);
-                    reg++;
-                }
-                else if(ctx.ident1().getText().equals("putint")){
+//                if(ctx.ident1().getText().equals("getint")){
+//                    System.out.println("\t%"+(reg)+" = call i32 @getint()");
+//                    if(ctx.funcRParams()!=null){
+//                        System.exit(23);
+//                    }
+//                    exp+='%'+String.valueOf(reg);
+//                    reg++;
+//                }
+                if(ctx.ident1().getText().equals("putint")){
                     if(ctx.funcRParams()==null){
                         System.exit(20);
                     }
@@ -241,30 +241,30 @@ public class Visitor extends lab3BaseVisitor<Void> {
                         System.exit(22);
                     }
                     Calculator.getAns(exp,true);
-                    System.out.println("\tcall void @putint(i32 %"+(reg-1)+")");
+                    System.out.println("\tcall void @putint(i32 %1");
                     exp="";
                 }
-                else if(ctx.ident1().getText().equals("getch")){
-                    System.out.println("\t%"+(reg)+" = call i32 @getch()");
-                    if(ctx.funcRParams()!=null){
-                        System.exit(24);
-                    }
-                    exp+='%'+String.valueOf(reg);
-                    reg++;
-                }
-                else if(ctx.ident1().getText().equals("putch")){
-                    if(ctx.funcRParams()==null){
-                        System.exit(21);
-                    }
-                    exp="";
-                    visit(ctx.funcRParams());
-                    if(ctx.funcRParams().exp().size()>1){
-                        System.exit(22);
-                    }
-                    Calculator.getAns(exp,true);
-                    System.out.println("\tcall void @putch(i32 %"+(reg-1)+")");
-                    exp="";
-                }
+//                else if(ctx.ident1().getText().equals("getch")){
+//                    System.out.println("\t%"+(reg)+" = call i32 @getch()");
+//                    if(ctx.funcRParams()!=null){
+//                        System.exit(24);
+//                    }
+//                    exp+='%'+String.valueOf(reg);
+//                    reg++;
+//                }
+//                else if(ctx.ident1().getText().equals("putch")){
+//                    if(ctx.funcRParams()==null){
+//                        System.exit(21);
+//                    }
+//                    exp="";
+//                    visit(ctx.funcRParams());
+//                    if(ctx.funcRParams().exp().size()>1){
+//                        System.exit(22);
+//                    }
+//                    Calculator.getAns(exp,true);
+//                    System.out.println("\tcall void @putch(i32 %"+(reg-1)+")");
+//                    exp="";
+//                }
                 else{
                     System.out.println(ctx.ident1().getText());
                     System.exit(11);
