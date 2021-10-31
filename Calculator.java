@@ -156,7 +156,7 @@ public class Calculator {
                         }
                     }
                     if(!exist){
-                        System.exit(12);
+                        System.exit(13);
                     }
                 }
                 if(flag2){
@@ -170,7 +170,7 @@ public class Calculator {
                         }
                     }
                     if(!exist){
-                        System.exit(12);
+                        System.exit(13);
                     }
                 }
                 if(s.equals("+")){
