@@ -109,6 +109,8 @@ public class Visitor extends lab3BaseVisitor<Void> {
     public Void visitVarDef(lab3Parser.VarDefContext ctx) {
         if(ctx.children.size()==1){
             System.out.println("\t%"+reg+" = alloca i32");
+            mark=reg;
+            reg++;
             Var var = new Var(ctx.ident1().getText(),false, 0,false,reg);
             for(Var var1 : listVar){
                 if(var1.varName.equals(var.varName)){
@@ -116,15 +118,13 @@ public class Visitor extends lab3BaseVisitor<Void> {
                 }
             }
             listVar.add(var);
-            mark=reg;
-            reg++;
         }
         else if(ctx.children.size()==3){
             System.out.println("\t%"+reg+" = alloca i32 ");
             Var var = new Var(ctx.ident1().getText(),true, 0,false,reg);
             mark=reg;
-            visit(ctx.initVal());
             reg++;
+            visit(ctx.initVal());
             Calculator.getAns(exp,false);
             exp="";
             for(Var e : listVar){
@@ -226,23 +226,24 @@ public class Visitor extends lab3BaseVisitor<Void> {
             if(ctx.ident1()!=null){
                 if(ctx.ident1().getText()!=null){
                     if(ctx.ident1().getText().equals("getint")){
-                        System.out.println("\t%"+(reg+1)+" = call i32 @getint()");
-                        exp+='%'+String.valueOf(reg+1);
+                        System.out.println("\t%"+(reg)+" = call i32 @getint()");
+                        exp+='%'+String.valueOf(reg);
                         reg++;
                     }
                     else if(ctx.ident1().getText().equals("putint")){
                         if(ctx.funcRParams()==null){
-                            System.exit(20);
+                            System.exit(21);
                         }
+                        exp="";
                         visit(ctx.funcRParams());
                         Calculator.getAns(exp,true);
-                        System.out.println("\tcall void @putint(i32 %"+(reg-1)+")");
+                        System.out.println("\tcall void @putch(i32 %"+(reg-1)+")");
                         exp="";
                     }
                     if(ctx.ident1().getText().equals("getch")){
-                        reg++;
                         System.out.println("\t%"+(reg)+" = call i32 @getch()");
                         exp+='%'+String.valueOf(reg);
+                        reg++;
                     }
                     else if(ctx.ident1().getText().equals("putch")){
                         if(ctx.funcRParams()==null){
@@ -308,6 +309,7 @@ public class Visitor extends lab3BaseVisitor<Void> {
         }
         else if(ctx.children.size()==4){
             String var;
+            exp="";
             var=ctx.lVal().getText();
             for(Var test : listVar){
                 if(test.varName.equals(var)&&test.isConst==true){
