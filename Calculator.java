@@ -156,7 +156,8 @@ public class Calculator {
                         }
                     }
                     if(!exist){
-                        System.exit(0);
+                        System.out.println("\t%"+Visitor.reg+" = load i32, i32* %"+Visitor.reg);
+                        Visitor.reg++;
                     }
                 }
                 if(flag2){
@@ -170,7 +171,8 @@ public class Calculator {
                         }
                     }
                     if(!exist){
-                        System.exit(0);
+                        System.out.println("\t%"+Visitor.reg+" = load i32, i32* %"+Visitor.reg);
+                        Visitor.reg++;
                     }
                 }
                 if(s.equals("+")){
