@@ -1,7 +1,7 @@
-[jobs.lab1]
+[jobs.lab3]
 
 image = { source = "dockerfile", path = ".", tag = "pascal-lex-example" }
 
 run = [
-  "java lab1 $input $ir",
+  "java lab3 $input $ir",
 ]
