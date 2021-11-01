@@ -177,15 +177,15 @@ public class Calculator {
                 }
                 if(s.equals("+")){
                     if(flag1&&flag2){//两个都是变量
-                        System.out.println("\t%"+(Visitor.reg)+" = add i32 %"+(Visitor.reg-2)+", %"+(Visitor.reg-1));
+                        System.out.println("\t%"+(Visitor.reg)+" = add i32 %"+(Visitor.reg-1)+", %"+(Visitor.reg-2));
                         Visitor.reg++;
                     }
                     else if(flag1 &&!flag2){
-                        System.out.println("\t%"+(Visitor.reg)+" = add i32 %"+(Visitor.reg-1)+", "+b);
+                        System.out.println("\t%"+(Visitor.reg)+" = add i32 "+b+", %"+(Visitor.reg-1));
                         Visitor.reg++;
                     }
                     else if(!flag1&&flag2){
-                        System.out.println("\t%"+(Visitor.reg)+" = add i32 "+a+", %"+(Visitor.reg-1));
+                        System.out.println("\t%"+(Visitor.reg)+" = add i32 %"+(Visitor.reg-1)+", "+a);
                         Visitor.reg++;
                     }
                     else if(!flag1&&!flag2){
