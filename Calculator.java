@@ -221,7 +221,7 @@ public class Calculator {
                         Visitor.reg++;
                     }
                     else if(!flag1&&flag2){
-                        System.out.println("\t%"+(Visitor.reg)+" = sdiv i32 %"+(Visitor.reg-1)+", "+a);
+                        System.out.println("\t%"+(Visitor.reg)+" = mul i32 %"+(Visitor.reg-1)+", "+a);
                         Visitor.reg++;
                     }
                     else if(!flag1&&!flag2){
