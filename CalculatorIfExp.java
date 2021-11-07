@@ -148,21 +148,30 @@ public class CalculatorIfExp {
             list.add(stack.peek().toString());
             stack.pop();
         }
-        Boolean exist=false;
+        boolean exist=false;
+        boolean isVar=false;
         for (int i = 0; i < list.size(); i++) {
-            for(Var var : Visitor.listVar){
-                if(var.varName.equals(list.get(i))){
-                    exist=true;
-                    System.out.println("\t%"+Visitor.reg+" = load i32, i32* %"+var.regID);
-                    list.set(i,"%"+Visitor.reg);
-                    Visitor.reg++;
-                    break;
+            for (int j = 0; j < list.get(i).length(); j++) {
+                if(Character.isAlphabetic(list.get(i).charAt(j))){
+                    isVar=true;
                 }
             }
-            if(!exist){
-                System.exit(222);
+            if(isVar){
+                for(Var var : Visitor.listVar){
+                    if(var.varName.equals(list.get(i))){
+                        exist=true;
+                        System.out.println("\t%"+Visitor.reg+" = load i32, i32* %"+var.regID);
+                        list.set(i,"%"+Visitor.reg);
+                        Visitor.reg++;
+                        break;
+                    }
+                }
+                if(!exist){
+                    System.exit(222);
+                }
+                exist=false;
             }
-            exist=false;
+            isVar=false;
         }
         for (int i = 0; i < list.size(); i++) {
             if(list.get(i).matches("^[a-zA-Z]+$")||list.get(i).matches("^[0-9%]+$")||list.get(i).matches("^[0-9]+$")){
