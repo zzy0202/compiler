@@ -347,29 +347,22 @@ public class Visitor extends minisysBaseVisitor<Void> {
         else if(ctx.children.size()==5||ctx.children.size()==7){
             exp="";
             visit(ctx.cond());
+            int mark;
+            exp="";
+            visit(ctx.cond());
             CalculatorIfExp.getAns(exp);
             exp="";
-            System.out.println("block"+(Visitor.block-2)+":");
+            System.out.println("true_block"+block+":");
+            mark=block;
+            block++;
             visit(ctx.stmt(0));
-            if(ctx.stmt(1)!=null){
-                if(ctx.stmt(1).cond()!=null){
-                    System.out.println("\tbr label %block"+(block-1));
-                }
-                else {
-                    System.out.println("\tbr label %block"+(block));
-                }
-            }
-            else if(ctx.stmt(1)==null){
-                System.out.println("\tbr label %block"+(block-1));
-            }
-            System.out.println("block"+(Visitor.block-1)+":");
+            System.out.println("\tbr label %end_block"+mark);
+            System.out.println("false_block"+mark+":");
             if(ctx.children.size()==7){
                 visit(ctx.stmt(1));
-                if(ctx.stmt(1).cond()==null){
-                    System.out.println("\tbr label %block"+(block));
-                    System.out.println("block"+block+":");
-                }
             }
+            System.out.println("\tbr label %end_block"+(mark));
+            System.out.println("end_block"+mark+":");
         }
         else if(ctx.children.size()==1){
             if(ctx.block()!=null){
