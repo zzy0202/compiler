@@ -1,0 +1,12 @@
+int main() {
+    int a;
+    a = 10;
+    if (2||2) {
+        a = - - -1;
+    }
+    else {
+        a = 0;
+    }
+    putint(a);
+    return 0;
+}
