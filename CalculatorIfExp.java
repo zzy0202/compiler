@@ -246,8 +246,7 @@ public class CalculatorIfExp {
                 counter.push("%"+(Visitor.reg-1));
             }
         }
-        System.out.println("\tbr i1 %"+(Visitor.reg-1)+" , label %block"+(Visitor.block)+" ,label %block"+(Visitor.block+1));
-        Visitor.block+=2;
+        System.out.println("\tbr i1 %"+(Visitor.reg-1)+" , label %true_block"+(Visitor.block)+" ,label %false_block"+(Visitor.block));
         return exp;
     }
 
@@ -320,7 +319,8 @@ public class CalculatorIfExp {
                     gotEq=false;
                 }
             }
-            if(temp.charAt(i)=='='||temp.charAt(i)=='~'){
+            if(temp.charAt(i)=='='||temp.charAt(i)=='~'||
+                    temp.charAt(i)=='@'||temp.charAt(i)=='$'){
                 gotEq=true;
             }
         }
