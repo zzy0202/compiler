@@ -8,6 +8,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
     public static int block=1;
     public static String exp="";
     public static int mark=1;
+    public static ArrayList<String> i1list = new ArrayList<>();
     public static boolean isFirstBlock=true;
     public static boolean isConstDef=false;
     public static ArrayList<Var> listVar = new ArrayList<>();
