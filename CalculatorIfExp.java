@@ -183,9 +183,6 @@ public class CalculatorIfExp {
                 counter.pop();
                 b=counter.peek();
                 counter.pop();
-                getReturn=checkI32(a,b);
-                a=getReturn.get(0);
-                b=getReturn.get(1);
                 if(list.get(i).equals("+")){
                     System.out.println("\t%" + (Visitor.reg) + " = add i32 " + (b) + ", " + (a));
                     Visitor.reg++;
@@ -207,33 +204,48 @@ public class CalculatorIfExp {
                     Visitor.reg++;
                 }
                 else if(list.get(i).equals(">")){
+                    getReturn=checkI32(a,b);
+                    a=getReturn.get(0);
+                    b=getReturn.get(1);
                     System.out.println("\t%"+ (Visitor.reg)+" = icmp sgt i32 "+(b) +", "+(a));
-                    Visitor.i1list.add(Visitor.reg+"%");
+                    Visitor.i1list.add("%"+Visitor.reg);
                     Visitor.reg++;
                 }
                 else if(list.get(i).equals("<")){
+                    getReturn=checkI32(a,b);
+                    a=getReturn.get(0);
+                    b=getReturn.get(1);
                     System.out.println("\t%"+ (Visitor.reg)+" = icmp slt i32 "+(b) +", "+(a));
-                    Visitor.i1list.add(Visitor.reg+"%");
+                    Visitor.i1list.add("%"+Visitor.reg);
                     Visitor.reg++;
                 }
                 else if(list.get(i).equals("@")){
+                    getReturn=checkI32(a,b);
+                    a=getReturn.get(0);
+                    b=getReturn.get(1);
                     System.out.println("\t%"+ (Visitor.reg)+" = icmp sle i32 "+(b) +", "+(a));
-                    Visitor.i1list.add(Visitor.reg+"%");
+                    Visitor.i1list.add("%"+Visitor.reg);
                     Visitor.reg++;
                 }
                 else if(list.get(i).equals("$")){
                     System.out.println("\t%"+ (Visitor.reg)+" = icmp sge i32 "+(b) +", "+(a));
-                    Visitor.i1list.add(Visitor.reg+"%");
+                    Visitor.i1list.add("%"+Visitor.reg);
                     Visitor.reg++;
                 }
                 else if(list.get(i).equals("~")){
+                    getReturn=checkI32(a,b);
+                    a=getReturn.get(0);
+                    b=getReturn.get(1);
                     System.out.println("\t%"+ (Visitor.reg)+" = icmp ne i32 "+(b) +", "+(a));
-                    Visitor.i1list.add(Visitor.reg+"%");
+                    Visitor.i1list.add("%"+Visitor.reg);
                     Visitor.reg++;
                 }
                 else if(list.get(i).equals("=")){
+                    getReturn=checkI32(a,b);
+                    a=getReturn.get(0);
+                    b=getReturn.get(1);
                     System.out.println("\t%"+ (Visitor.reg)+" = icmp eq i32 "+(b) +", "+(a));
-                    Visitor.i1list.add(Visitor.reg+"%");
+                    Visitor.i1list.add("%"+Visitor.reg);
                     Visitor.reg++;
                 }
                 else if(list.get(i).equals("&")){
@@ -267,13 +279,13 @@ public class CalculatorIfExp {
         returnI32.add(a);returnI32.add(b);
         for(String var : Visitor.i1list){
             if(var.equals(a)){
-                System.out.println("%"+(Visitor.reg)+" = zext i1 "+a+" to i32");
+                System.out.println("\t%"+(Visitor.reg)+" = zext i1 "+a+" to i32");
                 a="%"+Visitor.reg;
                 Visitor.reg++;
                 returnI32.set(0,a);
             }
             if(var.equals(b)){
-                System.out.println("%"+(Visitor.reg)+" = zext i1 "+a+" to i32");
+                System.out.println("\t%"+(Visitor.reg)+" = zext i1 "+a+" to i32");
                 b="%"+Visitor.reg;
                 Visitor.reg++;
                 returnI32.set(1,b);
@@ -351,7 +363,8 @@ public class CalculatorIfExp {
                 }
             }
             if(temp.charAt(i)=='='||temp.charAt(i)=='~'||
-                    temp.charAt(i)=='@'||temp.charAt(i)=='$'){
+                    temp.charAt(i)=='@'||temp.charAt(i)=='$'||
+                    temp.charAt(i)=='>'||temp.charAt(i)=='<'){
                 gotEq=true;
             }
         }
