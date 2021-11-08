@@ -1,4 +1,3 @@
-import java.sql.SQLClientInfoException;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -173,6 +172,7 @@ public class CalculatorIfExp {
             }
             isVar=false;
         }
+        ArrayList<String> getReturn = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             if(list.get(i).matches("^[a-zA-Z]+$")||list.get(i).matches("^[0-9%]+$")||list.get(i).matches("^[0-9]+$")){
                 counter.push(list.get(i));
@@ -183,6 +183,9 @@ public class CalculatorIfExp {
                 counter.pop();
                 b=counter.peek();
                 counter.pop();
+                getReturn=checkI32(a,b);
+                a=getReturn.get(0);
+                b=getReturn.get(1);
                 if(list.get(i).equals("+")){
                     System.out.println("\t%" + (Visitor.reg) + " = add i32 " + (b) + ", " + (a));
                     Visitor.reg++;
@@ -205,38 +208,47 @@ public class CalculatorIfExp {
                 }
                 else if(list.get(i).equals(">")){
                     System.out.println("\t%"+ (Visitor.reg)+" = icmp sgt i32 "+(b) +", "+(a));
+                    Visitor.i1list.add(Visitor.reg+"%");
                     Visitor.reg++;
                 }
                 else if(list.get(i).equals("<")){
                     System.out.println("\t%"+ (Visitor.reg)+" = icmp slt i32 "+(b) +", "+(a));
+                    Visitor.i1list.add(Visitor.reg+"%");
                     Visitor.reg++;
                 }
                 else if(list.get(i).equals("@")){
                     System.out.println("\t%"+ (Visitor.reg)+" = icmp sle i32 "+(b) +", "+(a));
+                    Visitor.i1list.add(Visitor.reg+"%");
                     Visitor.reg++;
                 }
                 else if(list.get(i).equals("$")){
                     System.out.println("\t%"+ (Visitor.reg)+" = icmp sge i32 "+(b) +", "+(a));
+                    Visitor.i1list.add(Visitor.reg+"%");
                     Visitor.reg++;
                 }
                 else if(list.get(i).equals("~")){
                     System.out.println("\t%"+ (Visitor.reg)+" = icmp ne i32 "+(b) +", "+(a));
+                    Visitor.i1list.add(Visitor.reg+"%");
                     Visitor.reg++;
                 }
                 else if(list.get(i).equals("=")){
                     System.out.println("\t%"+ (Visitor.reg)+" = icmp eq i32 "+(b) +", "+(a));
+                    Visitor.i1list.add(Visitor.reg+"%");
                     Visitor.reg++;
                 }
                 else if(list.get(i).equals("&")){
                     System.out.println("\t%"+ (Visitor.reg)+" = and i1 "+(b) +", "+(a));
+                    Visitor.i1list.add(Visitor.reg+"%");
                     Visitor.reg++;
                 }
                 else if(list.get(i).equals("|")){
                     System.out.println("\t%"+ (Visitor.reg)+" = or i1 "+(b) +", "+(a));
+                    Visitor.i1list.add(Visitor.reg+"%");
                     Visitor.reg++;
                 }
                 else if(list.get(i).equals("!")){
                     System.out.println("\t%"+ (Visitor.reg)+" = icmp ne i32 "+(b) +", "+(a));
+                    Visitor.i1list.add(Visitor.reg+"%");
                     Visitor.reg++;
                     System.out.println("\t%"+ (Visitor.reg)+" = xor i1 %"+(Visitor.reg-1) +", true");
                     Visitor.reg++;
@@ -250,6 +262,25 @@ public class CalculatorIfExp {
         return exp;
     }
 
+    public static ArrayList<String> checkI32(String a, String b){
+        ArrayList<String> returnI32 = new ArrayList<>();
+        returnI32.add(a);returnI32.add(b);
+        for(String var : Visitor.i1list){
+            if(var.equals(a)){
+                System.out.println("%"+(Visitor.reg)+" = zext i1 "+a+" to i32");
+                a="%"+Visitor.reg;
+                Visitor.reg++;
+                returnI32.set(0,a);
+            }
+            if(var.equals(b)){
+                System.out.println("%"+(Visitor.reg)+" = zext i1 "+a+" to i32");
+                b="%"+Visitor.reg;
+                Visitor.reg++;
+                returnI32.set(1,b);
+            }
+        }
+        return returnI32;
+    }
 
     public static String getString(String exp){
         exp = exp.replaceAll("\\s+", "");
@@ -298,7 +329,7 @@ public class CalculatorIfExp {
             }
         }
         String keep="";
-        Boolean gotEq=false;
+        boolean gotEq=false;
         for (int i = 0; i < temp.length(); i++) {
             if(i==temp.length()-1){
                 if(gotEq){
