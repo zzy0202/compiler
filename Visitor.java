@@ -234,7 +234,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     if(ctx.funcRParams()!=null){
                         System.exit(23);
                     }
-                    exp+='%'+String.valueOf(reg);
+                    exp+="%var"+String.valueOf(reg);
                     reg++;
                 }
                 else if(ctx.ident1().getText().equals("putint")){
@@ -254,7 +254,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     if(ctx.funcRParams()!=null){
                         System.exit(24);
                     }
-                    exp+='%'+String.valueOf(reg);
+                    exp+="%var"+String.valueOf(reg);
                     reg++;
                 }
                 else if(ctx.ident1().getText().equals("putch")){
