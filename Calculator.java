@@ -166,13 +166,13 @@ public class Calculator {
                 String get="";
                 if(a.charAt(0)=='%'){
                     get=a;
-                    get=get.substring(0);
-                    a="var"+get;
+                    get=get.substring(1);
+                    a="var%"+get;
                 }
                 if(b.charAt(0)=='%'){
                     get=b;
-                    get=get.substring(0);
-                    b="var"+get;
+                    get=get.substring(1);
+                    b="var%"+get;
                 }
                 switch (list.get(i)) {
                     case "+" -> {
