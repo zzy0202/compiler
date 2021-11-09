@@ -185,7 +185,7 @@ public class CalculatorIfExp {
                 counter.pop();
                 switch (list.get(i)) {
                     case "+" -> {
-                        System.out.println("\t%var" + (Visitor.reg) + " = add i32 " + (b) + ", " + (a));
+                        System.out.println("\t%var" + (Visitor.reg) + " = add ss i32 " + (b) + ", " + (a));
                         Visitor.reg++;
                     }
                     case "-" -> {
