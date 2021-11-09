@@ -321,7 +321,8 @@ public class CalculatorIfExp {
         }
         for (int i = 0; i <temp.length()-1; i++) {
             if(temp.charAt(i)=='!'&&temp.charAt(i+1)=='!'){
-                temp.deleteCharAt(i);temp.deleteCharAt(i);
+                temp.delete(i,i+2);
+                i-=1;
             }
         }
         for (int i = 0; i < temp.length(); i++) {
