@@ -140,7 +140,7 @@ public class Calculator {
                 for(Var var : Visitor.listVar){
                     if(var.varName.equals(list.get(i))){
                         exist=true;
-                        System.out.println("\t%"+Visitor.reg+" = load i32, i32* %"+var.regID);
+                        System.out.println("\t%var"+Visitor.reg+" = load i32, i32* %var"+var.regID);
                         list.set(i,"%"+Visitor.reg);
                         Visitor.reg++;
                         break;
@@ -163,25 +163,34 @@ public class Calculator {
                 counter.pop();
                 b=counter.peek();
                 counter.pop();
+                String get="";
+                if(a.charAt(0)=='%'){
+                    get=a;
+                    a="var"+get;
+                }
+                if(b.charAt(0)=='%'){
+                    get=b;
+                    b="var"+get;
+                }
                 switch (list.get(i)) {
                     case "+" -> {
-                        System.out.println("\t%" + (Visitor.reg) + " = add i32 " + (b) + ", " + (a));
+                        System.out.println("\t%var" + (Visitor.reg) + " = add i32 " + (b) + ", " + (a));
                         Visitor.reg++;
                     }
                     case "-" -> {
-                        System.out.println("\t%" + (Visitor.reg) + " = sub i32 " + (b) + ", " + (a));
+                        System.out.println("\t%var" + (Visitor.reg) + " = sub i32 " + (b) + ", " + (a));
                         Visitor.reg++;
                     }
                     case "*" -> {
-                        System.out.println("\t%" + (Visitor.reg) + " = mul i32 " + (b) + ", " + (a));
+                        System.out.println("\t%var" + (Visitor.reg) + " = mul i32 " + (b) + ", " + (a));
                         Visitor.reg++;
                     }
                     case "/" -> {
-                        System.out.println("\t%" + (Visitor.reg) + " = sdiv i32 " + (b) + ", " + (a));
+                        System.out.println("\t%var" + (Visitor.reg) + " = sdiv i32 " + (b) + ", " + (a));
                         Visitor.reg++;
                     }
                     case "#" -> {
-                        System.out.println("\t%" + (Visitor.reg) + " = srem i32 " + (b) + ", " + (a));
+                        System.out.println("\t%var" + (Visitor.reg) + " = srem i32 " + (b) + ", " + (a));
                         Visitor.reg++;
                     }
                 }
@@ -189,7 +198,7 @@ public class Calculator {
             }
         }
         if(!isStmt){
-            System.out.println("\tstore i32 %"+(Visitor.reg-1)+", i32* %"+Visitor.mark);
+            System.out.println("\tstore i32 %var"+(Visitor.reg-1)+", i32* %var"+Visitor.mark);
         }
         Visitor.exp="";
         return null;
