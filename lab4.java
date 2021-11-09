@@ -13,15 +13,9 @@ import java.io.PrintStream;
 public class lab4 {
     public static String output;
     public static void main(String[] args) throws IOException {
-        FileInputStream fileInputStream = new FileInputStream("C:\\Users\\yung\\IdeaProjects\\compiler4\\src\\input.txt");
-//        PrintStream ps=new PrintStream(new FileOutputStream(output));
-//        System.setOut(ps);
-//        FileInputStream fileInputStream = new FileInputStream(args[0]);
-//        PrintStream printStream = new PrintStream(new FileOutputStream(args[1]));
-//        System.setOut(printStream);
-//        FileInputStream fileInputStream = new FileInputStream(args[0]);
-//        PrintStream printStream = new PrintStream(new FileOutputStream(args[1]));
-//        System.setOut(printStream);
+        FileInputStream fileInputStream = new FileInputStream(args[0]);
+        PrintStream printStream = new PrintStream(new FileOutputStream(args[1]));
+        System.setOut(printStream);
         byte[] arr = new byte[100];
         String string = "";
         String finalString = "";    //没有注释的字符串变量
