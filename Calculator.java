@@ -162,7 +162,7 @@ public class Calculator {
                 counter.pop();
                 switch (s) {
                     case "+" -> {
-                        System.out.println("\t%var" + (Visitor.reg) + " = add s i32 " + (b) + ", " + (a));
+                        System.out.println("\t%var" + (Visitor.reg) + " = add i32 " + (b) + ", " + (a));
                         Visitor.reg++;
                     }
                     case "-" -> {
@@ -175,6 +175,10 @@ public class Calculator {
                     }
                     case "/" -> {
                         System.out.println("\t%var" + (Visitor.reg) + " = sdiv i32 " + (b) + ", " + (a));
+                        Visitor.reg++;
+                    }
+                    case "#" -> {
+                        System.out.println("\t%var" + (Visitor.reg) + " = srem i32 " + (b) + ", " + (a));
                         Visitor.reg++;
                     }
                 }
