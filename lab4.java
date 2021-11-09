@@ -13,6 +13,7 @@ import java.io.PrintStream;
 public class lab4 {
     public static String output;
     public static void main(String[] args) throws IOException {
+//        FileInputStream fileInputStream = new FileInputStream("C:\\Users\\yung\\IdeaProjects\\compiler4\\src\\input.txt");
         FileInputStream fileInputStream = new FileInputStream(args[0]);
         PrintStream printStream = new PrintStream(new FileOutputStream(args[1]));
         System.setOut(printStream);
@@ -63,7 +64,7 @@ public class lab4 {
         string = finalString;
         StringBuilder temp = new StringBuilder(string);
         for (int i = 0; i < temp.length(); i++) {
-            if(temp.charAt(i)=='+'||temp.charAt(i)=='-'||temp.charAt(i)=='!'){
+            if(temp.charAt(i)=='+'||temp.charAt(i)=='-'){
                 char mark = temp.charAt(i);
                 for (int j = i+1; j < temp.length(); j++) {
                     if(temp.charAt(j)=='+'||temp.charAt(j)=='-'){
@@ -73,13 +74,6 @@ public class lab4 {
                         else if(temp.charAt(j)=='-'&&mark=='-'){
                             mark='+';
                         }
-                    }
-//                    else if(temp.charAt(j)=='!'&&mark=='!'){
-//                        continue;
-//                    }
-                    else{
-                        temp.replace(i,j,Character.toString(mark));
-                        break;
                     }
                 }
             }

@@ -319,6 +319,11 @@ public class CalculatorIfExp {
                 }
             }
         }
+        for (int i = 0; i <temp.length()-1; i++) {
+            if(temp.charAt(i)=='!'&&temp.charAt(i+1)=='!'){
+                temp.deleteCharAt(i);temp.deleteCharAt(i);
+            }
+        }
         for (int i = 0; i < temp.length(); i++) {
             if(temp.charAt(i)=='+'||temp.charAt(i)=='-'){
                 if(i==0){
@@ -343,7 +348,6 @@ public class CalculatorIfExp {
                 }
             }
         }
-        String keep="";
         boolean gotEq=false;
         for (int i = 0; i < temp.length(); i++) {
             if(i==temp.length()-1){
