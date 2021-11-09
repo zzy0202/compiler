@@ -162,23 +162,19 @@ public class Calculator {
                 counter.pop();
                 switch (s) {
                     case "+" -> {
-                        System.out.println("\t%var" + (Visitor.reg) + " = add ss i32 " + (b) + ", " + (a));
+                        System.out.println("\t%var" + (Visitor.reg) + " = add i32 " + (b) + ", " + (a));
                         Visitor.reg++;
                     }
                     case "-" -> {
-                        System.out.println("\t%var" + (Visitor.reg) + " = sub ss i32 " + (b) + ", " + (a));
+                        System.out.println("\t%var" + (Visitor.reg) + " = sub i32 " + (b) + ", " + (a));
                         Visitor.reg++;
                     }
                     case "*" -> {
-                        System.out.println("\t%var" + (Visitor.reg) + " = mul ss i32 " + (b) + ", " + (a));
+                        System.out.println("\t%var" + (Visitor.reg) + " = mul i32 " + (b) + ", " + (a));
                         Visitor.reg++;
                     }
                     case "/" -> {
-                        System.out.println("\t%var" + (Visitor.reg) + " = sdiv ss i32 " + (b) + ", " + (a));
-                        Visitor.reg++;
-                    }
-                    case "#" -> {
-                        System.out.println("\t%var" + (Visitor.reg) + " = srem ss i32 " + (b) + ", " + (a));
+                        System.out.println("\t%var" + (Visitor.reg) + " = sdiv i32 " + (b) + ", " + (a));
                         Visitor.reg++;
                     }
                 }
