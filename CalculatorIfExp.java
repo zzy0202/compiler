@@ -172,7 +172,7 @@ public class CalculatorIfExp {
             }
             isVar=false;
         }
-        ArrayList<String> getReturn = new ArrayList<>();
+        ArrayList<String> getReturn;
         for (int i = 0; i < list.size(); i++) {
             if(list.get(i).matches("^[a-zA-Z]+$")||list.get(i).matches("^[0-9%]+$")||list.get(i).matches("^[0-9]+$")){
                 counter.push(list.get(i));
