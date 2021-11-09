@@ -112,7 +112,23 @@ public class CalculatorIfExp {
                             }
                         }
                     }
-                    else if(exp.charAt(i)=='|'||exp.charAt(i)=='&'){
+                    else if(exp.charAt(i)=='&'){
+                        while (true){
+                            if(stack.empty()||stack.peek()=='('){
+                                stack.push(exp.charAt(i));
+                                break;
+                            }
+                            else if(stack.peek()=='|'||stack.peek()=='&'){
+                                stack.push(exp.charAt(i));
+                                break;
+                            }
+                            else {
+                                list.add(stack.peek().toString());
+                                stack.pop();
+                            }
+                        }
+                    }
+                    else if(exp.charAt(i)=='|'){
                         while (true){
                             if(stack.empty()||stack.peek()=='('){
                                 stack.push(exp.charAt(i));
