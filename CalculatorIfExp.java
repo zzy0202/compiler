@@ -166,7 +166,7 @@ public class CalculatorIfExp {
                     }
                 }
                 if(!exist){
-                    System.exit(222);
+                    System.exit(111);
                 }
                 exist=false;
             }
