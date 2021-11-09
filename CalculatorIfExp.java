@@ -159,7 +159,7 @@ public class CalculatorIfExp {
                 for(Var var : Visitor.listVar){
                     if(var.varName.equals(list.get(i))){
                         exist=true;
-                        System.out.println("\t%"+Visitor.reg+" = load i32, i32* %var"+var.regID);
+                        System.out.println("\t%var"+Visitor.reg+" = load i32, i32* %var"+var.regID);
                         list.set(i,"%"+Visitor.reg);
                         Visitor.reg++;
                         break;
