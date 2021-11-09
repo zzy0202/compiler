@@ -128,149 +128,61 @@ public class Calculator {
                 }
             }
         }
+        boolean exist=false;
+        boolean isVar=false;
+        for (int i = 0; i < list.size(); i++) {
+            for (int j = 0; j < list.get(i).length(); j++) {
+                if(Character.isAlphabetic(list.get(i).charAt(j))){
+                    isVar=true;
+                }
+            }
+            if(isVar){
+                for(Var var : Visitor.listVar){
+                    if(var.varName.equals(list.get(i))){
+                        exist=true;
+                        System.out.println("\t%var"+Visitor.reg+" = load i32, i32* %var"+var.regID);
+                        list.set(i,"%var"+Visitor.reg);
+                        Visitor.reg++;
+                        break;
+                    }
+                }
+                if(!exist){
+                    System.exit(222);
+                }
+                exist=false;
+            }
+            isVar=false;
+        }
         for (String s : list) {
             if (s.equals("+") || s.equals("-") || s.equals("*") || s.equals("/") || s.equals("#")) {
-                boolean flag1=false,flag2=false;
-                String a,b;
-                for (int i = 0; i < counter.peek().length(); i++) {
-                    if(Character.isAlphabetic(counter.peek().charAt(i))){
-                        flag1=true;
-                    }
-                }
-                a=counter.peek();
+                String a, b;
+                a = counter.peek();
                 counter.pop();
-                for (int i = 0; i < counter.peek().length(); i++) {
-                    if(Character.isAlphabetic(counter.peek().charAt(i))){
-                        flag2=true;
-                    }
-                }
-                b=counter.peek();
+                b = counter.peek();
                 counter.pop();
-                boolean exist=false;
-                if(flag1){
-                    for(Var var : Visitor.listVar){
-                        if(var.varName.equals(a)){
-                            System.out.println("\t%var"+Visitor.reg+" = load i32, i32* %var"+var.regID);
-                            Visitor.reg++;
-                            exist=true;
-                            break;
-                        }
-                    }
-                    if(!exist){
-                        System.exit(1);
-                    }
-                }
-                if(flag2){
-                    exist=false;
-                    for(Var var : Visitor.listVar){
-                        if(var.varName.equals(b)){
-                            System.out.println("\t%var"+Visitor.reg+" = load i32, i32* %var"+var.regID);
-                            Visitor.reg++;
-                            exist=true;
-                            break;
-                        }
-                    }
-                    if(!exist){
-                        System.out.println("HERE2!");
-                        System.exit(1);
-                    }
-                }
                 switch (s) {
-                    case "+":
-                        if (flag1 && flag2) {//两个都是变量
-                            System.out.println("\t%var" + (Visitor.reg) + " = add aa i32 %var" + (Visitor.reg - 1) + ", %var" + (Visitor.reg - 2));
-                            Visitor.reg++;
-                        } else if (flag1 && !flag2) {
-                            System.out.println("\t%var" + (Visitor.reg) + " = add bb i32 " + b + ", %var" + (Visitor.reg - 1));
-                            Visitor.reg++;
-                        } else if (!flag1 && flag2) {
-                            System.out.println("\t%var" + (Visitor.reg) + " = add cc i32 %var" + (Visitor.reg - 1) + ", " + a);
-                            Visitor.reg++;
-                        } else if (!flag1 && !flag2) {
-                            System.out.println("\t%var" + (Visitor.reg) + " = add dd i32 " + b + ", " + a);
-                            Visitor.reg++;
-                        }
-                        break;
-                    case "-":
-                        if (flag1 && flag2) {//两个都是变量
-                            System.out.println("\t%var" + (Visitor.reg) + " = sub i32 %var" + (Visitor.reg - 1) + ", %var" + (Visitor.reg - 2));
-                            Visitor.reg++;
-                        } else if (flag1 && !flag2) {
-                            System.out.println("\t%var" + (Visitor.reg) + " = sub i32 " + b + ", %var" + (Visitor.reg - 1));
-                            Visitor.reg++;
-                        } else if (!flag1 && flag2) {
-                            System.out.println("\t%var" + (Visitor.reg) + " = sub i32 %var" + (Visitor.reg - 1) + ", " + a);
-                            Visitor.reg++;
-                        } else if (!flag1 && !flag2) {
-                            System.out.println("\t%var" + (Visitor.reg) + " = sub i32 " + b + ", " + a);
-                            Visitor.reg++;
-                        }
-                        break;
-                    case "*":
-                        if (flag1 && flag2) {//两个都是变量
-                            System.out.println("\t%var" + (Visitor.reg) + " = mul i32 %var" + (Visitor.reg - 1) + ", %var" + (Visitor.reg - 2));
-                            Visitor.reg++;
-                        } else if (flag1 && !flag2) {
-                            System.out.println("\t%var" + (Visitor.reg) + " = mul i32 %var" + (Visitor.reg - 1) + ", " + b);
-                            Visitor.reg++;
-                        } else if (!flag1 && flag2) {
-                            System.out.println("\t%var" + (Visitor.reg) + " = sdiv i32 %var" + (Visitor.reg - 1) + ", " + a);
-                            Visitor.reg++;
-                        } else if (!flag1 && !flag2) {
-                            System.out.println("\t%var" + (Visitor.reg) + " = mul i32 " + b + ", " + a);
-                            Visitor.reg++;
-                        }
-                        break;
-                    case "/":
-                        if (flag1 && flag2) {//两个都是变量
-                            System.out.println("\t%var" + (Visitor.reg) + " = sdiv i32 %var" + (Visitor.reg - 1) + ", %var" + (Visitor.reg - 2));
-                            Visitor.reg++;
-                        } else if (flag1 && !flag2) {
-//                        System.out.println("\t%"+(Visitor.reg)+" = sdiv i32 %"+(Visitor.reg-1)+", "+b);
-                            System.out.println("\t%var" + (Visitor.reg) + " = sdiv i32 " + b + ", %var" + (Visitor.reg - 1));
-                            Visitor.reg++;
-                        } else if (!flag1 && flag2) {
-//                        System.out.println("\t%"+(Visitor.reg)+" = sdiv i32 "+a+", %"+(Visitor.reg-1));
-                            System.out.println("\t%var" + (Visitor.reg) + " = sdiv i32 %var" + (Visitor.reg - 1) + ", " + a);
-                            Visitor.reg++;
-                        } else if (!flag1 && !flag2) {
-                            System.out.println("\t%var" + (Visitor.reg) + " = sdiv i32 " + b + ", " + a);
-                            Visitor.reg++;
-                        }
-                        break;
-                    default:
-                        if (flag1 && flag2) {//两个都是变量
-                            System.out.println("\t%var" + (Visitor.reg) + " = sdiv i32 %var" + (Visitor.reg - 1) + ", %var" + (Visitor.reg - 2));
-                            Visitor.reg++;
-                            System.out.println("\t%var" + (Visitor.reg) + " = mul i32 %var" + (Visitor.reg - 1) + ", %var" + (Visitor.reg - 3));
-                            Visitor.reg++;
-                            System.out.println("\t%var" + (Visitor.reg) + " = sub i32 %var" + (Visitor.reg - 3) + ", %var" + (Visitor.reg - 1));
-                            Visitor.reg++;
-                        } else if (flag1 && !flag2) {
-                            System.out.println("\t%var" + (Visitor.reg) + " = sdiv i32 " + b + ", %var" + (Visitor.reg - 1));
-                            Visitor.reg++;
-                            System.out.println("\t%var" + (Visitor.reg) + " = mul i32 %var" + (Visitor.reg - 2) + ", %var" + (Visitor.reg - 1));
-                            Visitor.reg++;
-                            System.out.println("\t%var" + (Visitor.reg) + " = sub i32 " + b + ", %var" + (Visitor.reg - 1));
-                            Visitor.reg++;
-                        } else if (!flag1 && flag2) {
-                            System.out.println("\t%var" + (Visitor.reg) + " = sdiv i32 %var" + (Visitor.reg - 1) + ", " + a);
-                            Visitor.reg++;
-                            System.out.println("\t%var" + (Visitor.reg) + " = mul i32 %var" + (Visitor.reg - 1) + ", " + a);
-                            Visitor.reg++;
-                            System.out.println("\t%var" + (Visitor.reg) + " = sub i32 %var" + (Visitor.reg - 3) + ", %var" + (Visitor.reg - 1));
-                            Visitor.reg++;
-                        } else if (!flag1 && !flag2) {//两个都是数字//done
-                            System.out.println("\t%var" + (Visitor.reg) + " = sdiv i32 " + b + ", " + a);
-                            Visitor.reg++;
-                            System.out.println("\t%var" + (Visitor.reg) + " = mul i32 %var" + (Visitor.reg - 1) + ", " + a);
-                            Visitor.reg++;
-                            System.out.println("\t%var" + (Visitor.reg) + " = sub i32 " + b + ", %var" + (Visitor.reg - 1));
-                            Visitor.reg++;
-                        }
-                        break;
+                    case "+" -> {
+                        System.out.println("\t%var" + (Visitor.reg) + " = add i32 " + (b) + ", " + (a));
+                        Visitor.reg++;
+                    }
+                    case "-" -> {
+                        System.out.println("\t%var" + (Visitor.reg) + " = sub i32 " + (b) + ", " + (a));
+                        Visitor.reg++;
+                    }
+                    case "*" -> {
+                        System.out.println("\t%var" + (Visitor.reg) + " = mul i32 " + (b) + ", " + (a));
+                        Visitor.reg++;
+                    }
+                    case "/" -> {
+                        System.out.println("\t%var" + (Visitor.reg) + " = sdiv i32 " + (b) + ", " + (a));
+                        Visitor.reg++;
+                    }
+                    case "#" -> {
+                        System.out.println("\t%var" + (Visitor.reg) + " = srem i32 " + (b) + ", " + (a));
+                        Visitor.reg++;
+                    }
                 }
-                counter.push("%var"+(Visitor.reg-1));
+                counter.push("%var" + (Visitor.reg - 1));
             }
             else {
                 counter.push(s);
