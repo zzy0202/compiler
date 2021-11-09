@@ -264,9 +264,9 @@ public class CalculatorIfExp {
                         System.out.println("\t%var" + (Visitor.reg) + " = icmp ne i32 " + (b) + ", " + (a));
                         Visitor.i1list.add(Visitor.reg + "%");
                         Visitor.reg++;
-                        System.out.println("\t%var" + (Visitor.reg) + " = xor i1 %" + (Visitor.reg - 1) + ", true");
+                        System.out.println("\t%var" + (Visitor.reg) + " = xor i1 %var" + (Visitor.reg - 1) + ", true");
                         Visitor.reg++;
-                        System.out.println("\t%var" + (Visitor.reg) + " = zext i1 %" + (Visitor.reg - 1) + " to i32");
+                        System.out.println("\t%var" + (Visitor.reg) + " = zext i1 %var" + (Visitor.reg - 1) + " to i32");
                     }
                 }
                 Visitor.reg++;
