@@ -178,16 +178,16 @@ public class Calculator {
                 switch (s) {
                     case "+":
                         if (flag1 && flag2) {//两个都是变量
-                            System.out.println("\t%var" + (Visitor.reg) + " = add i32 %var" + (Visitor.reg - 1) + ", %var" + (Visitor.reg - 2));
+                            System.out.println("\t%var" + (Visitor.reg) + " = add aa i32 %var" + (Visitor.reg - 1) + ", %var" + (Visitor.reg - 2));
                             Visitor.reg++;
                         } else if (flag1 && !flag2) {
-                            System.out.println("\t%var" + (Visitor.reg) + " = add i32 " + b + ", %var" + (Visitor.reg - 1));
+                            System.out.println("\t%var" + (Visitor.reg) + " = add bb i32 " + b + ", %var" + (Visitor.reg - 1));
                             Visitor.reg++;
                         } else if (!flag1 && flag2) {
-                            System.out.println("\t%var" + (Visitor.reg) + " = add i32 %var" + (Visitor.reg - 1) + ", " + a);
+                            System.out.println("\t%var" + (Visitor.reg) + " = add cc i32 %var" + (Visitor.reg - 1) + ", " + a);
                             Visitor.reg++;
                         } else if (!flag1 && !flag2) {
-                            System.out.println("\t%var" + (Visitor.reg) + " = add i32 " + b + ", " + a);
+                            System.out.println("\t%var" + (Visitor.reg) + " = add dd i32 " + b + ", " + a);
                             Visitor.reg++;
                         }
                         break;
