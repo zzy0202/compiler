@@ -6,6 +6,7 @@ public class Calculator {
     public static String getAns(String exp,Boolean isStmt){
         exp = exp.replaceAll("\\s+", "");
         String ans="";
+        System.out.println(exp);
         ArrayList<String> list = new ArrayList<String>();
         Stack<String> counter = new Stack<>();
         Stack<Character> stack = new Stack<>();
