@@ -272,7 +272,7 @@ public class CalculatorIfExp {
                         Visitor.reg++;
                     }
                 }
-                counter.push("%"+(Visitor.reg-1));
+                counter.push("%var"+(Visitor.reg-1));
             }
         }
         System.out.println("\tbr i1 %var"+(Visitor.reg-1)+" , label %true_block"+(Visitor.block)+" ,label %false_block"+(Visitor.block));
