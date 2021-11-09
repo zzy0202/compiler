@@ -159,14 +159,14 @@ public class CalculatorIfExp {
                 for(Var var : Visitor.listVar){
                     if(var.varName.equals(list.get(i))){
                         exist=true;
-                        System.out.println("\t%var"+Visitor.reg+" = load i32, i32* %var"+var.regID);
-                        list.set(i,"%var"+Visitor.reg);
+                        System.out.println("\t%"+Visitor.reg+" = load i32, i32* %"+var.regID);
+                        list.set(i,"%"+Visitor.reg);
                         Visitor.reg++;
                         break;
                     }
                 }
                 if(!exist){
-                    System.exit(111);
+                    System.exit(222);
                 }
                 exist=false;
             }
@@ -174,7 +174,7 @@ public class CalculatorIfExp {
         }
         ArrayList<String> getReturn;
         for (int i = 0; i < list.size(); i++) {
-            if(list.get(i).matches("^[a-zA-Z]+$")||list.get(i).matches("^[var0-9%]+$")||list.get(i).matches("^[0-9]+$")){
+            if(list.get(i).matches("^[a-zA-Z]+$")||list.get(i).matches("^[0-9%]+$")||list.get(i).matches("^[0-9]+$")){
                 counter.push(list.get(i));
             }
             else {
@@ -185,97 +185,97 @@ public class CalculatorIfExp {
                 counter.pop();
                 switch (list.get(i)) {
                     case "+" -> {
-                        System.out.println("\t%var" + (Visitor.reg) + " = add i32 " + (b) + ", " + (a));
+                        System.out.println("\t%" + (Visitor.reg) + " = add i32 " + (b) + ", " + (a));
                         Visitor.reg++;
                     }
                     case "-" -> {
-                        System.out.println("\t%var" + (Visitor.reg) + " = sub i32 " + (b) + ", " + (a));
+                        System.out.println("\t%" + (Visitor.reg) + " = sub i32 " + (b) + ", " + (a));
                         Visitor.reg++;
                     }
                     case "*" -> {
-                        System.out.println("\t%var" + (Visitor.reg) + " = mul i32 " + (b) + ", " + (a));
+                        System.out.println("\t%" + (Visitor.reg) + " = mul i32 " + (b) + ", " + (a));
                         Visitor.reg++;
                     }
                     case "/" -> {
-                        System.out.println("\t%var" + (Visitor.reg) + " = sdiv i32 " + (b) + ", " + (a));
+                        System.out.println("\t%" + (Visitor.reg) + " = sdiv i32 " + (b) + ", " + (a));
                         Visitor.reg++;
                     }
                     case "#" -> {
-                        System.out.println("\t%var" + (Visitor.reg) + " = srem i32 " + (b) + ", " + (a));
+                        System.out.println("\t%" + (Visitor.reg) + " = srem i32 " + (b) + ", " + (a));
                         Visitor.reg++;
                     }
                     case ">" -> {
                         getReturn = checkI32(a, b);
                         a = getReturn.get(0);
                         b = getReturn.get(1);
-                        System.out.println("\t%var" + (Visitor.reg) + " = icmp sgt i32 " + (b) + ", " + (a));
-                        Visitor.i1list.add("%var" + Visitor.reg);
+                        System.out.println("\t%" + (Visitor.reg) + " = icmp sgt i32 " + (b) + ", " + (a));
+                        Visitor.i1list.add("%" + Visitor.reg);
                         Visitor.reg++;
                     }
                     case "<" -> {
                         getReturn = checkI32(a, b);
                         a = getReturn.get(0);
                         b = getReturn.get(1);
-                        System.out.println("\t%var" + (Visitor.reg) + " = icmp slt i32 " + (b) + ", " + (a));
-                        Visitor.i1list.add("%var" + Visitor.reg);
+                        System.out.println("\t%" + (Visitor.reg) + " = icmp slt i32 " + (b) + ", " + (a));
+                        Visitor.i1list.add("%" + Visitor.reg);
                         Visitor.reg++;
                     }
                     case "@" -> {
                         getReturn = checkI32(a, b);
                         a = getReturn.get(0);
                         b = getReturn.get(1);
-                        System.out.println("\t%var" + (Visitor.reg) + " = icmp sle i32 " + (b) + ", " + (a));
-                        Visitor.i1list.add("%var" + Visitor.reg);
+                        System.out.println("\t%" + (Visitor.reg) + " = icmp sle i32 " + (b) + ", " + (a));
+                        Visitor.i1list.add("%" + Visitor.reg);
                         Visitor.reg++;
                     }
                     case "$" -> {
-                        System.out.println("\t%var" + (Visitor.reg) + " = icmp sge i32 " + (b) + ", " + (a));
-                        Visitor.i1list.add("%var" + Visitor.reg);
+                        System.out.println("\t%" + (Visitor.reg) + " = icmp sge i32 " + (b) + ", " + (a));
+                        Visitor.i1list.add("%" + Visitor.reg);
                         Visitor.reg++;
                     }
                     case "~" -> {
                         getReturn = checkI32(a, b);
                         a = getReturn.get(0);
                         b = getReturn.get(1);
-                        System.out.println("\t%var" + (Visitor.reg) + " = icmp ne i32 " + (b) + ", " + (a));
-                        Visitor.i1list.add("%var" + Visitor.reg);
+                        System.out.println("\t%" + (Visitor.reg) + " = icmp ne i32 " + (b) + ", " + (a));
+                        Visitor.i1list.add("%" + Visitor.reg);
                         Visitor.reg++;
                     }
                     case "=" -> {
                         getReturn = checkI32(a, b);
                         a = getReturn.get(0);
                         b = getReturn.get(1);
-                        System.out.println("\t%var" + (Visitor.reg) + " = icmp eq i32 " + (b) + ", " + (a));
-                        Visitor.i1list.add("%var" + Visitor.reg);
+                        System.out.println("\t%" + (Visitor.reg) + " = icmp eq i32 " + (b) + ", " + (a));
+                        Visitor.i1list.add("%" + Visitor.reg);
                         Visitor.reg++;
                     }
                     case "&" -> {
-                        System.out.println("\t%var" + (Visitor.reg) + " = and i1 " + (b) + ", " + (a));
-                        Visitor.i1list.add("%var"+Visitor.reg);
+                        System.out.println("\t%" + (Visitor.reg) + " = and i1 " + (b) + ", " + (a));
+                        Visitor.i1list.add(Visitor.reg + "%");
                         Visitor.reg++;
                     }
                     case "|" -> {
-                        System.out.println("\t%var" + (Visitor.reg) + " = or i1 " + (b) + ", " + (a));
-                        Visitor.i1list.add("%var"+Visitor.reg);
+                        System.out.println("\t%" + (Visitor.reg) + " = or i1 " + (b) + ", " + (a));
+                        Visitor.i1list.add(Visitor.reg + "%");
                         Visitor.reg++;
                     }
                     case "!" -> {
                         getReturn = checkI32(a, b);
                         a = getReturn.get(0);
                         b = getReturn.get(1);
-                        System.out.println("\t%var" + (Visitor.reg) + " = icmp ne i32 " + (b) + ", " + (a));
-                        Visitor.i1list.add("%var"+Visitor.reg);
+                        System.out.println("\t%" + (Visitor.reg) + " = icmp ne i32 " + (b) + ", " + (a));
+                        Visitor.i1list.add(Visitor.reg + "%");
                         Visitor.reg++;
-                        System.out.println("\t%var" + (Visitor.reg) + " = xor i1 %" + (Visitor.reg - 1) + ", true");
+                        System.out.println("\t%" + (Visitor.reg) + " = xor i1 %" + (Visitor.reg - 1) + ", true");
                         Visitor.reg++;
-                        System.out.println("\t%var" + (Visitor.reg) + " = zext i1 %" + (Visitor.reg - 1) + " to i32");
+                        System.out.println("\t%" + (Visitor.reg) + " = zext i1 %" + (Visitor.reg - 1) + " to i32");
                         Visitor.reg++;
                     }
                 }
-                counter.push("%var"+(Visitor.reg-1));
+                counter.push("%"+(Visitor.reg-1));
             }
         }
-        System.out.println("\tbr i1 %var"+(Visitor.reg-1)+" , label %true_block"+(Visitor.block)+" ,label %false_block"+(Visitor.block));
+        System.out.println("\tbr i1 %"+(Visitor.reg-1)+" , label %true_block"+(Visitor.block)+" ,label %false_block"+(Visitor.block));
         return exp;
     }
 
@@ -284,14 +284,14 @@ public class CalculatorIfExp {
         returnI32.add(a);returnI32.add(b);
         for(String var : Visitor.i1list){
             if(var.equals(a)){
-                System.out.println("\t%var"+(Visitor.reg)+" = zext i1 "+a+" to i32");
-                a="%var"+Visitor.reg;
+                System.out.println("\t%"+(Visitor.reg)+" = zext i1 "+a+" to i32");
+                a="%"+Visitor.reg;
                 Visitor.reg++;
                 returnI32.set(0,a);
             }
             if(var.equals(b)){
-                System.out.println("\t%var"+(Visitor.reg)+" = zext i1 "+a+" to i32");
-                b="%var"+Visitor.reg;
+                System.out.println("\t%"+(Visitor.reg)+" = zext i1 "+a+" to i32");
+                b="%"+Visitor.reg;
                 Visitor.reg++;
                 returnI32.set(1,b);
             }

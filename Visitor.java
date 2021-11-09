@@ -91,7 +91,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
 
     @Override
     public Void visitConstDef(minisysParser.ConstDefContext ctx) {
-        System.out.println("\t%var"+reg+" = alloca i32");
+        System.out.println("\t%"+reg+" = alloca i32");
         Var var = new Var(ctx.ident1().getText(),true, 0,true,reg);
         mark=reg;
         reg++;
@@ -113,7 +113,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
     @Override
     public Void visitVarDef(minisysParser.VarDefContext ctx) {
         if(ctx.children.size()==1){
-            System.out.println("\t%var"+reg+" = alloca i32");
+            System.out.println("\t%"+reg+" = alloca i32");
             Var var = new Var(ctx.ident1().getText(),false, 0,false,reg);
             for(Var var1 : listVar){
                 if(var1.varName.equals(var.varName)){
@@ -125,7 +125,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
             reg++;
         }
         else if(ctx.children.size()==3){
-            System.out.println("\t%var"+reg+" = alloca i32 ");
+            System.out.println("\t%"+reg+" = alloca i32 ");
             Var var = new Var(ctx.ident1().getText(),true, 0,false,reg);
             mark=reg;
             reg++;
@@ -230,11 +230,11 @@ public class Visitor extends minisysBaseVisitor<Void> {
         else{
             if(ctx.ident1().getText()!=null){
                 if(ctx.ident1().getText().equals("getint")){
-                    System.out.println("\t%var"+(reg)+" = call i32 @getint()");
+                    System.out.println("\t%"+(reg)+" = call i32 @getint()");
                     if(ctx.funcRParams()!=null){
                         System.exit(23);
                     }
-                    exp+="%var"+String.valueOf(reg);
+                    exp+='%'+String.valueOf(reg);
                     reg++;
                 }
                 else if(ctx.ident1().getText().equals("putint")){
@@ -246,15 +246,15 @@ public class Visitor extends minisysBaseVisitor<Void> {
                         System.exit(22);
                     }
                     Calculator.getAns(exp,true);
-                    System.out.println("\tcall void @putint(i32 %var"+(reg-1)+")");
+                    System.out.println("\tcall void @putint(i32 %"+(reg-1)+")");
                     exp="";
                 }
                 else if(ctx.ident1().getText().equals("getch")){
-                    System.out.println("\t%var"+(reg)+" = call i32 @getch()");
+                    System.out.println("\t%"+(reg)+" = call i32 @getch()");
                     if(ctx.funcRParams()!=null){
                         System.exit(24);
                     }
-                    exp+="%var"+String.valueOf(reg);
+                    exp+='%'+String.valueOf(reg);
                     reg++;
                 }
                 else if(ctx.ident1().getText().equals("putch")){
@@ -267,7 +267,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                         System.exit(22);
                     }
                     Calculator.getAns(exp,true);
-                    System.out.println("\tcall void @putch(i32 %var"+(reg-1)+")");
+                    System.out.println("\tcall void @putch(i32 %"+(reg-1)+")");
                     exp="";
                 }
                 else{
@@ -323,7 +323,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
             exp="";
             visit(ctx.exp());
             Calculator.getAns(exp,true);
-            System.out.println("\tret i32 %var"+(reg-1));
+            System.out.println("\tret i32 %"+(reg-1));
         }
         else if(ctx.children.size()==4){
             String var;
