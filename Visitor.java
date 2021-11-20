@@ -1,6 +1,3 @@
-
-import org.antlr.v4.runtime.tree.ParseTree;
-
 import java.util.ArrayList;
 
 public class Visitor extends minisysBaseVisitor<Void> {
@@ -13,6 +10,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
     public static ArrayList<String> i1list = new ArrayList<>();
     public static boolean isConstDef=false;
     public static ArrayList<Var> listVar = new ArrayList<>();
+    public static boolean isGlobalVar =false;
     // done
     @Override
     public Void visitCompUnit(minisysParser.CompUnitContext ctx) {
@@ -137,12 +135,19 @@ public class Visitor extends minisysBaseVisitor<Void> {
     @Override
     public Void visitVarDef(minisysParser.VarDefContext ctx) {
         if(ctx.children.size()==1){
-            System.out.println("\t%var"+reg+" = alloca i32");
             Var var = new Var(ctx.ident1().getText(),false, 0,false,reg,currentStage,isGlobal);
+            if(!isGlobal){
+                System.out.println("\t%var"+reg+" = alloca i32 ");
+            }
             for(Var var1 : listVar){
                 if(var1.varName.equals(var.varName)&&var1.stage==currentStage){
                     System.exit(2);
                 }
+            }
+            Calculator.getAns(exp,false);
+            if(isGlobal){
+                var.value=Calculator.ans;
+                Calculator.ans=0;
             }
             listVar.add(var);
             mark=reg;
@@ -374,7 +379,16 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     mark=var1.regID;
                 }
             }
+            for (int i = listVar.size()-1; i >=0 ; i--) {
+                if(ctx.lVal().getText().equals(listVar.get(i).varName)){
+                    if(listVar.get(i).isGlobal){
+                        isGlobalVar =true;
+                        break;
+                    }
+                }
+            }
             Calculator.getAns(exp,false);
+            isGlobalVar=false;
             exp="";
         }
         else if(ctx.children.size()==2){
