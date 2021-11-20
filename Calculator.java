@@ -249,8 +249,11 @@ public class Calculator {
                 }
             }
         }
-        if(!isStmt&&!Visitor.isGlobal){
+        if(!isStmt&&!Visitor.isGlobal&&!Visitor.isGlobalVar){
             System.out.println("\tstore i32 %var"+(Visitor.reg-1)+", i32* %var"+Visitor.mark);
+        }
+        if(Visitor.isGlobalVar){
+            System.out.println("\tstore i32 %var"+(Visitor.reg-1)+", i32* @global"+Visitor.mark);
         }
         if(Visitor.isGlobal){
             System.out.println("@global"+Visitor.reg+" =dso_local global i32 "+ans);
