@@ -1,0 +1,15 @@
+const int a = 6;
+int b = a + 1;
+int c=0;
+int main() {
+    if(c){
+        putint(222);
+    }
+    int c = b;
+    if(c){
+        putint(111);
+    }
+    int b = 8;
+    putint(b + c);
+    return 0;
+}
