@@ -135,16 +135,18 @@ public class Visitor extends minisysBaseVisitor<Void> {
     @Override
     public Void visitVarDef(minisysParser.VarDefContext ctx) {
         if(ctx.children.size()==1){
-            Var var = new Var(ctx.ident1().getText(),false, 0,false,reg,currentStage,isGlobal);
             if(!isGlobal){
-                System.out.println("\t%var"+reg+" = alloca i32 ");
+                System.out.println("\t%var"+reg+" = alloca i32");
             }
+            if(isGlobal){
+                System.out.println("@global"+Visitor.reg+" =dso_local global i32 0");
+            }
+            Var var = new Var(ctx.ident1().getText(),false, 0,false,reg,currentStage,isGlobal);
             for(Var var1 : listVar){
-                if(var1.varName.equals(var.varName)&&var1.stage==currentStage){
+                if(var1.varName.equals(var.varName)){
                     System.exit(2);
                 }
             }
-            Calculator.getAns(exp,false);
             if(isGlobal){
                 var.value=Calculator.ans;
                 Calculator.ans=0;
