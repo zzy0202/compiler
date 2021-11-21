@@ -416,8 +416,8 @@ public class Visitor extends minisysBaseVisitor<Void> {
             CalculatorIfExp.getAns(exp,"if",mark);
             exp="";
             System.out.println("true_block"+mark+":");
-            visit(ctx.stmt(0));
             block++;
+            visit(ctx.stmt(0));
             System.out.println("\tbr label %end_block"+mark);
             System.out.println("false_block"+mark+":");
             if(ctx.children.size()==7){
