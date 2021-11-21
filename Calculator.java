@@ -216,7 +216,9 @@ public class Calculator {
                 String a,b;
                 a=counter.peek();
                 counter.pop();
-                b=counter.peek();
+                if(!counter.empty()){
+                    b=counter.peek();
+                }
                 counter.pop();
                 String get="";
                 if(a.charAt(0)=='%'){
