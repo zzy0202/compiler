@@ -151,7 +151,7 @@ public class Calculator {
                 }
                 else{
                     for (int j = Visitor.listVar.size()-1; j >=0; j--) {
-                        if(Visitor.listVar.get(j).varName.equals(list.get(i))){
+                        if(Visitor.listVar.get(j).varName.equals(list.get(i))&&Visitor.listVar.get(i).stage<=Visitor.currentStage){
                             exist=true;
                             if(!Visitor.listVar.get(j).isGlobal){
                                 System.out.println("\t%var"+Visitor.reg+" = load i32, i32* %var"+Visitor.listVar.get(j).regID);
@@ -167,7 +167,7 @@ public class Calculator {
                     }
                 }
                 if(!exist){
-                    System.exit(221);
+                    System.exit(123);
                 }
                 exist=false;
             }
