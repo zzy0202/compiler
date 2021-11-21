@@ -391,6 +391,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     break;
                 }
             }
+            System.out.println(ctx.getText());
             Calculator.getAns(exp,false,"f");
             isGlobalVar=false;
             exp="";
