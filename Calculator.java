@@ -4,7 +4,7 @@ import java.util.Stack;
 
 public class Calculator {
     public static int ans=0;
-    public static String getAns(String exp,Boolean isStmt,String wrongType){
+    public static String getAns(String exp,Boolean isStmt,String wrongType,String get){
         exp = exp.replaceAll("\\s+", "");
         ArrayList<String> list = new ArrayList<String>();
         Stack<String> counter = new Stack<>();
@@ -201,7 +201,7 @@ public class Calculator {
                         System.exit(120);
                     }
                     else if(!Visitor.isGlobal&&wrongType.equals("f")){
-                        System.out.println(exp);
+                        System.out.println(get);
                     }
                 }
                 exist=false;
