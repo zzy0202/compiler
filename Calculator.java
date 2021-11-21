@@ -4,7 +4,7 @@ import java.util.Stack;
 
 public class Calculator {
     public static int ans=0;
-    public static String getAns(String exp,Boolean isStmt){
+    public static String getAns(String exp,Boolean isStmt,String wrongType){
         exp = exp.replaceAll("\\s+", "");
         ArrayList<String> list = new ArrayList<String>();
         Stack<String> counter = new Stack<>();
@@ -167,7 +167,42 @@ public class Calculator {
                     }
                 }
                 if(!exist){
-                    System.exit(111);
+                    if(Visitor.isGlobal&&wrongType.equals("a")){
+                        System.out.println(110);
+                    }
+                    else if(!Visitor.isGlobal&&wrongType.equals("a")){
+                        System.out.println(111);
+                    }
+                    else if(Visitor.isGlobal&&wrongType.equals("b")){
+                        System.out.println(112);
+                    }
+                    else if(!Visitor.isGlobal&&wrongType.equals("b")){
+                        System.out.println(113);
+                    }
+                    else if(Visitor.isGlobal&&wrongType.equals("c")){
+                        System.out.println(114);
+                    }
+                    else if(!Visitor.isGlobal&&wrongType.equals("c")){
+                        System.out.println(115);
+                    }
+                    else if(Visitor.isGlobal&&wrongType.equals("d")){
+                        System.out.println(116);
+                    }
+                    else if(!Visitor.isGlobal&&wrongType.equals("d")){
+                        System.out.println(117);
+                    }
+                    else if(Visitor.isGlobal&&wrongType.equals("e")){
+                        System.out.println(118);
+                    }
+                    else if(!Visitor.isGlobal&&wrongType.equals("e")){
+                        System.out.println(119);
+                    }
+                    else if(Visitor.isGlobal&&wrongType.equals("f")){
+                        System.out.println(120);
+                    }
+                    else if(!Visitor.isGlobal&&wrongType.equals("f")){
+                        System.out.println(121);
+                    }
                 }
                 exist=false;
             }
