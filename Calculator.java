@@ -167,7 +167,7 @@ public class Calculator {
                     }
                 }
                 if(!exist){
-                    System.exit(222);
+                    System.exit(221);
                 }
                 exist=false;
             }
