@@ -372,13 +372,6 @@ public class Visitor extends minisysBaseVisitor<Void> {
             System.out.println("\tret i32 %var"+(reg-1));
         }
         else if(ctx.children.size()==4){
-            String var;
-            var=ctx.lVal().getText();
-            for(Var test : listVar){
-                if(test.varName.equals(var)&& test.isConst){
-                    System.exit(12);
-                }
-            }
             visit(ctx.exp());
             for(Var var1 : listVar){
                 if(var1.varName.equals(ctx.lVal().getText())){
@@ -389,8 +382,11 @@ public class Visitor extends minisysBaseVisitor<Void> {
                 if(ctx.lVal().getText().equals(listVar.get(i).varName)){
                     if(listVar.get(i).isGlobal){
                         isGlobalVar =true;
-                        break;
                     }
+                    if(listVar.get(i).isConst){
+                        System.exit(12);
+                    }
+                    break;
                 }
             }
             Calculator.getAns(exp,false);
