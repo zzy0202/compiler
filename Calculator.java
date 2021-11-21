@@ -213,7 +213,7 @@ public class Calculator {
                 counter.push(list.get(i));
             }
             else {
-                String a,b;
+                String a,b = null;
                 a=counter.peek();
                 counter.pop();
                 if(!counter.empty()){
