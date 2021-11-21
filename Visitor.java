@@ -1,562 +1,299 @@
+
 import java.util.ArrayList;
+import java.util.Stack;
 
-public class Visitor extends minisysBaseVisitor<Void> {
-    public static int reg=1;
-    public static int block=1;
-    public static int whileBlock=1;
-    public static String exp="";
-    public static int mark=1;
-    public static int currentStage=0;
-    public static boolean isGlobal = false;
-    public static ArrayList<String> i1list = new ArrayList<>();
-    public static boolean isConstDef=false;
-    public static ArrayList<Var> listVar = new ArrayList<>();
-    public static boolean isGlobalVar =false;
-    public static int get;
-    // done
-    @Override
-    public Void visitCompUnit(minisysParser.CompUnitContext ctx) {
-        isGlobal=true;
-        for(minisysParser.DeclContext context : ctx.decl()){
-            visit(context);
-        }
-        isGlobal=false;
-        visit(ctx.funcDef(0));
-        return null;
-    }
-
-    // done
-    @Override
-    public Void visitFuncDef(minisysParser.FuncDefContext ctx) {
-        System.out.println("declare i32 @getint()");
-        System.out.println("declare void @putint(i32)");
-        System.out.println("declare i32 @getch()");
-        System.out.println("declare void @putch(i32)");
-        System.out.print("define dso_local ");
-        visit(ctx.funcType());
-        visit(ctx.main_ident());
-        System.out.println("{");
-        visit(ctx.block());
-        System.out.println("}");
-        return null;
-    }
-
-    // done
-    @Override
-    public Void visitFuncType(minisysParser.FuncTypeContext ctx) {
-        System.out.println("i32 @main() ");
-        return null;
-    }
-
-    // done
-    @Override
-    public Void visitBlock(minisysParser.BlockContext ctx) {
-        currentStage++;
-        for (minisysParser.BlockItemContext context : ctx.blockItem()) {
-            visit(context);
-        }
-        currentStage--;
-        ArrayList<Var> temp = new ArrayList<>();
-        for(Var var1: listVar){
-            if(var1.stage<=currentStage){
-                temp.add(var1);
-            }
-        }
-        listVar=null;
-        listVar=temp;
-        return null;
-    }
-
-    // done
-    @Override
-    public Void visitBlockItem(minisysParser.BlockItemContext ctx) {
-        if(ctx.decl()!=null){
-            visit(ctx.decl());
-        }
-        else if(ctx.stmt()!=null){
-            visit(ctx.stmt());
-        }
-        return null;
-    }
-
-    @Override
-    public Void visitDecl(minisysParser.DeclContext ctx) {
-        if(ctx.constDecl()!=null){
-            visit(ctx.constDecl());
-        }
-        else if(ctx.varDecl()!=null){
-            visit(ctx.varDecl());
-        }
-        return null;
-    }
-
-    @Override
-    public Void visitVarDecl(minisysParser.VarDeclContext ctx) {
-        for (minisysParser.VarDefContext context : ctx.varDef()){
-            visit(context);
-        }
-        return null;
-    }
-
-    @Override
-    public Void visitConstDecl(minisysParser.ConstDeclContext ctx) {
-        for (minisysParser.ConstDefContext context : ctx.constDef()){
-            visit(context);
-        }
-        return null;
-    }
-
-    @Override
-    public Void visitConstDef(minisysParser.ConstDefContext ctx) {
-        if(!isGlobal){
-            System.out.println("\t%var"+reg+" = alloca i32");
-        }
-        Var var = new Var(ctx.ident1().getText(),true, 0,true,reg,currentStage,isGlobal);
-        mark=reg;
-        if(!isGlobal){
-            reg++;
-        }
-        exp="";
-        visit(ctx.constInitVal());
-        isConstDef=true;
-        Calculator.getAns(exp,false,"a");
-        if(isGlobal){
-            reg++;
-        }
-        isConstDef=false;
-        exp="";
-        for(Var e : listVar){
-            if(e.varName.equals(ctx.ident1().getText())&&e.stage==currentStage){
-                System.exit(114514);
-            }
-        }
-        if(isGlobal){
-            var.value=Calculator.ans;
-            Calculator.ans=0;
-        }
-        listVar.add(var);
-        return null;
-    }
-
-    @Override
-    public Void visitVarDef(minisysParser.VarDefContext ctx) {
-        if(ctx.children.size()==1){
-            if(!isGlobal){
-                System.out.println("\t%var"+reg+" = alloca i32");
-            }
-            if(isGlobal){
-                System.out.println("@global"+Visitor.reg+" =dso_local global i32 0");
-            }
-            Var var = new Var(ctx.ident1().getText(),false, 0,false,reg,currentStage,isGlobal);
-            for(Var var1 : listVar){
-                if(var1.varName.equals(var.varName)&&var1.stage==currentStage){
-                    System.exit(2);
+public class Calculator {
+    public static int ans=0;
+    public static String getAns(String exp,Boolean isStmt,String wrongType){
+        exp = exp.replaceAll("\\s+", "");
+        ArrayList<String> list = new ArrayList<String>();
+        Stack<String> counter = new Stack<>();
+        Stack<Character> stack = new Stack<>();
+        String number = "";
+        Character in;
+        StringBuilder temp = new StringBuilder(exp);
+        for (int i = 0; i < temp.length(); i++) {
+            if(temp.charAt(i)=='+'||temp.charAt(i)=='-'){
+                char mark = temp.charAt(i);
+                for (int j = i+1; j < temp.length(); j++) {
+                    if(temp.charAt(j)=='+'||temp.charAt(j)=='-'){
+                        if(temp.charAt(j)=='-'&&mark=='+'){
+                            mark='-';
+                        }
+                        else if(temp.charAt(j)=='-'&&mark=='-'){
+                            mark='+';
+                        }
+                    }
+                    else{
+                        temp.replace(i,j,Character.toString(mark));
+                        break;
+                    }
                 }
             }
-            if(isGlobal){
-                var.value=Calculator.ans;
-                Calculator.ans=0;
-            }
-            listVar.add(var);
-            mark=reg;
-            reg++;
         }
-        else if(ctx.children.size()==3){
-            if(!isGlobal){
-                System.out.println("\t%var"+reg+" = alloca i32 ");
-            }
-            Var var = new Var(ctx.ident1().getText(),true, 0,false,reg,currentStage,isGlobal);
-            mark=reg;
-            if(!isGlobal){
-                reg++;
-            }
-            visit(ctx.initVal());
-            Calculator.getAns(exp,false,"b");
-            if(isGlobal){
-                reg++;
-            }
-            exp="";
-            for(Var e : listVar){
-                if(e.varName.equals(ctx.ident1().getText())&&e.stage==currentStage){
-                    System.out.println("ERROR!");
-                    System.exit(114514);
-                }
-            }
-            if(isGlobal){
-                var.value=Calculator.ans;
-                Calculator.ans=0;
-            }
-            listVar.add(var);
-        }
-        return null;
-    }
-
-    @Override
-    public Void visitInitVal(minisysParser.InitValContext ctx) {
-        visit(ctx.exp());
-        return null;
-    }
-
-    @Override
-    public Void visitBType(minisysParser.BTypeContext ctx) {
-        return super.visitBType(ctx);
-    }
-
-    @Override
-    public Void visitMain_ident(minisysParser.Main_identContext ctx) {
-        return super.visitMain_ident(ctx);
-    }
-
-    @Override
-    public Void visitConstInitVal(minisysParser.ConstInitValContext ctx) {
-        visit(ctx.constExp());
-        return null;
-    }
-
-    @Override
-    public Void visitConstExp(minisysParser.ConstExpContext ctx) {
-        visit(ctx.addExp());
-        return null;
-    }
-
-    @Override
-    public Void visitAddExp(minisysParser.AddExpContext ctx) {
-        if(ctx.children.size()==1){
-            visit(ctx.mulExp());
-        }
-        else if(ctx.children.size()==3){
-            visit(ctx.addExp());
-            if(ctx.Add()!=null){
-                exp+='+';
-            }
-            else if(ctx.Sub()!=null){
-                exp+='-';
-            }
-            visit(ctx.mulExp());
-        }
-        return null;
-    }
-
-    @Override
-    public Void visitMulExp(minisysParser.MulExpContext ctx) {
-        if(ctx.children.size()==1){
-            visit(ctx.unaryExp());
-        }
-        else if(ctx.children.size()==3){
-            visit(ctx.mulExp());
-            if(ctx.Div()!=null){
-                exp+="/";
-            }
-            else if(ctx.Mult()!=null){
-                exp+="*";
-            }
-            else if(ctx.Mod()!=null){
-                exp+="#";
-            }
-            visit(ctx.unaryExp());
-        }
-        return null;
-    }
-
-    @Override
-    public Void visitUnaryExp(minisysParser.UnaryExpContext ctx) {
-        if(ctx.children.size()==1){
-            if(ctx.primaryExp()!=null){
-                visit(ctx.primaryExp());
-            }
-            else if(ctx.ident1()!=null){
-                visit(ctx.ident1());
-                visit(ctx.funcRParams());
-            }
-        }
-        else if(ctx.children.size()==2){
-            if(ctx.unaryOp()!=null&&ctx.unaryExp()!=null){
-                visit(ctx.unaryOp());
-                visit(ctx.unaryExp());
-            }
-        }
-        else{
-            if(ctx.ident1().getText()!=null){
-                if(ctx.ident1().getText().equals("getint")){
-                    System.out.println("\t%var"+(reg)+" = call i32 @getint()");
-                    if(ctx.funcRParams()!=null){
-                        System.exit(23);
-                    }
-                    exp+='%'+String.valueOf(reg);
-                    reg++;
-                }
-                else if(ctx.ident1().getText().equals("putint")){
-                    if(ctx.funcRParams()==null){
-                        System.exit(20);
-                    }
-                    visit(ctx.funcRParams());
-                    if(ctx.funcRParams().exp().size()>1){
-                        System.exit(22);
-                    }
-                    Calculator.getAns(exp,true,"c");
-                    System.out.println("\tcall void @putint(i32 %var"+(reg-1)+")");
-                    exp="";
-                }
-                else if(ctx.ident1().getText().equals("getch")){
-                    System.out.println("\t%var"+(reg)+" = call i32 @getch()");
-                    if(ctx.funcRParams()!=null){
-                        System.exit(24);
-                    }
-                    exp+='%'+String.valueOf(reg);
-                    reg++;
-                }
-                else if(ctx.ident1().getText().equals("putch")){
-                    if(ctx.funcRParams()==null){
-                        System.exit(21);
-                    }
-                    exp="";
-                    visit(ctx.funcRParams());
-                    if(ctx.funcRParams().exp().size()>1){
-                        System.exit(22);
-                    }
-                    Calculator.getAns(exp,true,"d");
-                    System.out.println("\tcall void @putch(i32 %var"+(reg-1)+")");
-                    exp="";
+        for (int i = 0; i < temp.length(); i++) {
+            if(temp.charAt(i)=='+'||temp.charAt(i)=='-'){
+                if(i==0){
+                    temp.insert(0,"0");
                 }
                 else{
-                    System.out.println(ctx.ident1().getText());
-                    System.exit(11);
-                }
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Void visitFuncRParams(minisysParser.FuncRParamsContext ctx) {
-        for(minisysParser.ExpContext context : ctx.exp()){
-            visit(context);
-        }
-        return null;
-    }
-
-    @Override
-    public Void visitPrimaryExp(minisysParser.PrimaryExpContext ctx) {
-        if(ctx.exp()!=null){
-            exp+='(';
-            visit(ctx.exp());
-            exp+=')';
-        }
-        else if(ctx.lVal()!=null){
-            exp+=ctx.lVal().getText();
-        }
-        else if(ctx.number()!=null){
-            visit(ctx.number());
-        }
-        return null;
-    }
-
-    @Override
-    public Void visitUnaryOp(minisysParser.UnaryOpContext ctx) {
-        if(ctx.Add()!=null){
-            exp+='+';
-        }
-        else if(ctx.Sub()!=null){
-            exp+='-';
-        }
-        else {
-            exp+='!';
-        }
-        return null;
-    }
-
-    @Override
-    public Void visitStmt(minisysParser.StmtContext ctx) {
-        if(ctx.children.size()==3){
-            exp="";
-            visit(ctx.exp());
-            Calculator.getAns(exp,true,"e");
-            System.out.println("\tret i32 %var"+(reg-1));
-        }
-        else if(ctx.children.size()==4){
-            visit(ctx.exp());
-            for(Var var1 : listVar){
-                if(var1.varName.equals(ctx.lVal().getText())){
-                    mark=var1.regID;
-                }
-            }
-            for (int i = listVar.size()-1; i >=0 ; i--) {
-                if(ctx.lVal().getText().equals(listVar.get(i).varName)){
-                    if(listVar.get(i).isGlobal){
-                        isGlobalVar =true;
+                    if(temp.charAt(i-1)=='('){
+                        temp.insert(i,"0");
                     }
-                    if(listVar.get(i).isConst){
-                        System.exit(12);
-                    }
-                    break;
                 }
             }
-            Calculator.getAns(exp,false,"f");
-            isGlobalVar=false;
-            exp="";
         }
-        else if(ctx.children.size()==2){
-            if(ctx.children.get(0).getText().equals("break")){
-                System.out.println("\tbr label %while_block_end"+get);
+        exp=temp.toString();
+        for (int i = 0; i < exp.length(); i++) {
+            if(Character.isDigit(exp.charAt(i))||exp.charAt(i)=='%'||exp.charAt(i)=='_'||Character.isAlphabetic(exp.charAt(i))){
+                number+=exp.charAt(i);
             }
-            else if(ctx.children.get(0).getText().equals("continue")){
-                ;
+            else{
+                if(!number.equals("")){
+                    list.add(number);
+                }
+                number="";
+                if(stack.empty()){
+                    stack.push(exp.charAt(i));
+                }
+                else{
+                    if(exp.charAt(i)=='*'||exp.charAt(i)=='/'||exp.charAt(i)=='#'){
+                        while(!stack.empty()){
+                            if(stack.peek()=='('){
+                                stack.push(exp.charAt(i));
+                                break;
+                            }
+                            else if(stack.peek()=='+'||stack.peek()=='-'){
+                                stack.push(exp.charAt(i));
+                                break;
+                            }
+                            else if(stack.peek()=='*'||stack.peek()=='/'||stack.peek()=='#'){
+                                list.add(stack.peek().toString());
+                                stack.pop();
+                            }
+                        }
+                        if(stack.empty()){
+                            stack.push(exp.charAt(i));
+                        }
+                    }
+                    else if(exp.charAt(i)=='+'||exp.charAt(i)=='-'){
+                        while (true){
+                            if(stack.empty()){
+                                stack.push(exp.charAt(i));
+                                break;
+                            }
+                            else if(stack.peek()=='('){
+                                stack.push(exp.charAt(i));
+                                break;
+                            }
+                            list.add(stack.peek().toString());
+                            stack.pop();
+                        }
+                    }
+                    else if(exp.charAt(i)=='('){
+                        stack.push('(');
+                    }
+                    else if(exp.charAt(i)==')'){
+                        while(!stack.empty()){
+                            if(stack.peek()=='('){
+                                stack.pop();
+                                break;
+                            }
+                            else{
+                                list.add(stack.peek().toString());
+                                stack.pop();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if(!number.equals("")){
+            list.add(number);
+        }
+        while (!stack.empty()){
+            list.add(stack.peek().toString());
+            stack.pop();
+        }
+        if(list.size()==1){
+            list.add("0");
+            list.add("+");
+        }
+        if(Visitor.isConstDef){
+            for (String s : list) {
+                for (int j = 0; j < Visitor.listVar.size(); j++) {
+                    if (s.equals(Visitor.listVar.get(j).varName) && !Visitor.listVar.get(j).isConst) {
+                        System.exit(2);
+                    }
+                }
+            }
+        }
+        boolean exist=false;
+        boolean isVar=false;
+        for (int i = 0; i < list.size(); i++) {
+            for (int j = 0; j < list.get(i).length(); j++) {
+                if(Character.isAlphabetic(list.get(i).charAt(j))){
+                    isVar=true;
+                }
+            }
+            if(isVar){
+                if(Visitor.isGlobal){
+                    for (int j = 0; j < Visitor.listVar.size(); j++) {
+                        if(Visitor.listVar.get(j).varName.equals(list.get(i))){
+                            if (!Visitor.listVar.get(j).isConst){
+                                System.exit(111);
+                            }
+                            exist=true;
+                            list.set(i,Integer.toString(Visitor.listVar.get(j).value));
+                            break;
+                        }
+                    }
+                }
+                else{
+                    for (int j = Visitor.listVar.size()-1; j >=0; j--) {
+                        if(Visitor.listVar.get(j).varName.equals(list.get(i))){
+                            exist=true;
+                            if(!Visitor.listVar.get(j).isGlobal){
+                                System.out.println("\t%var"+Visitor.reg+" = load i32, i32* %var"+Visitor.listVar.get(j).regID);
+                            }
+                            else{
+                                System.out.println("\t%var"+Visitor.reg+" = load i32, i32* @global"+Visitor.listVar.get(j).regID);
+
+                            }
+                            list.set(i,"%"+Visitor.reg);
+                            Visitor.reg++;
+                            break;
+                        }
+                    }
+                }
+                if(!exist){
+                    if(Visitor.isGlobal&&wrongType.equals("a")){
+                        System.exit(110);
+                    }
+                    else if(!Visitor.isGlobal&&wrongType.equals("a")){
+                        System.exit(111);
+                    }
+                    else if(Visitor.isGlobal&&wrongType.equals("b")){
+                        System.exit(112);
+                    }
+                    else if(!Visitor.isGlobal&&wrongType.equals("b")){
+                        System.out.println(exp);
+                    }
+                    else if(Visitor.isGlobal&&wrongType.equals("c")){
+                        System.exit(114);
+                    }
+                    else if(!Visitor.isGlobal&&wrongType.equals("c")){
+                        System.exit(115);
+                    }
+                    else if(Visitor.isGlobal&&wrongType.equals("d")){
+                        System.exit(116);
+                    }
+                    else if(!Visitor.isGlobal&&wrongType.equals("d")){
+                        System.exit(117);
+                    }
+                    else if(Visitor.isGlobal&&wrongType.equals("e")){
+                        System.exit(118);
+                    }
+                    else if(!Visitor.isGlobal&&wrongType.equals("e")){
+                        System.exit(119);
+                    }
+                    else if(Visitor.isGlobal&&wrongType.equals("f")){
+                        System.exit(120);
+                    }
+                    else if(!Visitor.isGlobal&&wrongType.equals("f")){
+                        System.exit(113);
+                    }
+                }
+                exist=false;
+            }
+            isVar=false;
+        }
+        for (int i = 0; i < list.size(); i++) {
+            if(list.get(i).matches("^[a-zA-Z]+$")||list.get(i).matches("^[0-9%]+$")||list.get(i).matches("^[0-9]+$")){
+                counter.push(list.get(i));
             }
             else {
-                visit(ctx.exp());
-            }
-        }
-        else if((ctx.children.size()==5&&ctx.children.get(0).getText().equals("if"))||ctx.children.size()==7){
-            int mark;
-            exp="";
-            visit(ctx.cond());
-            mark=block;
-            CalculatorIfExp.getAns(exp,"if",mark);
-            exp="";
-            System.out.println("true_block"+mark+":");
-            block++;
-            visit(ctx.stmt(0));
-            System.out.println("\tbr label %end_block"+mark);
-            System.out.println("false_block"+mark+":");
-            if(ctx.children.size()==7){
-                visit(ctx.stmt(1));
-            }
-            System.out.println("\tbr label %end_block"+(mark));
-            System.out.println("end_block"+mark+":");
-        }
-        else if(ctx.children.size()==1){
-            if(ctx.block()!=null){
-                visit(ctx.block());
-            }
-        }
-        else {
-            int whilemark;
-            exp="";
-            visit(ctx.cond());
-            whilemark=whileBlock;
-            get=whilemark;
-            CalculatorIfExp.getAns(exp,"while",whilemark);
-            exp="";
-            System.out.println("while_block"+whilemark+":");
-            whileBlock++;
-            visit(ctx.stmt(0));
-            exp="";
-            visit(ctx.cond());
-            CalculatorIfExp.getAns(exp,"while",whilemark);
-            exp="";
-            System.out.println("while_block_end"+whilemark+":");
-        }
-        return null;
-    }
-
-    @Override
-    public Void visitLVal(minisysParser.LValContext ctx) {
-        return null;
-    }
-
-    @Override
-    public Void visitExp(minisysParser.ExpContext ctx) {
-        visit(ctx.addExp());
-        return null;
-    }
-
-    @Override
-    public Void visitNumber(minisysParser.NumberContext ctx) {
-        int temp;
-        String string;
-        if(ctx.HexadecimalConst()!=null){
-            string=ctx.HexadecimalConst().getText();
-            string=string.substring(2);
-            temp=Integer.parseInt(string,16);
-            string=Integer.toString(temp);
-            exp+=" "+string;
-        }
-        else if(ctx.DecimalConst()!=null){
-            exp+=" "+ctx.DecimalConst().getText();
-        }
-        else if(ctx.OctalConst()!=null){
-            string=ctx.OctalConst().getText();
-            temp=Integer.parseInt(string,8);
-            string=Integer.toString(temp);
-            exp+=" "+string;
-        }
-        return null;
-    }
-
-    @Override
-    public Void visitIdent1(minisysParser.Ident1Context ctx) {
-        return super.visitIdent1(ctx);
-    }
-
-    @Override
-    public Void visitCond(minisysParser.CondContext ctx) {
-        return super.visitCond(ctx);
-    }
-
-    @Override
-    public Void visitLOrExp(minisysParser.LOrExpContext ctx) {
-        if(ctx.children.size()==1){
-            visit(ctx.lAndExp());
-        }
-        else {
-            visit(ctx.lOrExp());
-            exp+="|";           //把'||'改写成只有一个'|'，方便遍历
-            visit(ctx.lAndExp());
-        }
-        return null;
-    }
-
-    @Override
-    public Void visitLAndExp(minisysParser.LAndExpContext ctx) {
-        if(ctx.children.size()==1){
-            visit(ctx.eqExp());
-        }
-        else{
-            visit(ctx.lAndExp());
-            exp+="&";
-            visit(ctx.eqExp());
-        }
-        return null;
-    }
-
-    @Override
-    public Void visitEqExp(minisysParser.EqExpContext ctx) {
-        if(ctx.children.size()==1){
-            visit(ctx.relExp());
-        }
-        else{
-            visit(ctx.eqExp());
-            if(ctx.EqExpSymbol().getText().equals("==")){
-                exp+='=';              //==变成=
-            }
-            else if(ctx.EqExpSymbol().getText().equals("!=")){
-                exp+='~';               //!=变成~
-            }
-            visit(ctx.relExp());
-        }
-        return null;
-    }
-
-    @Override
-    public Void visitRelExp(minisysParser.RelExpContext ctx) {
-        if(ctx.children.size()==1){
-            visit(ctx.addExp());
-        }
-        else{
-            visit(ctx.relExp());
-            if(ctx.RelExpSymbol().getText().equals("<")||ctx.RelExpSymbol().getText().equals(">")){
-                exp+=ctx.RelExpSymbol().getText();
-            }
-            else {
-                if(ctx.RelExpSymbol().getText().equals("<=")){
-                    exp+="@";         //@是<=
+                String a,b;
+                a=counter.peek();
+                counter.pop();
+                b=counter.peek();
+                counter.pop();
+                String get="";
+                if(a.charAt(0)=='%'){
+                    get=a;
+                    get=get.substring(1);
+                    a="%var"+get;
+                }
+                if(b.charAt(0)=='%'){
+                    get=b;
+                    get=get.substring(1);
+                    b="%var"+get;
+                }
+                switch (list.get(i)) {
+                    case "+" -> {
+                        if(Visitor.isGlobal){
+                            ans+=Integer.parseInt(a)+Integer.parseInt(b);
+                        }
+                        else{
+                            System.out.println("\t%var" + (Visitor.reg) + " = add i32 " + (b) + ", " + (a));
+                            Visitor.reg++;
+                        }
+                    }
+                    case "-" -> {
+                        if(Visitor.isGlobal){
+                            ans+=Integer.parseInt(b)-Integer.parseInt(a);
+                        }
+                        else{
+                            System.out.println("\t%var" + (Visitor.reg) + " = sub i32 " + (b) + ", " + (a));
+                            Visitor.reg++;
+                        }
+                    }
+                    case "*" -> {
+                        if(Visitor.isGlobal){
+                            ans+=Integer.parseInt(b)*Integer.parseInt(a);
+                        }
+                        else {
+                            System.out.println("\t%var" + (Visitor.reg) + " = mul i32 " + (b) + ", " + (a));
+                            Visitor.reg++;
+                        }
+                    }
+                    case "/" -> {
+                        if(Visitor.isGlobal){
+                            ans+=Integer.parseInt(b)/Integer.parseInt(a);
+                        }
+                        else {
+                            System.out.println("\t%var" + (Visitor.reg) + " = sdiv i32 " + (b) + ", " + (a));
+                            Visitor.reg++;
+                        }
+                    }
+                    case "#" -> {
+                        if(Visitor.isGlobal){
+                            ans+=Integer.parseInt(b)%Integer.parseInt(a);
+                        }
+                        else {
+                            System.out.println("\t%var" + (Visitor.reg) + " = srem i32 " + (b) + ", " + (a));
+                            Visitor.reg++;
+                        }
+                    }
+                }
+                if(Visitor.isGlobal){
+                    counter.push(String.valueOf(ans));
                 }
                 else {
-                    exp+='$';         //$是>=
+                    counter.push("%"+(Visitor.reg-1));
                 }
             }
-            visit(ctx.addExp());
         }
+        if(!isStmt&&!Visitor.isGlobal&&!Visitor.isGlobalVar){
+            System.out.println("\tstore i32 %var"+(Visitor.reg-1)+", i32* %var"+Visitor.mark);
+        }
+        if(Visitor.isGlobalVar){
+            System.out.println("\tstore i32 %var"+(Visitor.reg-1)+", i32* @global"+Visitor.mark);
+        }
+        if(Visitor.isGlobal){
+            System.out.println("@global"+Visitor.reg+" =dso_local global i32 "+ans);
+        }
+        Visitor.exp="";
         return null;
     }
 }
