@@ -168,40 +168,40 @@ public class Calculator {
                 }
                 if(!exist){
                     if(Visitor.isGlobal&&wrongType.equals("a")){
-                        System.out.println(110);
+                        System.exit(110);
                     }
                     else if(!Visitor.isGlobal&&wrongType.equals("a")){
-                        System.out.println(111);
+                        System.exit(111);
                     }
                     else if(Visitor.isGlobal&&wrongType.equals("b")){
-                        System.out.println(112);
+                        System.exit(112);
                     }
                     else if(!Visitor.isGlobal&&wrongType.equals("b")){
-                        System.out.println(113);
+                        System.exit(113);
                     }
                     else if(Visitor.isGlobal&&wrongType.equals("c")){
-                        System.out.println(114);
+                        System.exit(114);
                     }
                     else if(!Visitor.isGlobal&&wrongType.equals("c")){
-                        System.out.println(115);
+                        System.exit(115);
                     }
                     else if(Visitor.isGlobal&&wrongType.equals("d")){
-                        System.out.println(116);
+                        System.exit(116);
                     }
                     else if(!Visitor.isGlobal&&wrongType.equals("d")){
-                        System.out.println(117);
+                        System.exit(117);
                     }
                     else if(Visitor.isGlobal&&wrongType.equals("e")){
-                        System.out.println(118);
+                        System.exit(118);
                     }
                     else if(!Visitor.isGlobal&&wrongType.equals("e")){
-                        System.out.println(119);
+                        System.exit(119);
                     }
                     else if(Visitor.isGlobal&&wrongType.equals("f")){
-                        System.out.println(120);
+                        System.exit(120);
                     }
                     else if(!Visitor.isGlobal&&wrongType.equals("f")){
-                        System.out.println(121);
+                        System.exit(113);
                     }
                 }
                 exist=false;
