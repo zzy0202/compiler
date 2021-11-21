@@ -218,8 +218,8 @@ public class Calculator {
                 counter.pop();
                 if(!counter.empty()){
                     b=counter.peek();
+                    counter.pop();
                 }
-                counter.pop();
                 String get="";
                 if(a.charAt(0)=='%'){
                     get=a;
