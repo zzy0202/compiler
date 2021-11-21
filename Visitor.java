@@ -147,7 +147,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
             }
             Var var = new Var(ctx.ident1().getText(),false, 0,false,reg,currentStage,isGlobal);
             for(Var var1 : listVar){
-                if(var1.varName.equals(var.varName)){
+                if(var1.varName.equals(var.varName)&&var1.stage==currentStage){
                     System.exit(2);
                 }
             }
