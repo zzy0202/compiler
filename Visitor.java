@@ -55,15 +55,15 @@ public class Visitor extends minisysBaseVisitor<Void> {
         for (minisysParser.BlockItemContext context : ctx.blockItem()) {
             visit(context);
         }
+        currentStage--;
         ArrayList<Var> temp = new ArrayList<>();
         for(Var var1: listVar){
-            if(var1.stage<currentStage){
+            if(var1.stage>currentStage){
                 temp.add(var1);
             }
         }
         listVar=null;
         listVar=temp;
-        currentStage--;
         return null;
     }
 
