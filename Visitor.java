@@ -58,7 +58,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
         currentStage--;
         ArrayList<Var> temp = new ArrayList<>();
         for(Var var1: listVar){
-            if(var1.stage>currentStage){
+            if(var1.stage<=currentStage){
                 temp.add(var1);
             }
         }
