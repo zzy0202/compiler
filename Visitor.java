@@ -346,8 +346,8 @@ public class Visitor extends minisysBaseVisitor<Void> {
             visit(ctx.exp());
         }
         else if(ctx.children.size()==5||ctx.children.size()==7){
-            exp="";
-            visit(ctx.cond());
+//            exp="";
+//            visit(ctx.cond());
             int mark;
             exp="";
             visit(ctx.cond());
