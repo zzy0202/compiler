@@ -55,12 +55,14 @@ public class Visitor extends minisysBaseVisitor<Void> {
         for (minisysParser.BlockItemContext context : ctx.blockItem()) {
             visit(context);
         }
-        for (int i = 0; i < listVar.size(); i++) {
-            if(listVar.get(i).stage==currentStage){
-                listVar.remove(i);
-                i--;
+        ArrayList<Var> temp = new ArrayList<>();
+        for(Var var1: listVar){
+            if(var1.stage<currentStage){
+                temp.add(var1);
             }
         }
+        listVar=null;
+        listVar=temp;
         currentStage--;
         return null;
     }
