@@ -201,7 +201,7 @@ public class Calculator {
                         System.exit(120);
                     }
                     else if(!Visitor.isGlobal&&wrongType.equals("f")){
-                        System.exit(113);
+                        System.out.println(exp);
                     }
                 }
                 exist=false;
