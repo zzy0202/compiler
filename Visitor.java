@@ -400,7 +400,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                 System.out.println("\tbr label %while_block_end"+get);
             }
             else if(ctx.children.get(0).getText().equals("continue")){
-                System.out.println("\tbr label %while_block"+get);
+                ;
             }
             else {
                 visit(ctx.exp());
@@ -431,20 +431,18 @@ public class Visitor extends minisysBaseVisitor<Void> {
         }
         else {
             int whilemark;
-            whilemark=whileBlock;
-            System.out.println("\tbr label %while_block"+whilemark);
             exp="";
-            get++;
+            visit(ctx.cond());
+            whilemark=whileBlock;
+            get=whilemark;
+            CalculatorIfExp.getAns(exp,"while",whilemark);
             exp="";
             System.out.println("while_block"+whilemark+":");
-            visit(ctx.cond());
-            CalculatorIfExp.getAns(exp,"while",whilemark);
-            System.out.println("while_block_true"+whilemark+":");
             whileBlock++;
             visit(ctx.stmt(0));
-            System.out.println("\tbr label %while_block"+whilemark);
             exp="";
-            get--;
+            visit(ctx.cond());
+            CalculatorIfExp.getAns(exp,"while",whilemark);
             exp="";
             System.out.println("while_block_end"+whilemark+":");
         }
