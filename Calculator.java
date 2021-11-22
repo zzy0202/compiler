@@ -4,13 +4,12 @@ import java.util.Stack;
 
 public class Calculator {
     public static int ans=0;
-    public static String getAns(String exp,Boolean isStmt,String wrongType,String get){
+    public static String getAns(String exp,Boolean isStmt){
         exp = exp.replaceAll("\\s+", "");
         ArrayList<String> list = new ArrayList<String>();
         Stack<String> counter = new Stack<>();
         Stack<Character> stack = new Stack<>();
         String number = "";
-        Character in;
         StringBuilder temp = new StringBuilder(exp);
         for (int i = 0; i < temp.length(); i++) {
             if(temp.charAt(i)=='+'||temp.charAt(i)=='-'){
@@ -167,135 +166,98 @@ public class Calculator {
                     }
                 }
                 if(!exist){
-                    if(Visitor.isGlobal&&wrongType.equals("a")){
-                        System.exit(110);
-                    }
-                    else if(!Visitor.isGlobal&&wrongType.equals("a")){
-                        System.exit(111);
-                    }
-                    else if(Visitor.isGlobal&&wrongType.equals("b")){
-                        System.exit(112);
-                    }
-                    else if(!Visitor.isGlobal&&wrongType.equals("b")){
-                        System.out.println(exp);
-                    }
-                    else if(Visitor.isGlobal&&wrongType.equals("c")){
-                        System.exit(114);
-                    }
-                    else if(!Visitor.isGlobal&&wrongType.equals("c")){
-                        System.exit(115);
-                    }
-                    else if(Visitor.isGlobal&&wrongType.equals("d")){
-                        System.exit(116);
-                    }
-                    else if(!Visitor.isGlobal&&wrongType.equals("d")){
-                        System.exit(117);
-                    }
-                    else if(Visitor.isGlobal&&wrongType.equals("e")){
-                        System.exit(118);
-                    }
-                    else if(!Visitor.isGlobal&&wrongType.equals("e")){
-                        System.exit(119);
-                    }
-                    else if(Visitor.isGlobal&&wrongType.equals("f")){
-                        System.exit(120);
-                    }
-                    else if(!Visitor.isGlobal&&wrongType.equals("f")){
-                        System.out.println(get);
-                    }
+                    System.exit(111);
                 }
                 exist=false;
             }
             isVar=false;
         }
-//        for (int i = 0; i < list.size(); i++) {
-//            if(list.get(i).matches("^[a-zA-Z]+$")||list.get(i).matches("^[0-9%]+$")||list.get(i).matches("^[0-9]+$")){
-//                counter.push(list.get(i));
-//            }
-//            else {
-//                String a,b = null;
-//                a=counter.peek();
-//                counter.pop();
-//                if(!counter.empty()){
-//                    b=counter.peek();
-//                    counter.pop();
-//                }
-//                String get="";
-//                if(a.charAt(0)=='%'){
-//                    get=a;
-//                    get=get.substring(1);
-//                    a="%var"+get;
-//                }
-//                if(b.charAt(0)=='%'){
-//                    get=b;
-//                    get=get.substring(1);
-//                    b="%var"+get;
-//                }
-//                switch (list.get(i)) {
-//                    case "+" -> {
-//                        if(Visitor.isGlobal){
-//                            ans+=Integer.parseInt(a)+Integer.parseInt(b);
-//                        }
-//                        else{
-//                            System.out.println("\t%var" + (Visitor.reg) + " = add i32 " + (b) + ", " + (a));
-//                            Visitor.reg++;
-//                        }
-//                    }
-//                    case "-" -> {
-//                        if(Visitor.isGlobal){
-//                            ans+=Integer.parseInt(b)-Integer.parseInt(a);
-//                        }
-//                        else{
-//                            System.out.println("\t%var" + (Visitor.reg) + " = sub i32 " + (b) + ", " + (a));
-//                            Visitor.reg++;
-//                        }
-//                    }
-//                    case "*" -> {
-//                        if(Visitor.isGlobal){
-//                            ans+=Integer.parseInt(b)*Integer.parseInt(a);
-//                        }
-//                        else {
-//                            System.out.println("\t%var" + (Visitor.reg) + " = mul i32 " + (b) + ", " + (a));
-//                            Visitor.reg++;
-//                        }
-//                    }
-//                    case "/" -> {
-//                        if(Visitor.isGlobal){
-//                            ans+=Integer.parseInt(b)/Integer.parseInt(a);
-//                        }
-//                        else {
-//                            System.out.println("\t%var" + (Visitor.reg) + " = sdiv i32 " + (b) + ", " + (a));
-//                            Visitor.reg++;
-//                        }
-//                    }
-//                    case "#" -> {
-//                        if(Visitor.isGlobal){
-//                            ans+=Integer.parseInt(b)%Integer.parseInt(a);
-//                        }
-//                        else {
-//                            System.out.println("\t%var" + (Visitor.reg) + " = srem i32 " + (b) + ", " + (a));
-//                            Visitor.reg++;
-//                        }
-//                    }
-//                }
-//                if(Visitor.isGlobal){
-//                    counter.push(String.valueOf(ans));
-//                }
-//                else {
-//                    counter.push("%"+(Visitor.reg-1));
-//                }
-//            }
-//        }
-//        if(!isStmt&&!Visitor.isGlobal&&!Visitor.isGlobalVar){
-//            System.out.println("\tstore i32 %var"+(Visitor.reg-1)+", i32* %var"+Visitor.mark);
-//        }
-//        if(Visitor.isGlobalVar){
-//            System.out.println("\tstore i32 %var"+(Visitor.reg-1)+", i32* @global"+Visitor.mark);
-//        }
-//        if(Visitor.isGlobal){
-//            System.out.println("@global"+Visitor.reg+" =dso_local global i32 "+ans);
-//        }
-//        Visitor.exp="";
+        for (int i = 0; i < list.size(); i++) {
+            if(list.get(i).matches("^[a-zA-Z]+$")||list.get(i).matches("^[0-9%]+$")||list.get(i).matches("^[0-9]+$")){
+                counter.push(list.get(i));
+            }
+            else {
+                String a,b;
+                a=counter.peek();
+                counter.pop();
+                b=counter.peek();
+                counter.pop();
+                String get="";
+                if(a.charAt(0)=='%'){
+                    get=a;
+                    get=get.substring(1);
+                    a="%var"+get;
+                }
+                if(b.charAt(0)=='%'){
+                    get=b;
+                    get=get.substring(1);
+                    b="%var"+get;
+                }
+                switch (list.get(i)) {
+                    case "+" -> {
+                        if(Visitor.isGlobal){
+                            ans+=Integer.parseInt(a)+Integer.parseInt(b);
+                        }
+                        else{
+                            System.out.println("\t%var" + (Visitor.reg) + " = add i32 " + (b) + ", " + (a));
+                            Visitor.reg++;
+                        }
+                    }
+                    case "-" -> {
+                        if(Visitor.isGlobal){
+                            ans+=Integer.parseInt(b)-Integer.parseInt(a);
+                        }
+                        else{
+                            System.out.println("\t%var" + (Visitor.reg) + " = sub i32 " + (b) + ", " + (a));
+                            Visitor.reg++;
+                        }
+                    }
+                    case "*" -> {
+                        if(Visitor.isGlobal){
+                            ans+=Integer.parseInt(b)*Integer.parseInt(a);
+                        }
+                        else {
+                            System.out.println("\t%var" + (Visitor.reg) + " = mul i32 " + (b) + ", " + (a));
+                            Visitor.reg++;
+                        }
+                    }
+                    case "/" -> {
+                        if(Visitor.isGlobal){
+                            ans+=Integer.parseInt(b)/Integer.parseInt(a);
+                        }
+                        else {
+                            System.out.println("\t%var" + (Visitor.reg) + " = sdiv i32 " + (b) + ", " + (a));
+                            Visitor.reg++;
+                        }
+                    }
+                    case "#" -> {
+                        if(Visitor.isGlobal){
+                            ans+=Integer.parseInt(b)%Integer.parseInt(a);
+                        }
+                        else {
+                            System.out.println("\t%var" + (Visitor.reg) + " = srem i32 " + (b) + ", " + (a));
+                            Visitor.reg++;
+                        }
+                    }
+                }
+                if(Visitor.isGlobal){
+                    counter.push(String.valueOf(ans));
+                }
+                else {
+                    counter.push("%"+(Visitor.reg-1));
+                }
+            }
+        }
+        if(!isStmt&&!Visitor.isGlobal&&!Visitor.isGlobalVar){
+            System.out.println("\tstore i32 %var"+(Visitor.reg-1)+", i32* %var"+Visitor.mark);
+        }
+        if(Visitor.isGlobalVar){
+            System.out.println("\tstore i32 %var"+(Visitor.reg-1)+", i32* @global"+Visitor.mark);
+        }
+        if(Visitor.isGlobal){
+            System.out.println("@global"+Visitor.reg+" =dso_local global i32 "+ans);
+        }
+        Visitor.exp="";
         return null;
     }
 }
