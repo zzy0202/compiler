@@ -11,6 +11,7 @@ public class Calculator {
         Stack<Character> stack = new Stack<>();
         String number = "";
         Character in;
+        String getter2;
         StringBuilder temp = new StringBuilder(exp);
         for (int i = 0; i < temp.length(); i++) {
             if(temp.charAt(i)=='+'||temp.charAt(i)=='-'){
@@ -31,6 +32,7 @@ public class Calculator {
                 }
             }
         }
+        getter2=temp.toString();
         for (int i = 0; i < temp.length(); i++) {
             if(temp.charAt(i)=='+'||temp.charAt(i)=='-'){
                 if(i==0){
@@ -167,7 +169,7 @@ public class Calculator {
                     }
                 }
                 if(!exist){
-                    System.out.println(getter+" !   "+exp);
+                    System.out.println(getter+" ! "+exp+"   "+getter2);
                 }
                 exist=false;
             }
