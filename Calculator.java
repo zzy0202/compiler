@@ -43,8 +43,9 @@ public class Calculator {
             }
         }
         exp=temp.toString();
+        System.out.println(exp);
         for (int i = 0; i < exp.length(); i++) {
-            if(Character.isDigit(exp.charAt(i))||exp.charAt(i)=='%'||exp.charAt(i)=='_'||Character.isAlphabetic(exp.charAt(i))){
+            if(Character.isDigit(exp.charAt(i))||exp.charAt(i)=='_'||Character.isAlphabetic(exp.charAt(i))){
                 number+=exp.charAt(i);
             }
             else{
