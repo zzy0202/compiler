@@ -140,7 +140,7 @@ public class Calculator {
                     for (int j = 0; j < Visitor.listVar.size(); j++) {
                         if(Visitor.listVar.get(j).varName.equals(list.get(i))){
                             if (!Visitor.listVar.get(j).isConst){
-                                System.exit(111);
+                                System.exit(108);
                             }
                             exist=true;
                             list.set(i,Integer.toString(Visitor.listVar.get(j).value));
