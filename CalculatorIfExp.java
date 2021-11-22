@@ -313,7 +313,7 @@ public class CalculatorIfExp {
             System.out.println("\tbr i1 %var"+(Visitor.reg-1)+" , label %true_block"+(whilemark)+" ,label %false_block"+(whilemark));
         }
         else{
-            System.out.println("\tbr i1 %var"+(Visitor.reg-1)+" , label %while_block"+(whilemark)+" ,label %while_block_end"+(whilemark));
+            System.out.println("\tbr i1 %var"+(Visitor.reg-1)+" , label %while_block_true"+(whilemark)+" ,label %while_block_end"+(whilemark));
         }
         return exp;
     }
