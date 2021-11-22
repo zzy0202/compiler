@@ -55,15 +55,15 @@ public class Visitor extends minisysBaseVisitor<Void> {
         for (minisysParser.BlockItemContext context : ctx.blockItem()) {
             visit(context);
         }
+        ArrayList<Var> temp = new ArrayList<>();
+        for(Var var1: listVar){
+            if(var1.stage<currentStage){
+                temp.add(var1);
+            }
+        }
+        listVar=null;
+        listVar=temp;
         currentStage--;
-//        ArrayList<Var> temp = new ArrayList<>();
-//        for(Var var1: listVar){
-//            if(var1.stage<=currentStage){
-//                temp.add(var1);
-//            }
-//        }
-//        listVar=null;
-//        listVar=temp;
         return null;
     }
 
@@ -391,7 +391,6 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     break;
                 }
             }
-            //f
             Calculator.getAns(exp,false);
             isGlobalVar=false;
             exp="";
@@ -401,7 +400,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                 System.out.println("\tbr label %while_block_end"+get);
             }
             else if(ctx.children.get(0).getText().equals("continue")){
-                ;
+                System.out.println("\tbr label %while_block"+get);
             }
             else {
                 visit(ctx.exp());
@@ -432,18 +431,20 @@ public class Visitor extends minisysBaseVisitor<Void> {
         }
         else {
             int whilemark;
-            exp="";
-            visit(ctx.cond());
             whilemark=whileBlock;
-            get=whilemark;
-            CalculatorIfExp.getAns(exp,"while",whilemark);
+            System.out.println("\tbr label %while_block"+whilemark);
+            exp="";
+            get++;
             exp="";
             System.out.println("while_block"+whilemark+":");
-            whileBlock++;
-            visit(ctx.stmt(0));
-            exp="";
             visit(ctx.cond());
             CalculatorIfExp.getAns(exp,"while",whilemark);
+            System.out.println("while_block_true"+whilemark+":");
+            whileBlock++;
+            visit(ctx.stmt(0));
+            System.out.println("\tbr label %while_block"+whilemark);
+            exp="";
+            get--;
             exp="";
             System.out.println("while_block_end"+whilemark+":");
         }
