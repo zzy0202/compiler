@@ -171,7 +171,7 @@ public class Calculator {
                     }
                 }
                 if(!exist){
-                    System.out.println(getter+" ! "+exp+"   "+getter2+"  "+getter3);
+                    System.exit(101);
                 }
                 exist=false;
             }
