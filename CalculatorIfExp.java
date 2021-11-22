@@ -315,6 +315,7 @@ public class CalculatorIfExp {
         else{
             System.out.println("\tbr i1 %var"+(Visitor.reg-1)+" , label %while_block_true"+(whilemark)+" ,label %while_block_end"+(whilemark));
         }
+        Visitor.exp="";
         return exp;
     }
 
