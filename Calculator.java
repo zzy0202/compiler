@@ -131,7 +131,7 @@ public class Calculator {
         boolean isVar=false;
         for (int i = 0; i < list.size(); i++) {
             for (int j = 0; j < list.get(i).length(); j++) {
-                if(Character.isAlphabetic(list.get(i).charAt(j))){
+                if(Character.isAlphabetic(list.get(i).charAt(j))||list.get(i).charAt(j)=='_'){
                     isVar=true;
                 }
             }
@@ -152,6 +152,21 @@ public class Calculator {
                     }
                 }
                 else{
+//                    for (int j = Visitor.listVar.size()-1; j >=0; j--) {
+//                        if(Visitor.listVar.get(j).varName.equals(list.get(i))){
+//                            exist=true;
+//                            if(!Visitor.listVar.get(j).isGlobal){
+//                                System.out.println("\t%var"+Visitor.reg+" = load i32, i32* %var"+Visitor.listVar.get(j).regID);
+//                            }
+//                            else{
+//                                System.out.println("\t%var"+Visitor.reg+" = load i32, i32* @global"+Visitor.listVar.get(j).regID);
+//
+//                            }
+//                            list.set(i,"%"+Visitor.reg);
+//                            Visitor.reg++;
+//                            break;
+//                        }
+//                    }
                     for (int j = Visitor.listVar.size()-1; j >=0; j--) {
                         if(Visitor.listVar.get(j).varName.equals(list.get(i))){
                             exist=true;
