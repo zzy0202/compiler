@@ -119,7 +119,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
         exp="";
         visit(ctx.constInitVal());
         isConstDef=true;
-        Calculator.getAns(exp,false);
+        Calculator.getAns(exp,false,ctx.getText());
         if(isGlobal){
             reg++;
         }
@@ -171,7 +171,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                 reg++;
             }
             visit(ctx.initVal());
-            Calculator.getAns(exp,false);
+            Calculator.getAns(exp,false,ctx.getText());
             if(isGlobal){
                 reg++;
             }
@@ -293,7 +293,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     if(ctx.funcRParams().exp().size()>1){
                         System.exit(22);
                     }
-                    Calculator.getAns(exp,true);
+                    Calculator.getAns(exp,true,ctx.getText());
                     System.out.println("\tcall void @putint(i32 %var"+(reg-1)+")");
                     exp="";
                 }
@@ -314,7 +314,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     if(ctx.funcRParams().exp().size()>1){
                         System.exit(22);
                     }
-                    Calculator.getAns(exp,true);
+                    Calculator.getAns(exp,true,ctx.getText());
                     System.out.println("\tcall void @putch(i32 %var"+(reg-1)+")");
                     exp="";
                 }
@@ -370,7 +370,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
         if(ctx.children.size()==3){
             exp="";
             visit(ctx.exp());
-            Calculator.getAns(exp,true);
+            Calculator.getAns(exp,true,ctx.getText());
             System.out.println("\tret i32 %var"+(reg-1));
         }
         else if(ctx.children.size()==4){
@@ -391,7 +391,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     break;
                 }
             }
-            Calculator.getAns(exp,false);
+            Calculator.getAns(exp,false,ctx.getText());
             isGlobalVar=false;
             exp="";
         }
