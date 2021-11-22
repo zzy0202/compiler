@@ -4,7 +4,7 @@ import java.util.Stack;
 
 public class Calculator {
     public static int ans=0;
-    public static String getAns(String exp,Boolean isStmt){
+    public static String getAns(String exp,Boolean isStmt,String getter){
         exp = exp.replaceAll("\\s+", "");
         ArrayList<String> list = new ArrayList<String>();
         Stack<String> counter = new Stack<>();
@@ -167,6 +167,7 @@ public class Calculator {
                     }
                 }
                 if(!exist){
+                    System.out.println(getter+"  "+exp);
                     System.exit(101);
                 }
                 exist=false;
@@ -178,11 +179,15 @@ public class Calculator {
                 counter.push(list.get(i));
             }
             else {
-                String a,b;
-                a=counter.peek();
-                counter.pop();
-                b=counter.peek();
-                counter.pop();
+                String a="1",b="1";
+                if(!counter.empty()){
+                    a=counter.peek();
+                    counter.pop();
+                }
+                if(!counter.empty()){
+                    b=counter.peek();
+                    counter.pop();
+                }
                 String get="";
                 if(a.charAt(0)=='%'){
                     get=a;
