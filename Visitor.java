@@ -374,6 +374,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
             System.out.println("\tret i32 %var"+(reg-1));
         }
         else if(ctx.children.size()==4){
+            exp="";
             visit(ctx.exp());
             for(Var var1 : listVar){
                 if(var1.varName.equals(ctx.lVal().getText())){
