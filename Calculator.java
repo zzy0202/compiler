@@ -168,7 +168,6 @@ public class Calculator {
                 }
                 if(!exist){
                     System.out.println(getter+" !   "+exp);
-                    System.exit(101);
                 }
                 exist=false;
             }
