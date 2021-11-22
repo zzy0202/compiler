@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 public class CalculatorIfExp {
-    public static String getAns(String exp,String blockType,int whilemark){
+    public static String getAns(String exp,String blockType,int mark){
         exp=getString(exp);
         String number = "";
         ArrayList<String> list = new ArrayList<String>();
@@ -310,10 +310,10 @@ public class CalculatorIfExp {
             }
         }
         if(blockType.equals("if")){
-            System.out.println("\tbr i1 %var"+(Visitor.reg-1)+" , label %true_block"+(whilemark)+" ,label %false_block"+(whilemark));
+            System.out.println("\tbr i1 %var"+(Visitor.reg-1)+" , label %true_block"+(mark)+" ,label %false_block"+(mark));
         }
         else{
-            System.out.println("\tbr i1 %var"+(Visitor.reg-1)+" , label %while_block"+(whilemark)+" ,label %while_block_end"+(whilemark));
+            System.out.println("\tbr i1 %var"+(Visitor.reg-1)+" , label %while_block_true"+(mark)+" ,label %while_block_end"+(mark));
         }
         return exp;
     }
