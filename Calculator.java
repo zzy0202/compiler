@@ -12,6 +12,8 @@ public class Calculator {
         String number = "";
         Character in;
         String getter2;
+        String getter3;
+        getter3=exp;
         StringBuilder temp = new StringBuilder(exp);
         for (int i = 0; i < temp.length(); i++) {
             if(temp.charAt(i)=='+'||temp.charAt(i)=='-'){
@@ -169,7 +171,7 @@ public class Calculator {
                     }
                 }
                 if(!exist){
-                    System.out.println(getter+" ! "+exp+"   "+getter2);
+                    System.out.println(getter+" ! "+exp+"   "+getter2+"  "+getter3);
                 }
                 exist=false;
             }
