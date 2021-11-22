@@ -147,6 +147,9 @@ public class Calculator {
                             break;
                         }
                     }
+                    if(!exist){
+                        System.exit(44);
+                    }
                 }
                 else{
                     for (int j = Visitor.listVar.size()-1; j >=0; j--) {
