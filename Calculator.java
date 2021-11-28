@@ -178,6 +178,7 @@ public class Calculator {
                 counter.push(list.get(i));
             }
             else {
+                ans=0;
                 String a,b;
                 a=counter.peek();
                 counter.pop();
