@@ -269,8 +269,8 @@ public class Visitor extends minisysBaseVisitor<Void> {
             saveArrayDefValue.clear();
         }
         else if(ctx.children.size()==3){
-            toStore=true;
             if(!isGlobal){
+                toStore=true;
                 System.out.println("\t%var"+reg+" = alloca i32 ");
             }
             Var var = new Var(ctx.ident1().getText(),true, 0,false,reg,currentStage,isGlobal,false,false,0,0);
