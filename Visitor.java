@@ -301,7 +301,6 @@ public class Visitor extends minisysBaseVisitor<Void> {
         else if(ctx.children.size()==4||ctx.children.size()==6){    //都是一维数组，4是只定义没赋值，6是定义并且赋值了
             if(ctx.children.size()==4){                             //只定义了没有赋值
                 if(isGlobal){
-                    //mark
                     exp="";
                     visit(ctx.constExp(0));
                     isConstDef=true;
@@ -328,7 +327,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     listVar.add(var);
                 }
             }
-            else{                                                   //定义并且赋值
+            else{                                                   //定义了一维数组并且赋值
                 if(isGlobal){
 
                 }
@@ -344,7 +343,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     currentVar=var;
                     visit(ctx.initVal());  //开始遍历数组的值
                     editArray.assignArray(saveArrayDefValue,var);
-                    saveArrayDefValue.clear();
+                    System.out.println(saveArrayDefValue);
                     for (int i = listVar.size()-1; i >=0 ; i--) {
                         if(listVar.get(i).varName.equals(ctx.ident1().getText())&&listVar.get(i).stage==currentStage){
                             System.exit(11);
@@ -396,6 +395,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
                 size--;
                 exp="";
             }
+        }
+        else{
+            ;
         }
         return null;
     }
