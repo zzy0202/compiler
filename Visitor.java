@@ -266,8 +266,10 @@ public class Visitor extends minisysBaseVisitor<Void> {
             listVar.add(var);
             mark=reg;
             reg++;
+            saveArrayDefValue.clear();
         }
         else if(ctx.children.size()==3){
+            toStore=true;
             if(!isGlobal){
                 System.out.println("\t%var"+reg+" = alloca i32 ");
             }
@@ -293,10 +295,13 @@ public class Visitor extends minisysBaseVisitor<Void> {
                 Calculator.ans=0;
             }
             listVar.add(var);
+            saveArrayDefValue.clear();
+            toStore=false;
         }
         else if(ctx.children.size()==4||ctx.children.size()==6){    //都是一维数组，4是只定义没赋值，6是定义并且赋值了
             if(ctx.children.size()==4){                             //只定义了没有赋值
                 if(isGlobal){
+                    //mark
                     exp="";
                     visit(ctx.constExp(0));
                     isConstDef=true;
@@ -306,8 +311,8 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     var.arraySmallestSize=Calculator.ans;
                     var.arrayTotalSize=Calculator.ans;
                     exp="";
-                    editArray.initArray(var);
                     listVar.add(var);
+                    System.out.println("zeroinitializer");
                 }
                 else {
                     exp="";
@@ -622,7 +627,22 @@ public class Visitor extends minisysBaseVisitor<Void> {
             exp+=')';
         }
         else if(ctx.lVal()!=null){
-            visit(ctx.lVal());
+            if(ctx.lVal().children.size()==1){
+                for (int i = listVar.size()-1; i >=0; i--) {
+                    if (listVar.get(i).varName.equals(ctx.lVal().ident1().getText())) {
+                        if(!listVar.get(i).isArray){
+                            break;
+                        }
+                        else {
+                            System.exit(77);
+                        }
+                    }
+                }
+                exp+=ctx.lVal().getText();
+            }
+            else {
+                visit(ctx.lVal());
+            }
         }
         else if(ctx.number()!=null){
             visit(ctx.number());
@@ -734,16 +754,6 @@ public class Visitor extends minisysBaseVisitor<Void> {
     @Override
     public Void visitLVal(minisysParser.LValContext ctx) {
         if(ctx.children.size()==1){
-            for (int i = listVar.size()-1; i >=0 ; i--) {
-                if (listVar.get(i).varName.equals(ctx.ident1().getText())) {
-                    if(!listVar.get(i).isArray){
-                        break;
-                    }
-                    else {
-                        System.exit(99);
-                    }
-                }
-            }
             return null;
         }
         else if(ctx.children.size()==4){    //一维数组
