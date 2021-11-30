@@ -1,0 +1,5 @@
+const int aa=221+333-111;
+int bb=aa+(6)+aa*2;
+int main() {
+    return 0;
+}
