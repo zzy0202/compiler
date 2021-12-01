@@ -1012,7 +1012,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                             System.out.println("\t%var"+reg+" = add i32 %var"+firstLength+", %var"+secondLength);
                             reg++;
                             int latestReg= reg-1;
-                            System.out.println("\t%var"+reg+" = getelementptr ["+listVar.get(i).arrayTotalSize+" x i32], ["+listVar.get(i).arrayTotalSize+" x i32]* @global"+listVar.get(i).regID+", i32 0, i32 %var"+(reg-1));
+                            System.out.println("\t%var"+reg+" = getelementptr ["+listVar.get(i).arrayTotalSize+" x i32], ["+listVar.get(i).arrayTotalSize+" x i32]* @global"+listVar.get(i).regID+", i32 0, i32 0");
                             reg++;
                             System.out.println("\t%var"+reg+" = getelementptr i32, i32* %var"+(reg-1)+", i32 %var"+latestReg);
                             reg++;
