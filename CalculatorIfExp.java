@@ -216,10 +216,14 @@ public class CalculatorIfExp {
             }
             else {
                 String a,b;
-                a=counter.peek();
-                counter.pop();
-                b=counter.peek();
-                counter.pop();
+                if(!counter.isEmpty()){
+                    a=counter.peek();
+                    counter.pop();
+                }
+                if(!counter.isEmpty()){
+                    b=counter.peek();
+                    counter.pop();
+                }
                 String get="";
                 if(a.charAt(0)=='%'){
                     get=a;
