@@ -1,7 +1,4 @@
-import javax.swing.text.EditorKit;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
-import java.util.Currency;
 
 public class Visitor extends minisysBaseVisitor<Void> {
     public static int reg=1;
@@ -937,6 +934,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
             System.out.println("while_block"+whilemark+":");
             exp="";
             visit(ctx.cond());
+            System.out.println(ctx.getText());
             CalculatorIfExp.getAns(exp,"while",whilemark);
             System.out.println("while_block_true"+whilemark+":");
             exp="";
