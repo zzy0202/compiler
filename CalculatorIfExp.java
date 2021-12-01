@@ -215,7 +215,7 @@ public class CalculatorIfExp {
                 counter.push(list.get(i));
             }
             else {
-                String a,b;
+                String a = "1",b = "1";
                 if(!counter.isEmpty()){
                     a=counter.peek();
                     counter.pop();
