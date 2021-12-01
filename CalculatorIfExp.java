@@ -163,6 +163,7 @@ public class CalculatorIfExp {
             list.add(stack.peek().toString());
             stack.pop();
         }
+
         boolean exist=false;
         boolean isVar=false;
         for (int i = 0; i < list.size(); i++) {
@@ -216,20 +217,10 @@ public class CalculatorIfExp {
             }
             else {
                 String a = "1",b = "1";
-                if(!counter.isEmpty()){
-                    a=counter.peek();
-                    counter.pop();
-                }
-                else {
-                    System.out.println(exp);
-                }
-                if(!counter.isEmpty()){
-                    b=counter.peek();
-                    counter.pop();
-                }
-                else {
-                    System.out.println(exp);
-                }
+                a=counter.peek();
+                counter.pop();
+                b=counter.peek();
+                counter.pop();
                 String get="";
                 if(a.charAt(0)=='%'){
                     get=a;
@@ -384,7 +375,8 @@ public class CalculatorIfExp {
                     temp.insert(0,"0");
                 }
                 else{
-                    if(temp.charAt(i-1)=='('||temp.charAt(i-1)=='='||temp.charAt(i-1)=='~'){
+                    if(temp.charAt(i-1)=='('||temp.charAt(i-1)=='='||temp.charAt(i-1)=='~'
+                            ||temp.charAt(i-1)=='>'||temp.charAt(i-1)=='<'){
                         temp.insert(i,"0");
                     }
                 }
@@ -429,6 +421,7 @@ public class CalculatorIfExp {
                 gotEq=true;
             }
         }
+        Visitor.exp="";
         return temp.toString();
     }
 }
