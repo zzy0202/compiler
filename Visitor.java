@@ -233,7 +233,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     saveArrayDefValue.clear();
                     for (int i = listVar.size()-1; i >=0 ; i--) {
                         if(listVar.get(i).varName.equals(ctx.ident1().getText())&&listVar.get(i).stage==currentStage){
-                            System.exit(12);
+                            System.exit(13);
                         }
                     }
                     listVar.add(var);
@@ -311,14 +311,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     var.arrayTotalSize=Calculator.ans;
                     exp="";
                     listVar.add(var);
-                    System.out.print("[");
-                    for (int i = 0; i < var.arrayTotalSize; i++) {
-                        System.out.print("i32 0");
-                        if(i!=var.arrayTotalSize-1){
-                            System.out.print(", ");
-                        }
-                    }
-                    System.out.println("]");
+                    System.out.println("zeroinitializer");
                 }
                 else {
                     exp="";
@@ -389,6 +382,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     arrayExp1=exp;
                     exp="";
                     visit(ctx.constExp(1));     //访问数组的第一维度长度
+                    isConstDef=false;
                     arrayExp2=exp;
                     exp="";
                     Var var = new Var(ctx.ident1().getText(),true,0,false,reg,currentStage,true,true,true,0,0);
@@ -400,14 +394,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     }
                     listVar.add(var);
                     getGlobalArrayVal=false;
-                    System.out.print("[");
-                    for (int i = 0; i < var.arrayTotalSize; i++) {
-                        System.out.print("i32 0");
-                        if(i!=var.arrayTotalSize-1){
-                            System.out.print(", ");
-                        }
-                    }
-                    System.out.println("]");
+                    System.out.println("zeroinitializer ");
                 }
                 else{
                     String arrayExp1,arrayExp2;
