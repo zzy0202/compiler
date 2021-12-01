@@ -33,7 +33,7 @@ public class editArray {
         Calculator.ans=0;
         Visitor.getArrayLength=false;
         if(Visitor.isGlobal){
-            if(Visitor.isConstDef){
+            if(var.isConst){
                 System.out.print("@global"+Visitor.reg+" = dso_local constant ["+finalLength+" x i32] ");
             }
             else {

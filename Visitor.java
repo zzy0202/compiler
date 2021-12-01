@@ -1,4 +1,7 @@
+import javax.swing.text.EditorKit;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
+import java.util.Currency;
 
 public class Visitor extends minisysBaseVisitor<Void> {
     public static int reg=1;
@@ -26,7 +29,6 @@ public class Visitor extends minisysBaseVisitor<Void> {
         for(minisysParser.DeclContext context : ctx.decl()){
             visit(context);
         }
-        System.out.println(ctx.getText());
         isGlobal=false;
         visit(ctx.funcDef(0));
         return null;
@@ -300,16 +302,23 @@ public class Visitor extends minisysBaseVisitor<Void> {
             if(ctx.children.size()==4){                             //只定义了没有赋值
                 if(isGlobal){
                     exp="";
-                    visit(ctx.constExp(0));
                     isConstDef=true;
-                    editArray.getSingleArrayLength(exp);
+                    visit(ctx.constExp(0));
                     isConstDef=false;
+                    editArray.getSingleArrayLength(exp);
                     Var var = new Var(ctx.ident1().getText(),false,0,false,(reg-1),currentStage,true,true,false,Calculator.ans,Calculator.ans);
                     var.arraySmallestSize=Calculator.ans;
                     var.arrayTotalSize=Calculator.ans;
                     exp="";
                     listVar.add(var);
-                    System.out.println("zeroinitializer");
+                    System.out.print("[");
+                    for (int i = 0; i < var.arrayTotalSize; i++) {
+                        System.out.print("i32 0");
+                        if(i!=var.arrayTotalSize-1){
+                            System.out.print(", ");
+                        }
+                    }
+                    System.out.println("]");
                 }
                 else {
                     exp="";
@@ -391,8 +400,14 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     }
                     listVar.add(var);
                     getGlobalArrayVal=false;
-                    isConstDef=false;
-                    System.out.println("zeroinitializer");
+                    System.out.print("[");
+                    for (int i = 0; i < var.arrayTotalSize; i++) {
+                        System.out.print("i32 0");
+                        if(i!=var.arrayTotalSize-1){
+                            System.out.print(", ");
+                        }
+                    }
+                    System.out.println("]");
                 }
                 else{
                     String arrayExp1,arrayExp2;
@@ -408,6 +423,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     Var var = new Var(ctx.ident1().getText(),true,0,false,reg,currentStage,false,true,true,0,0);
                     editArray.getDoubleArrayLength(arrayExp1,arrayExp2,var);
                     editArray.initArray(var);
+                    listVar.add(var);
                 }
             }
             else {                                                  //定义并且赋值了的二维数组
@@ -849,26 +865,15 @@ public class Visitor extends minisysBaseVisitor<Void> {
                 visit(ctx.lVal());
                 mark=reg-2;
                 String arrayName = ctx.lVal().ident1().getText();
-                if(ctx.lVal().children.size()==4){      //是一维数组的stmt赋值
+                if(ctx.lVal().children.size()==4){      //
                     for (int i = listVar.size()-1; i >=0 ; i--) {
                         if(listVar.get(i).varName.equals(arrayName)){
-                            if(!listVar.get(i).isConst&&!listVar.get(i).isDoubleArray&&listVar.get(i).isArray){
+                            if(!listVar.get(i).isConst){
                                 break;
                             }
                             else {
+                                System.out.println(arrayName+"  "+listVar.get(i).varName+" "+listVar.get(i).isConst);
                                 System.exit(50);
-                            }
-                        }
-                    }
-                }
-                else{                                   //是二维数组的stmt赋值
-                    for (int i = listVar.size()-1; i >=0 ; i--) {
-                        if(listVar.get(i).varName.equals(arrayName)){
-                            if(!listVar.get(i).isConst&&listVar.get(i).isDoubleArray&&listVar.get(i).isArray){
-                                break;
-                            }
-                            else {
-                                System.exit(51);
                             }
                         }
                     }
@@ -909,7 +914,6 @@ public class Visitor extends minisysBaseVisitor<Void> {
             mark=block;
             CalculatorIfExp.getAns(exp,"if",mark);
             exp="";
-//            System.out.println(ctx.getText());
             System.out.println("true_block"+mark+":");
             block++;
             visit(ctx.stmt(0));
@@ -935,7 +939,6 @@ public class Visitor extends minisysBaseVisitor<Void> {
             System.out.println("while_block"+whilemark+":");
             exp="";
             visit(ctx.cond());
-//            System.out.println(ctx.getText());
             CalculatorIfExp.getAns(exp,"while",whilemark);
             System.out.println("while_block_true"+whilemark+":");
             exp="";
@@ -1021,7 +1024,10 @@ public class Visitor extends minisysBaseVisitor<Void> {
                             reg++;
                             System.out.println("\t%var"+reg+" = add i32 %var"+firstLength+", %var"+secondLength);
                             reg++;
+                            int latestReg= reg-1;
                             System.out.println("\t%var"+reg+" = getelementptr ["+listVar.get(i).arrayTotalSize+" x i32], ["+listVar.get(i).arrayTotalSize+" x i32]* @global"+listVar.get(i).regID+", i32 0, i32 %var"+(reg-1));
+                            reg++;
+                            System.out.println("\t%var"+reg+" = getelementptr i32, i32* %var"+(reg-1)+", i32 %var"+latestReg);
                             reg++;
                             System.out.println("\t%var"+reg+" = load i32, i32* %var"+(reg-1));
                             reg++;
@@ -1033,7 +1039,10 @@ public class Visitor extends minisysBaseVisitor<Void> {
                             reg++;
                             System.out.println("\t%var"+reg+" = add i32 %var"+firstLength+", %var"+secondLength);
                             reg++;
+                            int latestReg= reg-1;
                             System.out.println("\t%var"+reg+" = getelementptr ["+listVar.get(i).arrayTotalSize+" x i32], ["+listVar.get(i).arrayTotalSize+" x i32]* %var"+listVar.get(i).regID+", i32 0, i32 %var"+(reg-1));
+                            reg++;
+                            System.out.println("\t%var"+reg+" = getelementptr i32, i32* %var"+(reg-1)+", i32 %var"+latestReg);
                             reg++;
                             System.out.println("\t%var"+reg+" = load i32, i32* %var"+(reg-1));
                             reg++;
