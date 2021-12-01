@@ -854,7 +854,19 @@ public class Visitor extends minisysBaseVisitor<Void> {
                 if(ctx.lVal().children.size()==4){      //
                     for (int i = listVar.size()-1; i >=0 ; i--) {
                         if(listVar.get(i).varName.equals(arrayName)){
-                            if(!listVar.get(i).isConst){
+                            if(!listVar.get(i).isConst&&!listVar.get(i).isDoubleArray&&listVar.get(i).isArray){
+                                break;
+                            }
+                            else {
+                                System.exit(50);
+                            }
+                        }
+                    }
+                }
+                else{
+                    for (int i = listVar.size()-1; i >=0 ; i--) {
+                        if(listVar.get(i).varName.equals(arrayName)){
+                            if(!listVar.get(i).isConst&&listVar.get(i).isDoubleArray&&listVar.get(i).isArray){
                                 break;
                             }
                             else {
@@ -863,9 +875,6 @@ public class Visitor extends minisysBaseVisitor<Void> {
                             }
                         }
                     }
-                }
-                else{
-
                 }
             }
             for (int i = listVar.size()-1; i >=0 ; i--) {
