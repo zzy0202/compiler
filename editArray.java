@@ -53,6 +53,16 @@ public class editArray {
     }
 
     public static void assignArray(ArrayList<String> saveArrayDefValue, Var var) {      //对数组进行赋值
+        if(Visitor.isGlobal){
+            for (int i = saveArrayDefValue.size()-1; i >=0 ; i--) {
+                if(i>=var.arrayTotalSize){
+                    saveArrayDefValue.remove(i);
+                }
+                else {
+                    break;
+                }
+            }
+        }
         if(!var.isDoubleArray){         //已一维数组的方式进行赋值
             if(Visitor.isGlobal){
                 System.out.print("[");
@@ -132,7 +142,6 @@ public class editArray {
             }
         }
     }
-
     public static void initGlobalArray(Var var) {
         System.out.println("\t%var"+Visitor.reg+" = getelementptr ["+var.arrayTotalSize+" x i32], ["+ var.arrayTotalSize+" x i32]* %var"+var.regID+", i32 0,i32 0");
         System.out.println("\tcall void @memset(i32* %var"+Visitor.reg+", i32 0, i32 "+(var.arrayTotalSize*4)+")");
