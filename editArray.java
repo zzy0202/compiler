@@ -19,7 +19,7 @@ public class editArray {
         Visitor.reg++;
     }
 
-    public static Var getDoubleArrayLength(String exp1,String exp2,Var var){        //获取二维数组的长度
+    public static void getDoubleArrayLength(String exp1, String exp2, Var var){        //获取二维数组的长度
         int length1,length2,finalLength;
         Visitor.getArrayLength=true;
         Calculator.getAns(exp1,true);
@@ -44,7 +44,6 @@ public class editArray {
             System.out.println("\t%var"+Visitor.reg+" = alloca ["+finalLength+" x i32]");
         }
         Visitor.reg++;
-        return var;
     }
 
     public static void initArray(Var var){          //初始化数组，让数组所有元素为0
@@ -58,7 +57,7 @@ public class editArray {
             if(Visitor.isGlobal){
                 System.out.print("[");
                 boolean mark = false;
-                for (int i = 0; i < saveArrayDefValue.size()-1; i++) {
+                for (int i = 0; i < saveArrayDefValue.size(); i++) {
                     System.out.print("i32 "+saveArrayDefValue.get(i));
                     if(i!=saveArrayDefValue.size()-1){
                         System.out.print(", ");
@@ -67,7 +66,7 @@ public class editArray {
                 int left = var.arrayTotalSize-saveArrayDefValue.size();
                 for (int i = 0; i < left; i++) {
                     if(i==0){
-                        System.out.print("i32 0");
+                        System.out.print(", i32 0");
                     }
                     else {
                         System.out.print(", i32 0");
