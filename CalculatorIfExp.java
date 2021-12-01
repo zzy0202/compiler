@@ -220,9 +220,15 @@ public class CalculatorIfExp {
                     a=counter.peek();
                     counter.pop();
                 }
+                else {
+                    System.out.println(exp);
+                }
                 if(!counter.isEmpty()){
                     b=counter.peek();
                     counter.pop();
+                }
+                else {
+                    System.out.println(exp);
                 }
                 String get="";
                 if(a.charAt(0)=='%'){
