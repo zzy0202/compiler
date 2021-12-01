@@ -26,6 +26,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
         for(minisysParser.DeclContext context : ctx.decl()){
             visit(context);
         }
+        System.out.println(ctx.getText());
         isGlobal=false;
         visit(ctx.funcDef(0));
         return null;
@@ -848,7 +849,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                 visit(ctx.lVal());
                 mark=reg-2;
                 String arrayName = ctx.lVal().ident1().getText();
-                if(ctx.lVal().children.size()==4){      //
+                if(ctx.lVal().children.size()==4){      //是一维数组的stmt赋值
                     for (int i = listVar.size()-1; i >=0 ; i--) {
                         if(listVar.get(i).varName.equals(arrayName)){
                             if(!listVar.get(i).isConst&&!listVar.get(i).isDoubleArray&&listVar.get(i).isArray){
@@ -860,15 +861,14 @@ public class Visitor extends minisysBaseVisitor<Void> {
                         }
                     }
                 }
-                else{
+                else{                                   //是二维数组的stmt赋值
                     for (int i = listVar.size()-1; i >=0 ; i--) {
                         if(listVar.get(i).varName.equals(arrayName)){
                             if(!listVar.get(i).isConst&&listVar.get(i).isDoubleArray&&listVar.get(i).isArray){
                                 break;
                             }
                             else {
-                                System.out.println(arrayName+"  "+listVar.get(i).varName+" "+listVar.get(i).isConst);
-                                System.exit(50);
+                                System.exit(51);
                             }
                         }
                     }
@@ -909,7 +909,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
             mark=block;
             CalculatorIfExp.getAns(exp,"if",mark);
             exp="";
-            System.out.println(ctx.getText());
+//            System.out.println(ctx.getText());
             System.out.println("true_block"+mark+":");
             block++;
             visit(ctx.stmt(0));
@@ -935,7 +935,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
             System.out.println("while_block"+whilemark+":");
             exp="";
             visit(ctx.cond());
-            System.out.println(ctx.getText());
+//            System.out.println(ctx.getText());
             CalculatorIfExp.getAns(exp,"while",whilemark);
             System.out.println("while_block_true"+whilemark+":");
             exp="";
