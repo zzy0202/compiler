@@ -256,7 +256,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
             Var var = new Var(ctx.ident1().getText(),false, 0,false,reg,currentStage,isGlobal,false,false,0,0);
             for(Var var1 : listVar){
                 if(var1.varName.equals(var.varName)&&var1.stage==currentStage){
-                    System.exit(2);
+                    System.exit(22);
                 }
             }
             if(isGlobal){
@@ -329,11 +329,31 @@ public class Visitor extends minisysBaseVisitor<Void> {
             }
             else{                                                   //定义了一维数组并且赋值
                 if(isGlobal){
-
+                    exp="";
+                    isConstDef=true;
+                    visit(ctx.constExp(0));     //访问数组的第一个长度式子
+                    isConstDef=false;
+                    editArray.getSingleArrayLength(exp);
+                    Var var = new Var(ctx.ident1().getText(),true,0,false,(reg-1),currentStage,true,true,false,Calculator.ans,Calculator.ans);
+                    Calculator.ans=0;
+                    currentVar=var;
+                    getGlobalArrayVal=true;
+                    visit(ctx.initVal());
+                    editArray.assignArray(saveArrayDefValue,var);
+                    saveArrayDefValue.clear();
+                    for (int i = listVar.size()-1; i >=0 ; i--) {
+                        if(listVar.get(i).varName.equals(ctx.ident1().getText())&&listVar.get(i).stage==currentStage){
+                            System.exit(10);
+                        }
+                    }
+                    listVar.add(var);
+                    getGlobalArrayVal=false;
                 }
                 else {
                     exp="";
+                    isConstDef=true;
                     visit(ctx.constExp(0));
+                    isConstDef=false;
                     editArray.getSingleArrayLength(exp);
                     Var var = new Var(ctx.ident1().getText(),false,0,true,(reg-1),currentStage,false,true,false,Calculator.ans,Calculator.ans);
                     var.arraySmallestSize=Calculator.ans;
@@ -343,7 +363,6 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     currentVar=var;
                     visit(ctx.initVal());  //开始遍历数组的值
                     editArray.assignArray(saveArrayDefValue,var);
-                    System.out.println(saveArrayDefValue);
                     for (int i = listVar.size()-1; i >=0 ; i--) {
                         if(listVar.get(i).varName.equals(ctx.ident1().getText())&&listVar.get(i).stage==currentStage){
                             System.exit(11);
@@ -355,10 +374,100 @@ public class Visitor extends minisysBaseVisitor<Void> {
         }
         else if(ctx.children.size()==7||ctx.children.size()==9){    //二维数组
             if(ctx.children.size()==7){                             //只定义了没有赋值的二维数组
-
+                if(isGlobal){
+                    String arrayExp1,arrayExp2;
+                    isConstDef=true;
+                    exp="";
+                    visit(ctx.constExp(0));     //访问数组的第二维度长度
+                    arrayExp1=exp;
+                    exp="";
+                    visit(ctx.constExp(1));     //访问数组的第一维度长度
+                    arrayExp2=exp;
+                    exp="";
+                    Var var = new Var(ctx.ident1().getText(),true,0,false,reg,currentStage,true,true,true,0,0);
+                    editArray.getDoubleArrayLength(arrayExp1,arrayExp2,var);
+                    for (int i = listVar.size()-1; i >=0 ; i--) {
+                        if(listVar.get(i).varName.equals(ctx.ident1().getText())&&listVar.get(i).stage==currentStage){
+                            System.exit(12);
+                        }
+                    }
+                    listVar.add(var);
+                    getGlobalArrayVal=false;
+                    isConstDef=false;
+                    System.out.println("zeroinitializer");
+                }
+                else{
+                    String arrayExp1,arrayExp2;
+                    exp="";
+                    isConstDef=true;
+                    visit(ctx.constExp(0));     //访问数组的第二维度长度
+                    arrayExp1=exp;
+                    exp="";
+                    visit(ctx.constExp(1));     //访问数组的第一维度长度
+                    isConstDef=false;
+                    arrayExp2=exp;
+                    exp="";
+                    Var var = new Var(ctx.ident1().getText(),true,0,false,reg,currentStage,false,true,true,0,0);
+                    editArray.getDoubleArrayLength(arrayExp1,arrayExp2,var);
+                    editArray.initArray(var);
+                }
             }
             else {                                                  //定义并且赋值了的二维数组
-
+                if(isGlobal){
+                    String arrayExp1,arrayExp2;
+                    exp="";
+                    isConstDef=true;
+                    visit(ctx.constExp(0));     //访问数组的第二维度长度
+                    arrayExp1=exp;
+                    exp="";
+                    visit(ctx.constExp(1));     //访问数组的第一维度长度
+                    isConstDef=false;
+                    arrayExp2=exp;
+                    exp="";
+                    Var var = new Var(ctx.ident1().getText(),true,0,true,reg,currentStage,true,true,true,0,0);
+                    editArray.getDoubleArrayLength(arrayExp1,arrayExp2,var);
+                    currentVar=var;
+                    size=currentVar.arraySmallestSize;
+                    getGlobalArrayVal=true;
+                    visit(ctx.initVal());
+                    editArray.assignArray(saveArrayDefValue,var);
+                    saveArrayDefValue.clear();
+                    for (int i = listVar.size()-1; i >=0 ; i--) {
+                        if(listVar.get(i).varName.equals(ctx.ident1().getText())&&listVar.get(i).stage==currentStage){
+                            System.exit(12);
+                        }
+                    }
+                    listVar.add(var);
+                    getGlobalArrayVal=false;
+                    isConstDef=false;
+                }
+                else {
+                    String arrayExp1,arrayExp2;
+                    exp="";
+                    isConstDef=true;
+                    visit(ctx.constExp(0));
+                    arrayExp1=exp;
+                    exp="";
+                    visit(ctx.constExp(1));
+                    isConstDef=false;
+                    arrayExp2=exp;
+                    exp="";
+                    Var var = new Var(ctx.ident1().getText(),true,0,true,(reg),currentStage,false,true,true,0,0);
+                    editArray.getDoubleArrayLength(arrayExp1,arrayExp2,var);
+                    currentVar=var;
+                    size=currentVar.arraySmallestSize;
+                    visit(ctx.initVal());
+                    editArray.initArray(var);
+                    editArray.assignArray(saveArrayDefValue,var);
+                    saveArrayDefValue.clear();
+                    for (int i = listVar.size()-1; i >=0 ; i--) {
+                        if(listVar.get(i).varName.equals(ctx.ident1().getText())&&listVar.get(i).stage==currentStage){
+                            System.exit(12);
+                        }
+                    }
+                    listVar.add(var);
+                    isConstDef=false;
+                }
             }
         }
         return null;
@@ -397,7 +506,56 @@ public class Visitor extends minisysBaseVisitor<Void> {
             }
         }
         else{
-            ;
+            if(!Visitor.isGlobal){                  //因为不是全局变量，可以直接用寄存器来保存
+                if(!currentVar.isDoubleArray){      //一维数组的赋值
+                    if(ctx.initVal(0)!=null){
+                        visit(ctx.initVal(0));
+                    }
+                    for (int i = 1; i <ctx.initVal().size() ; i++) {
+                        visit(ctx.initVal(i));
+                    }
+                }
+                else {                              //二维数组的赋值
+                    if(ctx.initVal(0)!=null){
+                        visit(ctx.initVal(0));
+                    }
+                    for (int i = 1; i <ctx.initVal().size() ; i++) {
+                        visit(ctx.initVal(i));
+                    }
+                    while(size>0){
+                        saveArrayDefValue.add("0");
+                        size--;
+                    }
+                    size=currentVar.arraySmallestSize;
+                }
+            }
+            else {                        //是全局变量数组，需要直接用固定的数值表示
+                if(!currentVar.isDoubleArray){
+                    if(ctx.initVal(0)!=null){
+                        exp="";
+                        visit(ctx.initVal(0));
+                        exp="";
+                    }
+                    for (int i = 1; i <ctx.initVal().size() ; i++) {
+                        exp="";
+                        visit(ctx.initVal(i));
+                        exp="";
+                    }
+                }
+                else {
+                    if(ctx.initVal(0)!=null){
+                        visit(ctx.initVal(0));
+                    }
+                    for (int i = 1; i <ctx.initVal().size() ; i++) {
+                        visit(ctx.initVal(i));
+                    }
+                    while(size>0){
+                        saveArrayDefValue.add("0");
+                        size--;
+                    }
+                    size=currentVar.arraySmallestSize;
+                }
+            }
         }
         return null;
     }
@@ -677,10 +835,15 @@ public class Visitor extends minisysBaseVisitor<Void> {
         else if(ctx.children.size()==4){
             exp="";
             visit(ctx.exp());
-            for(Var var1 : listVar){
-                if(var1.varName.equals(ctx.lVal().getText())){
-                    mark=var1.regID;
+            if(ctx.lVal().children.size()==1){
+                for(Var var1 : listVar){
+                    if(var1.varName.equals(ctx.lVal().getText())){
+                        mark=var1.regID;
+                    }
                 }
+            }
+            else {
+                
             }
             for (int i = listVar.size()-1; i >=0 ; i--) {
                 if(ctx.lVal().getText().equals(listVar.get(i).varName)){
@@ -790,6 +953,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                             System.out.println("\t%var"+reg+" = load i32, i32* %var"+(reg-1));
                             reg++;
                         }
+                        break;
                     }
                     else {
                         System.exit(54);
@@ -841,6 +1005,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                             System.out.println("\t%var"+reg+" = load i32, i32* %var"+(reg-1));
                             reg++;
                         }
+                        break;
                     }
                     else {
                         System.exit(12);
