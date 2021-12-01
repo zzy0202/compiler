@@ -522,9 +522,11 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     for (int i = 1; i <ctx.initVal().size() ; i++) {
                         visit(ctx.initVal(i));
                     }
-                    while(size>0){
-                        saveArrayDefValue.add("0");
-                        size--;
+                    if(ctx.getText().charAt(1)!='{'&&ctx.getText().charAt(ctx.getText().length()-2)!='}'){
+                        while(size>0){
+                            saveArrayDefValue.add("0");
+                            size--;
+                        }
                     }
                     size=currentVar.arraySmallestSize;
                 }
@@ -549,9 +551,11 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     for (int i = 1; i <ctx.initVal().size() ; i++) {
                         visit(ctx.initVal(i));
                     }
-                    while(size>0){
-                        saveArrayDefValue.add("0");
-                        size--;
+                    if(ctx.getText().charAt(1)!='{'&&ctx.getText().charAt(ctx.getText().length()-2)!='}'){
+                        while(size>0){
+                            saveArrayDefValue.add("0");
+                            size--;
+                        }
                     }
                     size=currentVar.arraySmallestSize;
                 }
