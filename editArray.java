@@ -53,6 +53,14 @@ public class editArray {
     }
 
     public static void assignArray(ArrayList<String> saveArrayDefValue, Var var) {      //对数组进行赋值
+        if(saveArrayDefValue.size()>var.arrayTotalSize){
+            for (int i = saveArrayDefValue.size()-1; i >=0 ; i--) {
+                saveArrayDefValue.remove(i);
+                if(i==var.arrayTotalSize){
+                    break;
+                }
+            }
+        }
         if(!var.isDoubleArray){         //已一维数组的方式进行赋值
             if(Visitor.isGlobal){
                 System.out.print("[");
