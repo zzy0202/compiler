@@ -202,6 +202,7 @@ public class CalculatorIfExp {
                     }
                 }
                 if(!exist){
+                    System.out.println(exp);
                     System.exit(222);
                 }
                 exist=false;

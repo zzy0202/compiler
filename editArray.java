@@ -6,7 +6,12 @@ public class editArray {
         Calculator.getAns(exp,true);
         Visitor.getArrayLength=false;
         if(Visitor.isGlobal){
-            System.out.print("@global"+Visitor.reg+" = dso_local constant ["+Calculator.ans+" x i32] ");
+            if(Visitor.isConstDef){
+                System.out.print("@global"+Visitor.reg+" = dso_local constant ["+Calculator.ans+" x i32] ");
+            }
+            else {
+                System.out.print("@global"+Visitor.reg+" = dso_local global ["+Calculator.ans+" x i32] ");
+            }
         }
         else {
             System.out.println("\t%var"+Visitor.reg+" = alloca ["+Calculator.ans+" x i32]");
@@ -28,7 +33,12 @@ public class editArray {
         Calculator.ans=0;
         Visitor.getArrayLength=false;
         if(Visitor.isGlobal){
-            System.out.print("@global"+Visitor.reg+" = dso_local constant ["+finalLength+" x i32] ");
+            if(Visitor.isConstDef){
+                System.out.print("@global"+Visitor.reg+" = dso_local constant ["+finalLength+" x i32] ");
+            }
+            else {
+                System.out.print("@global"+Visitor.reg+" = dso_local global ["+finalLength+" x i32] ");
+            }
         }
         else {
             System.out.println("\t%var"+Visitor.reg+" = alloca ["+finalLength+" x i32]");
@@ -47,7 +57,8 @@ public class editArray {
         if(!var.isDoubleArray){         //已一维数组的方式进行赋值
             if(Visitor.isGlobal){
                 System.out.print("[");
-                for (int i = 0; i < saveArrayDefValue.size(); i++) {
+                boolean mark = false;
+                for (int i = 0; i < saveArrayDefValue.size()-1; i++) {
                     System.out.print("i32 "+saveArrayDefValue.get(i));
                     if(i!=saveArrayDefValue.size()-1){
                         System.out.print(", ");
@@ -55,7 +66,12 @@ public class editArray {
                 }
                 int left = var.arrayTotalSize-saveArrayDefValue.size();
                 for (int i = 0; i < left; i++) {
-                    System.out.print(" ,i32 0");
+                    if(i==0){
+                        System.out.print("i32 0");
+                    }
+                    else {
+                        System.out.print(", i32 0");
+                    }
                 }
                 System.out.println("]");
             }
@@ -67,7 +83,7 @@ public class editArray {
                 for (String string : saveArrayDefValue){
                     System.out.println("\t%var"+(Visitor.reg)+" = getelementptr i32, i32* %var"+safeReg+", i32 "+i);
                     if(string.charAt(0)=='%'){
-                        string=string.substring(0,string.length()-1);
+                        string=string.substring(1);
                         System.out.println("\tstore i32 %var"+(string)+", i32* %var"+Visitor.reg);
                     }
                     else{
@@ -102,7 +118,13 @@ public class editArray {
                 for (String string : saveArrayDefValue){
                     if(!string.equals("0")){
                         System.out.println("\t%var"+(Visitor.reg)+" = getelementptr i32, i32* %var"+safeReg+", i32 "+i);
-                        System.out.println("\tstore i32 %var"+(string)+", i32* %var"+Visitor.reg);
+                        if(string.charAt(0)=='%'){
+                            string=string.substring(1);
+                            System.out.println("\tstore i32 %var"+(string)+", i32* %var"+Visitor.reg);
+                        }
+                        else{
+                            System.out.println("\tstore i32 "+(string)+", i32* %var"+Visitor.reg);
+                        }
                         Visitor.reg++;
                     }
                     i++;
@@ -110,5 +132,11 @@ public class editArray {
                 Visitor.saveArrayDefValue.clear();
             }
         }
+    }
+
+    public static void initGlobalArray(Var var) {
+        System.out.println("\t%var"+Visitor.reg+" = getelementptr ["+var.arrayTotalSize+" x i32], ["+ var.arrayTotalSize+" x i32]* %var"+var.regID+", i32 0,i32 0");
+        System.out.println("\tcall void @memset(i32* %var"+Visitor.reg+", i32 0, i32 "+(var.arrayTotalSize*4)+")");
+        Visitor.reg++;
     }
 }

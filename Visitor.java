@@ -306,7 +306,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     isConstDef=true;
                     editArray.getSingleArrayLength(exp);
                     isConstDef=false;
-                    Var var = new Var(ctx.ident1().getText(),false,0,true,(reg-1),currentStage,true,true,false,Calculator.ans,Calculator.ans);
+                    Var var = new Var(ctx.ident1().getText(),false,0,false,(reg-1),currentStage,true,true,false,Calculator.ans,Calculator.ans);
                     var.arraySmallestSize=Calculator.ans;
                     var.arrayTotalSize=Calculator.ans;
                     exp="";
@@ -319,7 +319,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     isConstDef=true;
                     editArray.getSingleArrayLength(exp);
                     isConstDef=false;
-                    Var var = new Var(ctx.ident1().getText(),false,0,true,(reg-1),currentStage,false,true,false,Calculator.ans,Calculator.ans);
+                    Var var = new Var(ctx.ident1().getText(),false,0,false,(reg-1),currentStage,false,true,false,Calculator.ans,Calculator.ans);
                     var.arraySmallestSize=Calculator.ans;
                     var.arrayTotalSize=Calculator.ans;
                     exp="";
@@ -355,7 +355,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     visit(ctx.constExp(0));
                     isConstDef=false;
                     editArray.getSingleArrayLength(exp);
-                    Var var = new Var(ctx.ident1().getText(),false,0,true,(reg-1),currentStage,false,true,false,Calculator.ans,Calculator.ans);
+                    Var var = new Var(ctx.ident1().getText(),false,0,false,(reg-1),currentStage,false,true,false,Calculator.ans,Calculator.ans);
                     var.arraySmallestSize=Calculator.ans;
                     var.arrayTotalSize=Calculator.ans;
                     exp="";
@@ -424,7 +424,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     isConstDef=false;
                     arrayExp2=exp;
                     exp="";
-                    Var var = new Var(ctx.ident1().getText(),true,0,true,reg,currentStage,true,true,true,0,0);
+                    Var var = new Var(ctx.ident1().getText(),true,0,false,reg,currentStage,true,true,true,0,0);
                     editArray.getDoubleArrayLength(arrayExp1,arrayExp2,var);
                     currentVar=var;
                     size=currentVar.arraySmallestSize;
@@ -452,7 +452,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     isConstDef=false;
                     arrayExp2=exp;
                     exp="";
-                    Var var = new Var(ctx.ident1().getText(),true,0,true,(reg),currentStage,false,true,true,0,0);
+                    Var var = new Var(ctx.ident1().getText(),true,0,false,(reg),currentStage,false,true,true,0,0);
                     editArray.getDoubleArrayLength(arrayExp1,arrayExp2,var);
                     currentVar=var;
                     size=currentVar.arraySmallestSize;
@@ -833,17 +833,34 @@ public class Visitor extends minisysBaseVisitor<Void> {
             System.out.println("\tret i32 %var"+(reg-1));
         }
         else if(ctx.children.size()==4){
-            exp="";
-            visit(ctx.exp());
             if(ctx.lVal().children.size()==1){
-                for(Var var1 : listVar){
-                    if(var1.varName.equals(ctx.lVal().getText())){
-                        mark=var1.regID;
+                for (int i = listVar.size()-1; i >=0 ; i--) {
+                    if (listVar.get(i).varName.equals(ctx.lVal().ident1().getText())) {
+                        mark=listVar.get(i).regID;
+                        break;
                     }
                 }
             }
             else {
-                
+                visit(ctx.lVal());
+                mark=reg-2;
+                String arrayName = ctx.lVal().ident1().getText();
+                if(ctx.lVal().children.size()==4){      //
+                    for (int i = listVar.size()-1; i >=0 ; i--) {
+                        if(listVar.get(i).varName.equals(arrayName)){
+                            if(!listVar.get(i).isConst){
+                                break;
+                            }
+                            else {
+                                System.out.println(arrayName+"  "+listVar.get(i).varName+" "+listVar.get(i).isConst);
+                                System.exit(50);
+                            }
+                        }
+                    }
+                }
+                else{
+
+                }
             }
             for (int i = listVar.size()-1; i >=0 ; i--) {
                 if(ctx.lVal().getText().equals(listVar.get(i).varName)){
@@ -856,6 +873,8 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     break;
                 }
             }
+            exp="";
+            visit(ctx.exp());
             Calculator.getAns(exp,false);
             isGlobalVar=false;
             exp="";

@@ -142,7 +142,7 @@ public class Calculator {
                 if(Visitor.isGlobal){
                     for (int j = 0; j < Visitor.listVar.size(); j++) {
                         if(Visitor.listVar.get(j).varName.equals(list.get(i))){
-                            if (!Visitor.listVar.get(j).isConst||Visitor.listVar.get(j).isArray){
+                            if (!Visitor.listVar.get(j).isConst&&Visitor.listVar.get(j).isArray){
                                 System.exit(111);
                             }
                             exist=true;
@@ -158,6 +158,8 @@ public class Calculator {
                             if(!Visitor.listVar.get(j).isGlobal){
                                 if(!Visitor.getArrayLength&&!Visitor.isConstDef){
                                     System.out.println("\t%var"+Visitor.reg+" = load i32, i32* %var"+Visitor.listVar.get(j).regID);
+                                    list.set(i,"%"+Visitor.reg);
+                                    Visitor.reg++;
                                 }
                                 else {
                                     list.set(i,Integer.toString(Visitor.listVar.get(j).value));
@@ -165,11 +167,16 @@ public class Calculator {
                                 }
                             }
                             else{
-                                System.out.println("\t%var"+Visitor.reg+" = load i32, i32* @global"+Visitor.listVar.get(j).regID);
-
+                                if(!Visitor.getArrayLength&&!Visitor.isConstDef){
+                                    System.out.println("\t%var"+Visitor.reg+" = load i32, i32* @global"+Visitor.listVar.get(j).regID);
+                                    list.set(i,"%"+Visitor.reg);
+                                    Visitor.reg++;
+                                }
+                                else {
+                                    list.set(i,Integer.toString(Visitor.listVar.get(j).value));
+                                    continue;
+                                }
                             }
-                            list.set(i,"%"+Visitor.reg);
-                            Visitor.reg++;
                             break;
                         }
                     }
