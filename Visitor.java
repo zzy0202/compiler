@@ -909,6 +909,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
             mark=block;
             CalculatorIfExp.getAns(exp,"if",mark);
             exp="";
+            System.out.println(ctx.getText());
             System.out.println("true_block"+mark+":");
             block++;
             visit(ctx.stmt(0));
