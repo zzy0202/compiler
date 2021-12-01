@@ -199,10 +199,14 @@ public class Calculator {
             else {
                 ans=0;
                 String a="1",b="1";
-                a=counter.peek();
-                counter.pop();
-                b=counter.peek();
-                counter.pop();
+                if(!counter.isEmpty()){
+                    a=counter.peek();
+                    counter.pop();
+                }
+                if(!counter.isEmpty()){
+                    b=counter.peek();
+                    counter.pop();
+                }
                 String get="";
                 if(a.charAt(0)=='%'){
                     get=a;
