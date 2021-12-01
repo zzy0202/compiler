@@ -303,8 +303,10 @@ public class CalculatorIfExp {
                         Visitor.i1list.add(Visitor.reg + "%");
                         Visitor.reg++;
                         System.out.println("\t%var" + (Visitor.reg) + " = xor i1 %var" + (Visitor.reg - 1) + ", true");
+                        Visitor.i1list.add(Visitor.reg + "%");
                         Visitor.reg++;
                         System.out.println("\t%var" + (Visitor.reg) + " = zext i1 %var" + (Visitor.reg - 1) + " to i32");
+                        Visitor.i1list.add(Visitor.reg + "%");
                     }
                 }
                 Visitor.reg++;
@@ -422,6 +424,7 @@ public class CalculatorIfExp {
             }
         }
         Visitor.exp="";
+        Visitor.i1list.clear();
         return temp.toString();
     }
 }
