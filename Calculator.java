@@ -134,7 +134,7 @@ public class Calculator {
         boolean isVar=false;
         for (int i = 0; i < list.size(); i++) {
             for (int j = 0; j < list.get(i).length(); j++) {
-                if(Character.isAlphabetic(list.get(i).charAt(j))){
+                if(Character.isAlphabetic(list.get(i).charAt(j))||list.get(i).charAt(j)=='_'){
                     isVar=true;
                 }
             }
