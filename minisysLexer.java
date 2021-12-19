@@ -206,4 +206,7 @@ public class minisysLexer extends Lexer {
 			_decisionToDFA[i] = new DFA(_ATN.getDecisionState(i), i);
 		}
 	}
+
+    public void removeErrorListener() {
+    }
 }

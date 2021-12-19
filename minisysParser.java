@@ -112,6 +112,9 @@ public class minisysParser extends Parser {
 		_interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
 	}
 
+	public void removeErrorListener() {
+	}
+
 	public static class CompUnitContext extends ParserRuleContext {
 		public CompUnit_Context compUnit_() {
 			return getRuleContext(CompUnit_Context.class,0);
