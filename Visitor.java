@@ -28,14 +28,14 @@ public class Visitor extends minisysBaseVisitor<Void> {
 
     @Override
     public Void visitCompUnit_(minisysParser.CompUnit_Context ctx) {
-        isGlobal=true;
         if(ctx.decl()!=null){
+            isGlobal=true;
             visit(ctx.decl());
+            isGlobal=true;
         }
         else {
             visit(ctx.funcDef());
         }
-        isGlobal=false;
         if(ctx.compUnit_()!=null){
             visit(ctx.compUnit_());
         }
@@ -52,7 +52,6 @@ public class Visitor extends minisysBaseVisitor<Void> {
         System.out.println("declare void @memset(i32*, i32, i32)");
         System.out.print("define dso_local ");
         visit(ctx.funcType());
-        visit(ctx.ident1());
         System.out.println("{");
         visit(ctx.block());
         System.out.println("}");

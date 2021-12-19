@@ -1,5 +1,6 @@
-const int aa=221+333-111;
-int bb=aa+(6)+aa*2;
 int main() {
+    int a[2][2] = {{1}, {2, 3}};
+    int e[2][2] = {{a[0][0], a[1][1]}, {5, 6}};
+    putint(e[1][1] + a[1][0]);
     return 0;
 }
