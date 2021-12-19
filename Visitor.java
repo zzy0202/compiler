@@ -31,7 +31,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
         if(ctx.decl()!=null){
             isGlobal=true;
             visit(ctx.decl());
-            isGlobal=true;
+            isGlobal=false;
         }
         else {
             visit(ctx.funcDef());

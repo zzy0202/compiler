@@ -219,6 +219,7 @@ public class Calculator {
                 switch (list.get(i)) {
                     case "+" -> {
                         if(Visitor.isGlobal||Visitor.getArrayLength){
+
                             ans+=Integer.parseInt(a)+Integer.parseInt(b);
                         }
                         else{
