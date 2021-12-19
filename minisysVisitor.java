@@ -28,6 +28,18 @@ public interface minisysVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFuncDef(minisysParser.FuncDefContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link minisysParser#funcFParams}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFuncFParams(minisysParser.FuncFParamsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link minisysParser#funcFParam}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFuncFParam(minisysParser.FuncFParamContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link minisysParser#decl}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

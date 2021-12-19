@@ -37,6 +37,26 @@ public interface minisysListener extends ParseTreeListener {
 	 */
 	void exitFuncDef(minisysParser.FuncDefContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link minisysParser#funcFParams}.
+	 * @param ctx the parse tree
+	 */
+	void enterFuncFParams(minisysParser.FuncFParamsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link minisysParser#funcFParams}.
+	 * @param ctx the parse tree
+	 */
+	void exitFuncFParams(minisysParser.FuncFParamsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link minisysParser#funcFParam}.
+	 * @param ctx the parse tree
+	 */
+	void enterFuncFParam(minisysParser.FuncFParamContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link minisysParser#funcFParam}.
+	 * @param ctx the parse tree
+	 */
+	void exitFuncFParam(minisysParser.FuncFParamContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link minisysParser#decl}.
 	 * @param ctx the parse tree
 	 */
