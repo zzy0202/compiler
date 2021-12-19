@@ -76,18 +76,6 @@ public interface minisysVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVarDef(minisysParser.VarDefContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link minisysParser#funcFParams}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFuncFParams(minisysParser.FuncFParamsContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link minisysParser#funcFParam}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitFuncFParam(minisysParser.FuncFParamContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link minisysParser#initVal}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -99,6 +87,12 @@ public interface minisysVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitFuncType(minisysParser.FuncTypeContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link minisysParser#main_ident}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMain_ident(minisysParser.Main_identContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link minisysParser#block}.
 	 * @param ctx the parse tree
