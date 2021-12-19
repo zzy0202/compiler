@@ -17,6 +17,16 @@ public interface minisysListener extends ParseTreeListener {
 	 */
 	void exitCompUnit(minisysParser.CompUnitContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link minisysParser#compUnit_}.
+	 * @param ctx the parse tree
+	 */
+	void enterCompUnit_(minisysParser.CompUnit_Context ctx);
+	/**
+	 * Exit a parse tree produced by {@link minisysParser#compUnit_}.
+	 * @param ctx the parse tree
+	 */
+	void exitCompUnit_(minisysParser.CompUnit_Context ctx);
+	/**
 	 * Enter a parse tree produced by {@link minisysParser#funcDef}.
 	 * @param ctx the parse tree
 	 */
@@ -107,6 +117,26 @@ public interface minisysListener extends ParseTreeListener {
 	 */
 	void exitVarDef(minisysParser.VarDefContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link minisysParser#funcFParams}.
+	 * @param ctx the parse tree
+	 */
+	void enterFuncFParams(minisysParser.FuncFParamsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link minisysParser#funcFParams}.
+	 * @param ctx the parse tree
+	 */
+	void exitFuncFParams(minisysParser.FuncFParamsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link minisysParser#funcFParam}.
+	 * @param ctx the parse tree
+	 */
+	void enterFuncFParam(minisysParser.FuncFParamContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link minisysParser#funcFParam}.
+	 * @param ctx the parse tree
+	 */
+	void exitFuncFParam(minisysParser.FuncFParamContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link minisysParser#initVal}.
 	 * @param ctx the parse tree
 	 */
@@ -126,16 +156,6 @@ public interface minisysListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFuncType(minisysParser.FuncTypeContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link minisysParser#main_ident}.
-	 * @param ctx the parse tree
-	 */
-	void enterMain_ident(minisysParser.Main_identContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link minisysParser#main_ident}.
-	 * @param ctx the parse tree
-	 */
-	void exitMain_ident(minisysParser.Main_identContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link minisysParser#block}.
 	 * @param ctx the parse tree

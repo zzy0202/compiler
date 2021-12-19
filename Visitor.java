@@ -1,7 +1,4 @@
-import javax.swing.text.EditorKit;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
-import java.util.Currency;
 
 public class Visitor extends minisysBaseVisitor<Void> {
     public static int reg=1;
@@ -25,12 +22,23 @@ public class Visitor extends minisysBaseVisitor<Void> {
     // done
     @Override
     public Void visitCompUnit(minisysParser.CompUnitContext ctx) {
+        visit(ctx.compUnit_());
+        return null;
+    }
+
+    @Override
+    public Void visitCompUnit_(minisysParser.CompUnit_Context ctx) {
         isGlobal=true;
-        for(minisysParser.DeclContext context : ctx.decl()){
-            visit(context);
+        if(ctx.decl()!=null){
+            visit(ctx.decl());
+        }
+        else {
+            visit(ctx.funcDef());
         }
         isGlobal=false;
-        visit(ctx.funcDef(0));
+        if(ctx.compUnit_()!=null){
+            visit(ctx.compUnit_());
+        }
         return null;
     }
 
@@ -44,7 +52,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
         System.out.println("declare void @memset(i32*, i32, i32)");
         System.out.print("define dso_local ");
         visit(ctx.funcType());
-        visit(ctx.main_ident());
+        visit(ctx.ident1());
         System.out.println("{");
         visit(ctx.block());
         System.out.println("}");
@@ -568,11 +576,6 @@ public class Visitor extends minisysBaseVisitor<Void> {
     @Override
     public Void visitBType(minisysParser.BTypeContext ctx) {
         return super.visitBType(ctx);
-    }
-
-    @Override
-    public Void visitMain_ident(minisysParser.Main_identContext ctx) {
-        return super.visitMain_ident(ctx);
     }
 
     @Override

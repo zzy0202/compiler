@@ -204,7 +204,7 @@ public class CalculatorIfExp {
                 }
                 if(!exist){
                     System.out.println(exp);
-                    System.exit(222);
+                    System.exit(25);
                 }
                 exist=false;
             }

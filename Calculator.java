@@ -1,6 +1,4 @@
 
-import com.sun.security.jgss.GSSUtil;
-import org.abego.treelayout.internal.util.java.lang.string.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Stack;
