@@ -1,13 +1,11 @@
-int field[2];
-int main(){
-    int i[1];
-    int j[3];
-    int k;
-    field[0]=getint();
-    field[1]=getint();
-    j[0+0]=-1;
-    j[1]=j[0]-2;
-    k=j[1];j[2]=16;
-    putint(j[3-field[0]]+2+k);
-    return0;
+int foo(int a, int b) {
+    int t = a + b;
+    a = t - a;
+    b = t - b;
+    return a - b;
+}
+
+int main() {
+    putint(foo(1, 2, 3));
+    return 0;
 }

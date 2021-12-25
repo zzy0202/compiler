@@ -19,9 +19,18 @@ public class Visitor extends minisysBaseVisitor<Void> {
     public static boolean getGlobalArrayVal = false;
     public static int size;
     public static boolean toStore=false;
+    public static boolean wrongArraySizeAllow=false;
+    public static boolean allowIsArray;
     // done
     @Override
     public Void visitCompUnit(minisysParser.CompUnitContext ctx) {
+        System.out.println("declare i32 @getint()");
+        System.out.println("declare void @putint(i32)");
+        System.out.println("declare i32 @getch()");
+        System.out.println("declare void @putch(i32)");
+        System.out.println("declare void @memset(i32*, i32, i32)");
+        System.out.println("declare i32 @getarray(i32*)");
+        System.out.println("declare void @putarray(i32, i32*)");
         visit(ctx.compUnit_());
         return null;
     }
@@ -34,7 +43,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
             isGlobal=false;
         }
         else {
+            reg=1;
             visit(ctx.funcDef());
+            reg=1;
         }
         if(ctx.compUnit_()!=null){
             visit(ctx.compUnit_());
@@ -45,23 +56,121 @@ public class Visitor extends minisysBaseVisitor<Void> {
     // done
     @Override
     public Void visitFuncDef(minisysParser.FuncDefContext ctx) {
-        System.out.println("declare i32 @getint()");
-        System.out.println("declare void @putint(i32)");
-        System.out.println("declare i32 @getch()");
-        System.out.println("declare void @putch(i32)");
-        System.out.println("declare void @memset(i32*, i32, i32)");
-        System.out.print("define dso_local ");
+        ArrayList<Var> temp;
+        isGlobal=false;
+        temp=listVar;
+        if(ctx.ident1()!=null){
+            for (int i = listVar.size()-1; i >=0 ; i--) {
+                if(listVar.get(i).varName.equals(ctx.ident1().getText())){
+                    System.exit(144);
+                }
+            }
+            Var var = new Var(ctx.ident1().getText(),false,0,false,-1,currentStage,
+                    true,false,false,0,0,true,false,false,ctx.funcFParams().funcFParam().size()); //这个是判断为函数
+            if(ctx.funcType().getText().equals("void")){
+                var.isVoidFunc=true;
+            }
+            temp.add(var);
+        }
+        for (int i = 0; i < listVar.size(); i++) {
+            if(!listVar.get(i).isGlobal){
+                listVar.remove(i);
+                i--;
+            }
+        }
         visit(ctx.funcType());
+        if(ctx.ident1()!=null){
+            System.out.print("@"+ctx.ident1().getText()+"(");
+        }
+        else {
+            System.out.print("@main"+"(");
+        }
+        if(ctx.funcFParams()!=null){
+            visit(ctx.funcFParams());
+        }
+        System.out.print(")");
         System.out.println("{");
+        for (Var var : listVar) {
+            if (!var.isGlobal) {
+                if (!var.isArray) {
+                    System.out.println("\t%var" + reg + " = alloca i32");
+                    System.out.println("\tstore i32 %var"+var.regID+", i32* %var"+reg);
+                    var.regID=reg;
+                    reg++;
+                } else {
+                    System.out.println("\t%var" + reg + " = alloca i32*");
+                    System.out.println("\tstore i32* %var"+var.regID+", i32* * %var"+reg);
+                    var.regID=reg;
+                    reg++;
+                }
+            }
+        }
         visit(ctx.block());
+        if(ctx.funcType().getText().equals("void")){
+            System.out.println("\tret void");
+        }
         System.out.println("}");
+        listVar=temp;
+        isGlobal=true;
+        return null;
+    }
+
+    @Override
+    public Void visitFuncFParams(minisysParser.FuncFParamsContext ctx) {
+        for (int i = 0; i < ctx.funcFParam().size(); i++) {
+            visit(ctx.funcFParam(i));
+            if(i!=ctx.funcFParam().size()-1){
+                System.out.print(", ");
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Void visitFuncFParam(minisysParser.FuncFParamContext ctx) {
+        String[] test =ctx.ident1().getText().split("\\[");
+        if(ctx.children.size()==2){         //代表参数为普通变量
+            System.out.print("i32 %var"+reg);
+            Var var = new Var(ctx.ident1().getText(),false,0,false,reg,currentStage,
+                    false,false,false,0,0,false,true,false,0);
+            listVar.add(var);
+            reg++;
+        }
+        else if(ctx.children.size()==4){    //参数可以当做一维数组来看
+            System.out.print("i32* %var"+reg);
+            Var var = new Var(ctx.ident1().getText(),false,0,false,reg,currentStage,
+                    false,true,false,200,200,false,true,false,0);
+            listVar.add(var);
+            reg++;
+        }
+        else {                      //参数可以当做二维数组来看
+            String temp = exp;
+            exp="";
+            visit(ctx.exp(0));
+            getArrayLength=true;
+            Calculator.getAns(exp,true);
+            System.out.print("i32* %var"+reg);
+            Var var = new Var(ctx.ident1().getText(),false,0,false,reg,currentStage,
+                    false,true,true,Calculator.ans,
+                    Calculator.ans,false,true,false,0);
+            listVar.add(var);
+            Calculator.ans=0;
+            getArrayLength=false;
+            exp=temp;
+            reg++;
+        }
         return null;
     }
 
     // done
     @Override
     public Void visitFuncType(minisysParser.FuncTypeContext ctx) {
-        System.out.println("i32 @main() ");
+        if(ctx.getText().equals("int")){
+            System.out.print("define dso_local i32 ");
+        }
+        else {
+            System.out.print("define dso_local void ");
+        }
         return null;
     }
 
@@ -126,7 +235,8 @@ public class Visitor extends minisysBaseVisitor<Void> {
     @Override
     public Void visitConstDef(minisysParser.ConstDefContext ctx) {
         if(ctx.children.size()==3){     //普通变量的赋值
-            Var var = new Var(ctx.ident1().getText(),true, 0,true,reg,currentStage,isGlobal,false,false,0,0);
+            Var var = new Var(ctx.ident1().getText(),true, 0,true,reg,currentStage,
+                    isGlobal,false,false,0,0,false,false,false,0);
             mark=reg;
             if(!isGlobal){
                 toStore=true;
@@ -159,7 +269,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     exp="";
                     visit(ctx.constExp(0));     //访问数组的第一个长度式子
                     editArray.getSingleArrayLength(exp);
-                    Var var = new Var(ctx.ident1().getText(),true,0,true,(reg-1),currentStage,true,true,false,Calculator.ans,Calculator.ans);
+                    Var var = new Var(ctx.ident1().getText(),true,0,true,
+                            (reg-1),currentStage,true,true,false,
+                            Calculator.ans,Calculator.ans,false,false,false,0);
                     Calculator.ans=0;
                     currentVar=var;
                     getGlobalArrayVal=true;
@@ -178,7 +290,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     exp="";
                     visit(ctx.constExp(0));
                     editArray.getSingleArrayLength(exp);
-                    Var var = new Var(ctx.ident1().getText(),true,0,true,(reg-1),currentStage,false,true,false,Calculator.ans,Calculator.ans);
+                    Var var = new Var(ctx.ident1().getText(),true,0,true,
+                            (reg-1),currentStage,false,true,false,
+                            Calculator.ans,Calculator.ans,false,false,false,0);
                     Calculator.ans=0;
                     editArray.initArray(var);
                     currentVar=var;
@@ -187,7 +301,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     saveArrayDefValue.clear();
                     for (int i = listVar.size()-1; i >=0 ; i--) {
                         if(listVar.get(i).varName.equals(ctx.ident1().getText())&&listVar.get(i).stage==currentStage){
-                            System.exit(11);
+                            System.exit(12);
                         }
                     }
                     listVar.add(var);
@@ -204,7 +318,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     visit(ctx.constExp(1));     //访问数组的第一维度长度
                     arrayExp2=exp;
                     exp="";
-                    Var var = new Var(ctx.ident1().getText(),true,0,true,reg,currentStage,true,true,true,0,0);
+                    Var var = new Var(ctx.ident1().getText(),true,0,true,reg,currentStage,
+                            true,true,true,0,0,
+                            false,false,false,0);
                     editArray.getDoubleArrayLength(arrayExp1,arrayExp2,var);
                     currentVar=var;
                     size=currentVar.arraySmallestSize;
@@ -230,7 +346,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     visit(ctx.constExp(1));
                     arrayExp2=exp;
                     exp="";
-                    Var var = new Var(ctx.ident1().getText(),true,0,true,(reg),currentStage,false,true,true,0,0);
+                    Var var = new Var(ctx.ident1().getText(),true,0,true,(reg),currentStage,
+                            false,true,true,
+                            0,0,false,false,false,0);
                     editArray.getDoubleArrayLength(arrayExp1,arrayExp2,var);
                     currentVar=var;
                     size=currentVar.arraySmallestSize;
@@ -260,7 +378,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
             if(isGlobal){
                 System.out.println("@global"+Visitor.reg+" =dso_local global i32 0");
             }
-            Var var = new Var(ctx.ident1().getText(),false, 0,false,reg,currentStage,isGlobal,false,false,0,0);
+            Var var = new Var(ctx.ident1().getText(),false, 0,false,reg,currentStage,
+                    isGlobal,false,false,
+                    0,0,false,false,false,0);
             for(Var var1 : listVar){
                 if(var1.varName.equals(var.varName)&&var1.stage==currentStage){
                     System.exit(22);
@@ -280,7 +400,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
                 toStore=true;
                 System.out.println("\t%var"+reg+" = alloca i32 ");
             }
-            Var var = new Var(ctx.ident1().getText(),true, 0,false,reg,currentStage,isGlobal,false,false,0,0);
+            Var var = new Var(ctx.ident1().getText(),true, 0,false,reg,currentStage,
+                    isGlobal,false,false,
+                    0,0,false,false,false,0);
             mark=reg;
             if(!isGlobal){
                 reg++;
@@ -313,7 +435,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     visit(ctx.constExp(0));
                     isConstDef=false;
                     editArray.getSingleArrayLength(exp);
-                    Var var = new Var(ctx.ident1().getText(),false,0,false,(reg-1),currentStage,true,true,false,Calculator.ans,Calculator.ans);
+                    Var var = new Var(ctx.ident1().getText(),false,0,false,(reg-1),currentStage,
+                            true,true,false,
+                            Calculator.ans,Calculator.ans,false,false,false,0);
                     var.arraySmallestSize=Calculator.ans;
                     var.arrayTotalSize=Calculator.ans;
                     exp="";
@@ -326,7 +450,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     isConstDef=true;
                     editArray.getSingleArrayLength(exp);
                     isConstDef=false;
-                    Var var = new Var(ctx.ident1().getText(),false,0,false,(reg-1),currentStage,false,true,false,Calculator.ans,Calculator.ans);
+                    Var var = new Var(ctx.ident1().getText(),false,0,false,(reg-1),currentStage,
+                            false,true,false,
+                            Calculator.ans,Calculator.ans,false,false,false,0);
                     var.arraySmallestSize=Calculator.ans;
                     var.arrayTotalSize=Calculator.ans;
                     exp="";
@@ -341,7 +467,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     visit(ctx.constExp(0));     //访问数组的第一个长度式子
                     isConstDef=false;
                     editArray.getSingleArrayLength(exp);
-                    Var var = new Var(ctx.ident1().getText(),true,0,false,(reg-1),currentStage,true,true,false,Calculator.ans,Calculator.ans);
+                    Var var = new Var(ctx.ident1().getText(),true,0,false,(reg-1),currentStage,
+                            true,true,false,Calculator.ans,
+                            Calculator.ans,false,false,false,0);
                     Calculator.ans=0;
                     currentVar=var;
                     getGlobalArrayVal=true;
@@ -362,7 +490,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     visit(ctx.constExp(0));
                     isConstDef=false;
                     editArray.getSingleArrayLength(exp);
-                    Var var = new Var(ctx.ident1().getText(),false,0,false,(reg-1),currentStage,false,true,false,Calculator.ans,Calculator.ans);
+                    Var var = new Var(ctx.ident1().getText(),false,0,false,(reg-1),currentStage,
+                            false,true,false,Calculator.ans,
+                            Calculator.ans,false,false,false,0);
                     var.arraySmallestSize=Calculator.ans;
                     var.arrayTotalSize=Calculator.ans;
                     exp="";
@@ -392,7 +522,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     isConstDef=false;
                     arrayExp2=exp;
                     exp="";
-                    Var var = new Var(ctx.ident1().getText(),true,0,false,reg,currentStage,true,true,true,0,0);
+                    Var var = new Var(ctx.ident1().getText(),true,0,false,reg,currentStage,
+                            true,true,true,
+                            0,0,false,false,false,0);
                     editArray.getDoubleArrayLength(arrayExp1,arrayExp2,var);
                     for (int i = listVar.size()-1; i >=0 ; i--) {
                         if(listVar.get(i).varName.equals(ctx.ident1().getText())&&listVar.get(i).stage==currentStage){
@@ -414,7 +546,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     isConstDef=false;
                     arrayExp2=exp;
                     exp="";
-                    Var var = new Var(ctx.ident1().getText(),true,0,false,reg,currentStage,false,true,true,0,0);
+                    Var var = new Var(ctx.ident1().getText(),true,0,false,reg,currentStage,
+                            false,true,true,
+                            0,0,false,false,false,0);
                     editArray.getDoubleArrayLength(arrayExp1,arrayExp2,var);
                     editArray.initArray(var);
                     listVar.add(var);
@@ -432,7 +566,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     isConstDef=false;
                     arrayExp2=exp;
                     exp="";
-                    Var var = new Var(ctx.ident1().getText(),true,0,false,reg,currentStage,true,true,true,0,0);
+                    Var var = new Var(ctx.ident1().getText(),true,0,false,reg,currentStage,
+                            true,true,true,0,
+                            0,false,false,false,0);
                     editArray.getDoubleArrayLength(arrayExp1,arrayExp2,var);
                     currentVar=var;
                     size=currentVar.arraySmallestSize;
@@ -460,7 +596,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     isConstDef=false;
                     arrayExp2=exp;
                     exp="";
-                    Var var = new Var(ctx.ident1().getText(),true,0,false,(reg),currentStage,false,true,true,0,0);
+                    Var var = new Var(ctx.ident1().getText(),true,0,false,(reg),currentStage,
+                            false,true,true,
+                            0,0,false,false,false,0);
                     editArray.getDoubleArrayLength(arrayExp1,arrayExp2,var);
                     currentVar=var;
                     size=currentVar.arraySmallestSize;
@@ -771,9 +909,132 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     System.out.println("\tcall void @putch(i32 %var"+(reg-1)+")");
                     exp="";
                 }
+                else if(ctx.ident1().getText().equals("getarray")){
+                    exp="";
+                    wrongArraySizeAllow=true;
+                    visit(ctx.funcRParams());
+                    wrongArraySizeAllow=false;
+                    System.out.println("\t%var"+reg+" = call i32 @getarray(i32* %var"+(reg-2)+")");
+                    System.out.println("\tstore i32 %var"+reg+", i32* %var"+mark);
+                    exp="";
+                    reg++;
+                }
+                else if(ctx.ident1().getText().equals("putarray")){
+                    exp="";
+                    visit(ctx.funcRParams().exp(0));
+                    int mark1,mark2;
+                    Calculator.getAns(exp,true);
+                    mark1=reg-1;
+                    exp="";
+                    wrongArraySizeAllow=true;
+                    visit(ctx.funcRParams().exp(1));
+                    Calculator.getAns(exp,true);
+                    mark2=reg-3;
+                    wrongArraySizeAllow=false;
+                    System.out.println("\tcall void @putarray(i32 %var"+mark1+" , i32* %var"+mark2+")");
+                    exp="";
+                }
                 else{
-                    System.out.println(ctx.ident1().getText());
-                    System.exit(11);
+
+                    boolean defFunc=false;
+                    for (Var var : listVar) {
+                        if (ctx.ident1().getText().equals(var.varName) &&var.isFunc){
+                            defFunc=true;
+                            if(ctx.funcRParams().exp().size()!=var.funcParamCount){
+                                System.exit(69);
+                            }
+                            if(var.isVoidFunc){ //不带返回值的函数，直接调用就可以了
+                                ArrayList<String> funcParam = new ArrayList<>();
+                                for (int i = 0; i < ctx.funcRParams().exp().size(); i++) {
+                                    wrongArraySizeAllow=true;
+                                    exp="";
+                                    visit(ctx.funcRParams().exp(i));
+                                    Calculator.getAns(exp,true);
+                                    exp="";
+                                    if(ctx.funcRParams().exp(i).getText().contains("[")){
+                                        if(i!=ctx.funcRParams().exp().size()-1){
+                                            funcParam.add("i32* %var"+(reg-3)+",");
+                                        }
+                                        else {
+                                            funcParam.add("i32* %var"+(reg-3));
+                                        }
+                                    }
+                                    else {
+                                        if(i!=ctx.funcRParams().exp().size()-1){
+                                            funcParam.add("i32 %var"+(reg-1)+",");
+                                        }
+                                        else {
+                                            funcParam.add("i32 %var"+(reg-1));
+                                        }
+                                    }
+                                    wrongArraySizeAllow=false;
+                                }
+                                System.out.print("\tcall void @"+var.varName+"(");
+                                for (String s:funcParam){
+                                    System.out.print(s);
+                                }
+                                System.out.println(")");
+                            }
+                            else {              //带返回值的函数，所以要当成加进去exp来进行计算
+                                ArrayList<String> funcParam = new ArrayList<>();
+                                for (int i = 0; i < ctx.funcRParams().exp().size(); i++) {
+                                    wrongArraySizeAllow=true;
+                                    exp="";
+                                    allowIsArray =true;
+                                    visit(ctx.funcRParams().exp(i));
+                                    allowIsArray =false;
+                                    Calculator.getAns(exp,true);
+                                    exp="";
+                                    if(ctx.funcRParams().exp(i).getText().contains("[")){   //代表是一个数组，要特别判断
+                                        if(i!=ctx.funcRParams().exp().size()-1){
+                                            funcParam.add("i32* %var"+(reg-3)+",");
+                                        }
+                                        else {
+                                            funcParam.add("i32* %var"+(reg-3));
+                                        }
+                                    }
+                                    else {
+                                        if(i!=ctx.funcRParams().exp().size()-1){
+                                            for (int j = listVar.size()-1; j >=0 ; j--) {
+                                                if(listVar.get(j).varName.equals(ctx.ident1().getText())){
+                                                    if(listVar.get(j).isArray){
+                                                        funcParam.add("i32 %var"+(reg-1)+",");
+                                                    }
+                                                    else {
+                                                        funcParam.add("i32* %var"+(reg-1)+",");
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            for (int j = listVar.size()-1; j >=0 ; j--) {
+                                                if(listVar.get(j).varName.equals(ctx.ident1().getText())){
+                                                    if(listVar.get(j).isArray){
+                                                        funcParam.add("i32 %var"+(reg-1));
+                                                    }
+                                                    else {
+                                                        funcParam.add("i32* %var"+(reg-1));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    wrongArraySizeAllow=false;
+                                }
+                                System.out.print("\t%var"+reg+" = call i32 @"+var.varName+"(");
+                                for (String s:funcParam){
+                                    System.out.print(s);
+                                }
+                                System.out.println(")");
+                                exp+="%"+reg;
+                                reg++;
+                            }
+                            break;
+                        }
+                    }
+                    if(!defFunc){
+                        System.exit(13);
+                    }
                 }
             }
         }
@@ -799,7 +1060,13 @@ public class Visitor extends minisysBaseVisitor<Void> {
             if(ctx.lVal().children.size()==1){
                 for (int i = listVar.size()-1; i >=0; i--) {
                     if (listVar.get(i).varName.equals(ctx.lVal().ident1().getText())) {
-                        if(!listVar.get(i).isArray){
+                        if(!listVar.get(i).isArray|| allowIsArray){
+                            if(allowIsArray){      //出现这个情况为在调用函数里只是传了一个函数地址;
+                                System.out.println("\t%var"+reg+" = getelementptr ["+listVar.get(i).arrayTotalSize+" x i32], " +
+                                        "["+listVar.get(i).arrayTotalSize+" x i32]* %var"+listVar.get(i).regID+", i32 0, i32 0");
+                                reg++;
+                                return null;
+                            }
                             break;
                         }
                         else {
@@ -956,17 +1223,32 @@ public class Visitor extends minisysBaseVisitor<Void> {
             boolean exist=false;
             for (int i = listVar.size()-1; i >=0 ; i--) {
                 if(listVar.get(i).varName.equals(arrayName)){
-                    if(listVar.get(i).isArray&&!listVar.get(i).isDoubleArray){      //找到了数组，并且与保存的最新数组都是一样的一维数组
+                    if(listVar.get(i).isArray&&!listVar.get(i).isDoubleArray||wrongArraySizeAllow){      //找到了数组，并且与保存的最新数组都是一样的一维数组
                         exist=true;
                         if(!listVar.get(i).isGlobal){
-                            markReg=listVar.get(i).regID;
-                            latestReg= reg-1;
-                            System.out.println("\t%var"+reg+" = getelementptr ["+listVar.get(i).arrayTotalSize+" x i32], ["+listVar.get(i).arrayTotalSize+" x i32]* %var"+markReg+", i32 0, i32 0");
-                            reg++;
-                            System.out.println("\t%var"+reg+" = getelementptr i32, i32* %var"+(reg-1)+", i32 %var"+latestReg);
-                            reg++;
-                            System.out.println("\t%var"+reg+" = load i32, i32* %var"+(reg-1));
-                            reg++;
+                            if(wrongArraySizeAllow){
+                                System.out.println("\t%var"+reg+" = mul i32 %var"+(reg-1)+", "+listVar.get(i).arraySmallestSize);
+                                reg++;
+                            }
+                            if(!listVar.get(i).isFuncParam){
+                                markReg=listVar.get(i).regID;
+                                latestReg= reg-1;
+                                System.out.println("\t%var"+reg+" = getelementptr ["+listVar.get(i).arrayTotalSize+" x i32], ["+listVar.get(i).arrayTotalSize+" x i32]* %var"+markReg+", i32 0, i32 0");
+                                reg++;
+                                System.out.println("\t%var"+reg+" = getelementptr i32, i32* %var"+(reg-1)+", i32 %var"+latestReg);
+                                reg++;
+                                System.out.println("\t%var"+reg+" = load i32, i32* %var"+(reg-1));
+                                reg++;
+                            }
+                            else {
+                                int mark = reg-1;
+                                mark=reg-1;
+                                System.out.println("\t%var"+reg+" = load i32*, i32* * %var"+listVar.get(i).regID);
+                                reg++;
+                                System.out.println("\t%var"+reg+" = getelementptr i32, i32* %var"+(reg-1)+", i32 %var"+mark);
+                                reg++;
+                                reg++;
+                            }
                         }
                         else {
                             markReg=listVar.get(i).regID;
@@ -1022,19 +1304,38 @@ public class Visitor extends minisysBaseVisitor<Void> {
                             reg++;
                         }
                         else {
-                            exist=true;
-                            System.out.println("\t%var"+reg+" = mul i32 "+listVar.get(i).arraySmallestSize+" , %var"+firstLength);
-                            firstLength=Integer.toString(reg);
-                            reg++;
-                            System.out.println("\t%var"+reg+" = add i32 %var"+firstLength+", %var"+secondLength);
-                            reg++;
-                            int latestReg= reg-1;
-                            System.out.println("\t%var"+reg+" = getelementptr ["+listVar.get(i).arrayTotalSize+" x i32], ["+listVar.get(i).arrayTotalSize+" x i32]* %var"+listVar.get(i).regID+", i32 0, i32 0");
-                            reg++;
-                            System.out.println("\t%var"+reg+" = getelementptr i32, i32* %var"+(reg-1)+", i32 %var"+latestReg);
-                            reg++;
-                            System.out.println("\t%var"+reg+" = load i32, i32* %var"+(reg-1));
-                            reg++;
+                            if(!listVar.get(i).isFuncParam){
+                                exist=true;
+                                System.out.println("\t%var"+reg+" = mul i32 "+listVar.get(i).arraySmallestSize+" , %var"+firstLength);
+                                firstLength=Integer.toString(reg);
+                                reg++;
+                                System.out.println("\t%var"+reg+" = add i32 %var"+firstLength+", %var"+secondLength);
+                                reg++;
+                                int latestReg= reg-1;
+                                System.out.println("\t%var"+reg+" = getelementptr ["+listVar.get(i).arrayTotalSize+" x i32], ["+listVar.get(i).arrayTotalSize+" x i32]* %var"+listVar.get(i).regID+", i32 0, i32 0");
+                                reg++;
+                                System.out.println("\t%var"+reg+" = getelementptr i32, i32* %var"+(reg-1)+", i32 %var"+latestReg);
+                                reg++;
+                                System.out.println("\t%var"+reg+" = load i32, i32* %var"+(reg-1));
+                                reg++;
+                            }
+                            else {
+                                exist=true;
+                                System.out.println("\t%var"+reg+" = mul i32 "+listVar.get(i).arraySmallestSize+" , %var"+firstLength);
+                                firstLength=Integer.toString(reg);
+                                reg++;
+                                System.out.println("\t%var"+reg+" = add i32 %var"+firstLength+", %var"+secondLength);
+                                reg++;
+                                int latestReg= reg-1;
+                                System.out.println("\t%var"+reg+" = load i32*, i32* * %var"+listVar.get(i).regID);
+                                reg++;
+                                System.out.println("\t%var"+reg+" = getelementptr i32, i32* %var"+(reg-1)+", i32 0");
+                                reg++;
+                                System.out.println("\t%var"+reg+" = getelementptr i32, i32* %var"+(reg-1)+", i32 %var"+latestReg);
+                                reg++;
+                                System.out.println("\t%var"+reg+" = load i32, i32* %var"+(reg-1));
+                                reg++;
+                            }
                         }
                         break;
                     }

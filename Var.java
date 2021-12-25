@@ -11,9 +11,14 @@ public class Var {
     public boolean isDoubleArray;
     public int arraySmallestSize;
     public int arrayTotalSize;
+    public boolean isFunc;
+    public boolean isFuncParam;
+    public boolean isVoidFunc;
+    public int funcParamCount;
     public Var(String varName, boolean isDefined, int value,
                boolean isConst, int id,int stage,boolean isGlobal,boolean isArray,
-               boolean isDoubleArray,int arraySmallestSize,int arrayTotalSize){
+               boolean isDoubleArray,int arraySmallestSize,int arrayTotalSize,boolean isFunc,
+               boolean isFuncParam,boolean isVoidFunc,int funcParamCount){
         this.varName=varName;
         this.isDefined=isDefined;
         this.value=value;
@@ -25,5 +30,9 @@ public class Var {
         this.isDoubleArray=isDoubleArray;
         this.arraySmallestSize=arraySmallestSize;
         this.arrayTotalSize=arrayTotalSize;
+        this.isFunc=isFunc;
+        this.isFuncParam=isFuncParam;
+        this.isVoidFunc=isVoidFunc;
+        this.funcParamCount=funcParamCount;
     }
 }

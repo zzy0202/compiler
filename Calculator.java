@@ -130,6 +130,9 @@ public class Calculator {
         }
         boolean exist=false;
         boolean isVar=false;
+//        for (Var var:Visitor.listVar){
+//            System.out.println(var.varName+"  "+var.isFunc+"  "+var.isGlobal);
+//        }
         for (int i = 0; i < list.size(); i++) {
             for (int j = 0; j < list.get(i).length(); j++) {
                 if(Character.isAlphabetic(list.get(i).charAt(j))||list.get(i).charAt(j)=='_'){
@@ -144,7 +147,16 @@ public class Calculator {
                                 System.exit(111);
                             }
                             exist=true;
-                            list.set(i,Integer.toString(Visitor.listVar.get(j).value));
+                            if(!Visitor.listVar.get(j).isFunc){
+                                System.out.println("\t%var"+Visitor.reg+" = load i32, i32* %var"+Visitor.listVar.get(j).regID);
+                                list.set(i,"%"+Visitor.reg);
+                                Visitor.reg++;
+                            }
+                            else {
+                                System.out.println("\t%var"+Visitor.reg+" = call i32 @"+list.get(i)+"()");
+                                list.set(i,"%"+Visitor.reg);
+                                Visitor.reg++;
+                            }
                             break;
                         }
                     }
@@ -155,9 +167,16 @@ public class Calculator {
                             exist=true;
                             if(!Visitor.listVar.get(j).isGlobal){
                                 if(!Visitor.getArrayLength&&!Visitor.isConstDef){
-                                    System.out.println("\t%var"+Visitor.reg+" = load i32, i32* %var"+Visitor.listVar.get(j).regID);
-                                    list.set(i,"%"+Visitor.reg);
-                                    Visitor.reg++;
+                                    if(!Visitor.listVar.get(j).isFunc){
+                                        System.out.println("\t%var"+Visitor.reg+" = load i32, i32* %var"+Visitor.listVar.get(j).regID);
+                                        list.set(i,"%"+Visitor.reg);
+                                        Visitor.reg++;
+                                    }
+                                    else {
+                                        System.out.println("\t%var"+Visitor.reg+" = call i32 @"+list.get(i)+"()");
+                                        list.set(i,"%"+Visitor.reg);
+                                        Visitor.reg++;
+                                    }
                                 }
                                 else {
                                     list.set(i,Integer.toString(Visitor.listVar.get(j).value));
@@ -166,9 +185,16 @@ public class Calculator {
                             }
                             else{
                                 if(!Visitor.getArrayLength&&!Visitor.isConstDef){
-                                    System.out.println("\t%var"+Visitor.reg+" = load i32, i32* @global"+Visitor.listVar.get(j).regID);
-                                    list.set(i,"%"+Visitor.reg);
-                                    Visitor.reg++;
+                                    if(!Visitor.listVar.get(j).isFunc){
+                                        System.out.println("\t%var"+Visitor.reg+" = load i32, i32* @global"+Visitor.listVar.get(j).regID);
+                                        list.set(i,"%"+Visitor.reg);
+                                        Visitor.reg++;
+                                    }
+                                    else {
+                                        System.out.println("\t%var"+Visitor.reg+" = call i32 @"+list.get(i)+"()");
+                                        list.set(i,"%"+Visitor.reg);
+                                        Visitor.reg++;
+                                    }
                                 }
                                 else {
                                     list.set(i,Integer.toString(Visitor.listVar.get(j).value));
@@ -180,7 +206,8 @@ public class Calculator {
                     }
                 }
                 if(!exist){
-                    System.exit(101);
+                    System.out.println(exp);
+                    System.exit(102);
                 }
                 exist=false;
             }
