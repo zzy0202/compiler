@@ -65,9 +65,19 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     System.exit(144);
                 }
             }
-            Var var = new Var(ctx.ident1().getText(),false,0,false,-1,currentStage,
-                    true,false,false,0,0,true,false,false,ctx.funcFParams().funcFParam().size()); //这个是判断为函数
+            Var var=null;
+            if(ctx.funcFParams()!=null){
+                var= new Var(ctx.ident1().getText(),false,0,false,-1,currentStage,
+                        true,false,false,0,0,true,
+                        false,false,ctx.funcFParams().funcFParam().size());
+            }
+            else if(ctx.funcFParams()==null){
+                var= new Var(ctx.ident1().getText(),false,0,false,-1,currentStage,
+                        true,false,false,0,0,true,
+                        false,false,0);
+            }
             if(ctx.funcType().getText().equals("void")){
+                assert var != null;
                 var.isVoidFunc=true;
             }
             temp.add(var);
@@ -935,105 +945,113 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     exp="";
                 }
                 else{
-
-                    boolean defFunc=false;
-                    for (Var var : listVar) {
-                        if (ctx.ident1().getText().equals(var.varName) &&var.isFunc){
-                            defFunc=true;
-                            if(ctx.funcRParams().exp().size()!=var.funcParamCount){
-                                System.exit(69);
-                            }
-                            if(var.isVoidFunc){ //不带返回值的函数，直接调用就可以了
-                                ArrayList<String> funcParam = new ArrayList<>();
-                                for (int i = 0; i < ctx.funcRParams().exp().size(); i++) {
-                                    wrongArraySizeAllow=true;
-                                    exp="";
-                                    visit(ctx.funcRParams().exp(i));
-                                    Calculator.getAns(exp,true);
-                                    exp="";
-                                    if(ctx.funcRParams().exp(i).getText().contains("[")){
-                                        if(i!=ctx.funcRParams().exp().size()-1){
-                                            funcParam.add("i32* %var"+(reg-3)+",");
-                                        }
-                                        else {
-                                            funcParam.add("i32* %var"+(reg-3));
-                                        }
-                                    }
-                                    else {
-                                        if(i!=ctx.funcRParams().exp().size()-1){
-                                            funcParam.add("i32 %var"+(reg-1)+",");
-                                        }
-                                        else {
-                                            funcParam.add("i32 %var"+(reg-1));
-                                        }
-                                    }
-                                    wrongArraySizeAllow=false;
+                    if(ctx.funcRParams()!=null){
+                        boolean defFunc=false;
+                        for (Var var : listVar) {
+                            if (ctx.ident1().getText().equals(var.varName) &&var.isFunc){
+                                defFunc=true;
+                                if(ctx.funcRParams().exp().size()!=var.funcParamCount){
+                                    System.exit(69);
                                 }
-                                System.out.print("\tcall void @"+var.varName+"(");
-                                for (String s:funcParam){
-                                    System.out.print(s);
-                                }
-                                System.out.println(")");
-                            }
-                            else {              //带返回值的函数，所以要当成加进去exp来进行计算
-                                ArrayList<String> funcParam = new ArrayList<>();
-                                for (int i = 0; i < ctx.funcRParams().exp().size(); i++) {
-                                    wrongArraySizeAllow=true;
-                                    exp="";
-                                    allowIsArray =true;
-                                    visit(ctx.funcRParams().exp(i));
-                                    allowIsArray =false;
-                                    Calculator.getAns(exp,true);
-                                    exp="";
-                                    if(ctx.funcRParams().exp(i).getText().contains("[")){   //代表是一个数组，要特别判断
-                                        if(i!=ctx.funcRParams().exp().size()-1){
-                                            funcParam.add("i32* %var"+(reg-3)+",");
+                                if(var.isVoidFunc){ //不带返回值的函数，直接调用就可以了
+                                    ArrayList<String> funcParam = new ArrayList<>();
+                                    for (int i = 0; i < ctx.funcRParams().exp().size(); i++) {
+                                        wrongArraySizeAllow=true;
+                                        exp="";
+                                        visit(ctx.funcRParams().exp(i));
+                                        Calculator.getAns(exp,true);
+                                        exp="";
+                                        if(ctx.funcRParams().exp(i).getText().contains("[")){
+                                            if(i!=ctx.funcRParams().exp().size()-1){
+                                                funcParam.add("i32* %var"+(reg-3)+",");
+                                            }
+                                            else {
+                                                funcParam.add("i32* %var"+(reg-3));
+                                            }
                                         }
                                         else {
-                                            funcParam.add("i32* %var"+(reg-3));
+                                            if(i!=ctx.funcRParams().exp().size()-1){
+                                                funcParam.add("i32 %var"+(reg-1)+",");
+                                            }
+                                            else {
+                                                funcParam.add("i32 %var"+(reg-1));
+                                            }
                                         }
+                                        wrongArraySizeAllow=false;
                                     }
-                                    else {
-                                        if(i!=ctx.funcRParams().exp().size()-1){
-                                            for (int j = listVar.size()-1; j >=0 ; j--) {
-                                                if(listVar.get(j).varName.equals(ctx.ident1().getText())){
-                                                    if(listVar.get(j).isArray){
-                                                        funcParam.add("i32 %var"+(reg-1)+",");
+                                    System.out.print("\tcall void @"+var.varName+"(");
+                                    for (String s:funcParam){
+                                        System.out.print(s);
+                                    }
+                                    System.out.println(")");
+                                }
+                                else {              //带返回值的函数，所以要当成加进去exp来进行计算
+                                    ArrayList<String> funcParam = new ArrayList<>();
+                                    for (int i = 0; i < ctx.funcRParams().exp().size(); i++) {
+                                        wrongArraySizeAllow=true;
+                                        exp="";
+                                        allowIsArray =true;
+                                        visit(ctx.funcRParams().exp(i));
+                                        allowIsArray =false;
+                                        Calculator.getAns(exp,true);
+                                        exp="";
+                                        if(ctx.funcRParams().exp(i).getText().contains("[")){   //代表是一个数组，要特别判断
+                                            if(i!=ctx.funcRParams().exp().size()-1){
+                                                funcParam.add("i32* %var"+(reg-3)+",");
+                                            }
+                                            else {
+                                                funcParam.add("i32* %var"+(reg-3));
+                                            }
+                                        }
+                                        else {
+                                            if(i!=ctx.funcRParams().exp().size()-1){
+                                                for (int j = listVar.size()-1; j >=0 ; j--) {
+                                                    if(listVar.get(j).varName.equals(ctx.ident1().getText())){
+                                                        if(listVar.get(j).isArray){
+                                                            funcParam.add("i32 %var"+(reg-1)+",");
+                                                        }
+                                                        else {
+                                                            funcParam.add("i32* %var"+(reg-1)+",");
+                                                        }
                                                     }
-                                                    else {
-                                                        funcParam.add("i32* %var"+(reg-1)+",");
+                                                }
+                                            }
+                                            else {
+                                                for (int j = listVar.size()-1; j >=0 ; j--) {
+                                                    if(listVar.get(j).varName.equals(ctx.ident1().getText())){
+                                                        if(listVar.get(j).isArray){
+                                                            funcParam.add("i32 %var"+(reg-1));
+                                                        }
+                                                        else {
+                                                            funcParam.add("i32* %var"+(reg-1));
+                                                        }
                                                     }
                                                 }
                                             }
                                         }
-                                        else {
-                                            for (int j = listVar.size()-1; j >=0 ; j--) {
-                                                if(listVar.get(j).varName.equals(ctx.ident1().getText())){
-                                                    if(listVar.get(j).isArray){
-                                                        funcParam.add("i32 %var"+(reg-1));
-                                                    }
-                                                    else {
-                                                        funcParam.add("i32* %var"+(reg-1));
-                                                    }
-                                                }
-                                            }
-                                        }
+                                        wrongArraySizeAllow=false;
                                     }
-                                    wrongArraySizeAllow=false;
+                                    System.out.print("\t%var"+reg+" = call i32 @"+var.varName+"(");
+                                    for (String s:funcParam){
+                                        System.out.print(s);
+                                    }
+                                    System.out.println(")");
+                                    exp+="%"+reg;
+                                    reg++;
                                 }
-                                System.out.print("\t%var"+reg+" = call i32 @"+var.varName+"(");
-                                for (String s:funcParam){
-                                    System.out.print(s);
-                                }
-                                System.out.println(")");
-                                exp+="%"+reg;
-                                reg++;
+                                break;
                             }
-                            break;
+                        }
+                        if(!defFunc){
+                            System.exit(13);
                         }
                     }
-                    if(!defFunc){
-                        System.exit(13);
+                    else {
+                        for(Var var:listVar){
+                            if (ctx.ident1().getText().equals(var.varName) &&var.isFunc){
+                                System.out.println("\tcall void @"+var.varName+"()");
+                            }
+                        }
                     }
                 }
             }
