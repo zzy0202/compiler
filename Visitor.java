@@ -1,3 +1,5 @@
+import org.stringtemplate.v4.ST;
+
 import java.util.ArrayList;
 
 public class Visitor extends minisysBaseVisitor<Void> {
@@ -21,7 +23,8 @@ public class Visitor extends minisysBaseVisitor<Void> {
     public static boolean toStore = false;
     public static boolean wrongArraySizeAllow = false;
     public static boolean allowIsArray;
-
+    public static String returnExp="";
+    public static boolean noNeedAddReturnExp=false;
     // done
     @Override
     public Void visitCompUnit(minisysParser.CompUnitContext ctx) {
@@ -796,8 +799,15 @@ public class Visitor extends minisysBaseVisitor<Void> {
             visit(ctx.addExp());
             if (ctx.Add() != null) {
                 exp += '+';
+                if(!noNeedAddReturnExp){
+                    returnExp+='+';
+                }
+
             } else if (ctx.Sub() != null) {
                 exp += '-';
+                if(!noNeedAddReturnExp){
+                    returnExp+='-';
+                }
             }
             visit(ctx.mulExp());
         }
@@ -812,10 +822,19 @@ public class Visitor extends minisysBaseVisitor<Void> {
             visit(ctx.mulExp());
             if (ctx.Div() != null) {
                 exp += "/";
+                if(!noNeedAddReturnExp){
+                    returnExp+='/';
+                }
             } else if (ctx.Mult() != null) {
                 exp += "*";
+                if(!noNeedAddReturnExp){
+                    returnExp+='*';
+                }
             } else if (ctx.Mod() != null) {
                 exp += "#";
+                if(!noNeedAddReturnExp){
+                    returnExp+='#';
+                }
             }
             visit(ctx.unaryExp());
         }
@@ -844,6 +863,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
                         System.exit(23);
                     }
                     exp += '%' + String.valueOf(reg);
+                    if(!noNeedAddReturnExp){
+                        returnExp += '%' + String.valueOf(reg);
+                    }
                     reg++;
                 } else if (ctx.ident1().getText().equals("putint")) {
                     if (ctx.funcRParams() == null) {
@@ -862,6 +884,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
                         System.exit(24);
                     }
                     exp += '%' + String.valueOf(reg);
+                    if(!noNeedAddReturnExp){
+                        returnExp += '%' + String.valueOf(reg);
+                    }
                     reg++;
                 } else if (ctx.ident1().getText().equals("putch")) {
                     if (ctx.funcRParams() == null) {
@@ -936,10 +961,12 @@ public class Visitor extends minisysBaseVisitor<Void> {
                                     }
                                     System.out.println(")");
                                 } else {              //带返回值的函数，所以要当成加进去exp来进行计算
+                                    noNeedAddReturnExp=true;
                                     ArrayList<String> funcParam = new ArrayList<>();
+                                    String temp = "";
                                     for (int i = 0; i < ctx.funcRParams().exp().size(); i++) {
                                         wrongArraySizeAllow = true;
-                                        exp = "";
+                                        exp=temp;
                                         allowIsArray = true;
                                         visit(ctx.funcRParams().exp(i));
                                         allowIsArray = false;
@@ -986,7 +1013,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
                                     }
                                     System.out.println(")");
                                     exp += "%" + reg;
+                                    returnExp+="%"+reg;
                                     reg++;
+                                    noNeedAddReturnExp=false;
                                 }
                                 break;
                             }
@@ -1019,8 +1048,14 @@ public class Visitor extends minisysBaseVisitor<Void> {
     public Void visitPrimaryExp(minisysParser.PrimaryExpContext ctx) {
         if (ctx.exp() != null) {
             exp += '(';
+            if(!noNeedAddReturnExp){
+                returnExp += '(';
+            }
             visit(ctx.exp());
             exp += ')';
+            if(!noNeedAddReturnExp){
+                returnExp += ')';
+            }
         } else if (ctx.lVal() != null) {
             if (ctx.lVal().children.size() == 1) {
                 for (int i = listVar.size() - 1; i >= 0; i--) {
@@ -1048,6 +1083,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     }
                 }
                 exp += ctx.lVal().getText();
+                if(!noNeedAddReturnExp){
+                    returnExp += ctx.lVal().getText();
+                }
             } else {
                 visit(ctx.lVal());
             }
@@ -1061,10 +1099,19 @@ public class Visitor extends minisysBaseVisitor<Void> {
     public Void visitUnaryOp(minisysParser.UnaryOpContext ctx) {
         if (ctx.Add() != null) {
             exp += '+';
+            if(!noNeedAddReturnExp){
+                returnExp += '+';
+            }
         } else if (ctx.Sub() != null) {
             exp += '-';
+            if(!noNeedAddReturnExp){
+                returnExp += '-';
+            }
         } else {
             exp += '!';
+            if(!noNeedAddReturnExp){
+                returnExp += '!';
+            }
         }
         return null;
     }
@@ -1073,8 +1120,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
     public Void visitStmt(minisysParser.StmtContext ctx) {
         if (ctx.children.size() == 3) {
             exp = "";
+            returnExp="";
             visit(ctx.exp());
-            Calculator.getAns(exp, true);
+            Calculator.getAns(returnExp, true);
             System.out.println("\tret i32 %var" + (reg - 1));
         } else if (ctx.children.size() == 4) {
             if (ctx.lVal().children.size() == 1) {
@@ -1123,7 +1171,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
             } else if (ctx.children.get(0).getText().equals("continue")) {
                 System.out.println("\tbr label %while_block" + get);
             } else {
-                visit(ctx.exp());
+                if(ctx.exp()!=null){
+                    visit(ctx.exp());
+                }
             }
         } else if ((ctx.children.size() == 5 && ctx.children.get(0).getText().equals("if")) || ctx.children.size() == 7) {
             int mark;
@@ -1324,13 +1374,22 @@ public class Visitor extends minisysBaseVisitor<Void> {
             temp = Integer.parseInt(string, 16);
             string = Integer.toString(temp);
             exp += " " + string;
+            if(!noNeedAddReturnExp){
+                returnExp += " " + string;
+            }
         } else if (ctx.DecimalConst() != null) {
             exp += " " + ctx.DecimalConst().getText();
+            if(!noNeedAddReturnExp){
+                returnExp += " " + ctx.DecimalConst().getText();
+            }
         } else if (ctx.OctalConst() != null) {
             string = ctx.OctalConst().getText();
             temp = Integer.parseInt(string, 8);
             string = Integer.toString(temp);
             exp += " " + string;
+            if(!noNeedAddReturnExp){
+                returnExp += " " + string;
+            }
         }
         return null;
     }
