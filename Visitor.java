@@ -14,7 +14,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
     public static boolean isConstDef = false;
     public static ArrayList<Var> listVar = new ArrayList<>();
     public static boolean isGlobalVar = false;
-    public static int get;
+    public static int get=1;
     public static boolean getArrayLength = false;
     public static Var currentVar;
     public static ArrayList<String> saveArrayDefValue = new ArrayList<>();
@@ -1202,7 +1202,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
             int whilemark;
             whilemark = whileBlock;
             whileBlock++;
-            get = whilemark;
+            get++;
             System.out.println("\tbr label %while_block" + whilemark);
             System.out.println("while_block" + whilemark + ":");
             exp = "";
