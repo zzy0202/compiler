@@ -120,6 +120,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
         if (ctx.funcType().getText().equals("void")) {
             System.out.println("\tret void");
         }
+        if(ctx.funcType().getText().equals("int")){
+            System.out.println("\tret i32 0");
+        }
         System.out.println("}");
         listVar = temp;
         isGlobal = true;
