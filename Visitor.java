@@ -977,7 +977,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                                         exp = "";
                                         //这里要循环listvar来判断是不是真正数组，不然判断不了，明天记得写!
                                         if (i != ctx.funcRParams().exp().size() - 1) {
-                                            boolean flag=false;
+                                            boolean flag=false;     //这个是用来判断是不是数组的
                                             for (int j = listVar.size() - 1; j >= 0; j--) {
                                                 if (listVar.get(j).varName.equals(ctx.funcRParams().exp(i).getText())) {
                                                     if (!listVar.get(j).isArray) {
@@ -1001,6 +1001,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                                                         funcParam.add("i32* %var" + (reg - 1));
                                                     }
                                                     flag=true;
+                                                    break;
                                                 }
                                             }
                                             if(!flag){
@@ -1063,7 +1064,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
             if (ctx.lVal().children.size() == 1) {
                 for (int i = listVar.size() - 1; i >= 0; i--) {
                     if (listVar.get(i).varName.equals(ctx.lVal().ident1().getText())) {
-                        if (!listVar.get(i).isArray || allowIsArray) {
+                        if (!listVar.get(i).isArray || allowIsArray||listVar.get(i).isArray) {
                             if (allowIsArray && listVar.get(i).isArray && !listVar.get(i).isFuncParam) {      //出现这个情况为在调用函数里只是传了一个函数地址;
                                 System.out.println("\t%var" + reg + " = getelementptr [" + listVar.get(i).arrayTotalSize + " x i32], " +
                                         "[" + listVar.get(i).arrayTotalSize + " x i32]* %var" + listVar.get(i).regID + ", i32 0, i32 0");
@@ -1075,8 +1076,6 @@ public class Visitor extends minisysBaseVisitor<Void> {
                                     reg++;
 
                                     return null;
-                                } else {                                  //是一个二维数组，要用两个*号
-
                                 }
                             }
                             break;
