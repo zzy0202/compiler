@@ -618,6 +618,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
 
     @Override
     public Void visitInitVal(minisysParser.InitValContext ctx) {
+        isExp=true;
         if (ctx.children.size() == 1) {
             if (!isGlobal) {
                 if (!isConstDef) {
@@ -698,6 +699,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                 }
             }
         }
+        isExp=false;
         return null;
     }
 
@@ -1368,9 +1370,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
 
     @Override
     public Void visitExp(minisysParser.ExpContext ctx) {
-        isExp=true;
         visit(ctx.addExp());
-        isExp=false;
         return null;
     }
 
