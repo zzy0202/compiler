@@ -25,7 +25,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
     public static boolean allowIsArray;
     public static String returnExp="";
     public static boolean noNeedAddReturnExp=false;
-    public static boolean isExp=false;
+    public static boolean isExp=true;
     // done
     @Override
     public Void visitCompUnit(minisysParser.CompUnitContext ctx) {
@@ -937,9 +937,6 @@ public class Visitor extends minisysBaseVisitor<Void> {
                                     System.exit(69);
                                 }
                                 if (var.isVoidFunc) { //不带返回值的函数，直接调用就可以了
-                                    if(isExp){
-                                        System.exit(3);
-                                    }
                                     ArrayList<String> funcParam = new ArrayList<>();
                                     for (int i = 0; i < ctx.funcRParams().exp().size(); i++) {
                                         wrongArraySizeAllow = true;
@@ -1038,7 +1035,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                                     System.out.println("\tcall void @" + var.varName + "()");
                                 }
                                 else {
-                                    System.exit(22);
+                                    System.exit(74);
                                 }
                             }
                         }
@@ -1172,9 +1169,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                 }
             }
             exp = "";
-            isExp=true;
             visit(ctx.exp());
-            isExp=false;
             Calculator.getAns(exp, false);
             isGlobalVar = false;
             exp = "";
