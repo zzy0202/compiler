@@ -25,6 +25,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
     public static boolean allowIsArray;
     public static String returnExp="";
     public static boolean noNeedAddReturnExp=false;
+    public static boolean isExp=false;
     // done
     @Override
     public Void visitCompUnit(minisysParser.CompUnitContext ctx) {
@@ -936,6 +937,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
                                     System.exit(69);
                                 }
                                 if (var.isVoidFunc) { //不带返回值的函数，直接调用就可以了
+                                    if(isExp){
+                                        System.exit(3);
+                                    }
                                     ArrayList<String> funcParam = new ArrayList<>();
                                     for (int i = 0; i < ctx.funcRParams().exp().size(); i++) {
                                         wrongArraySizeAllow = true;
@@ -1030,7 +1034,12 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     } else {
                         for (Var var : listVar) {
                             if (ctx.ident1().getText().equals(var.varName) && var.isFunc) {
-                                System.out.println("\tcall void @" + var.varName + "()");
+                                if(!isExp){
+                                    System.out.println("\tcall void @" + var.varName + "()");
+                                }
+                                else {
+                                    System.exit(22);
+                                }
                             }
                         }
                     }
@@ -1163,7 +1172,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
                 }
             }
             exp = "";
+            isExp=true;
             visit(ctx.exp());
+            isExp=false;
             Calculator.getAns(exp, false);
             isGlobalVar = false;
             exp = "";
@@ -1362,7 +1373,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
 
     @Override
     public Void visitExp(minisysParser.ExpContext ctx) {
+        isExp=true;
         visit(ctx.addExp());
+        isExp=false;
         return null;
     }
 
