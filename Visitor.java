@@ -1186,9 +1186,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
             if (ctx.lVal().children.size() == 1) {
                 for (int i = listVar.size() - 1; i >= 0; i--) {
                     if (listVar.get(i).varName.equals(ctx.lVal().ident1().getText())) {
-                        isValGetArray=true;
                         mark = listVar.get(i).regID;
-                        isValGetArray=false;
                         break;
                     }
                 }
@@ -1221,7 +1219,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
                 }
             }
             exp = "";
+            isValGetArray=true;
             visit(ctx.exp());
+            isValGetArray=false;
             Calculator.getAns(exp, false);
             isGlobalVar = false;
             exp = "";
