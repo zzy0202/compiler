@@ -1183,11 +1183,12 @@ public class Visitor extends minisysBaseVisitor<Void> {
             Calculator.getAns(returnExp, true);
             System.out.println("\tret i32 %var" + (reg - 1));
         } else if (ctx.children.size() == 4) {
-            isValGetArray=true;
             if (ctx.lVal().children.size() == 1) {
                 for (int i = listVar.size() - 1; i >= 0; i--) {
                     if (listVar.get(i).varName.equals(ctx.lVal().ident1().getText())) {
+                        isValGetArray=true;
                         mark = listVar.get(i).regID;
+                        isValGetArray=false;
                         break;
                     }
                 }
@@ -1224,7 +1225,6 @@ public class Visitor extends minisysBaseVisitor<Void> {
             Calculator.getAns(exp, false);
             isGlobalVar = false;
             exp = "";
-            isValGetArray=true;
         } else if (ctx.children.size() == 2) {
             if (ctx.children.get(0).getText().equals("break")) {
                 System.out.println("\tbr label %while_block_end" + get);
