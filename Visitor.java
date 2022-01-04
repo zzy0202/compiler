@@ -29,6 +29,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
     public static boolean isGetArray=false;
     public static boolean getArrayIsGlobal=false;
     public static boolean isValGetArray=false;
+    public static boolean isGlobalGetArray=false;
     // done
     @Override
     public Void visitCompUnit(minisysParser.CompUnitContext ctx) {
@@ -922,7 +923,14 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     System.out.println("\t%var" + reg + " = call i32 @getarray(i32* %var" + (reg - 2) + ")");
                     if(!getArrayIsGlobal){
                         if(isValGetArray){
-                            System.out.println("\tstore i32 %var" + reg + ", i32* %var" + mark);
+                            if(!isGlobalVar){
+                                System.out.println("\tstore i32 %var" + reg + ", i32* %var" + mark);
+
+                            }
+                            else{
+                                System.out.println("\tstore i32 %var" + reg + ", i32* @global" + mark);
+
+                            }
                         }
                     }
                     else {
