@@ -919,11 +919,6 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     visit(ctx.funcRParams());
                     isGetArray=false;
                     wrongArraySizeAllow = false;
-                    for (int i = listVar.size()-1; i >=0; i--) {
-                        if(listVar.get(i).varName.equals(ctx.funcRParams().getText())){
-                            mark=listVar.get(i).regID;
-                        }
-                    }
                     System.out.println("\t%var" + reg + " = call i32 @getarray(i32* %var" + (reg - 2) + ")");
                     if(!getArrayIsGlobal){
                         if(isValGetArray){
@@ -1188,6 +1183,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
             Calculator.getAns(returnExp, true);
             System.out.println("\tret i32 %var" + (reg - 1));
         } else if (ctx.children.size() == 4) {
+            isValGetArray=true;
             if (ctx.lVal().children.size() == 1) {
                 for (int i = listVar.size() - 1; i >= 0; i--) {
                     if (listVar.get(i).varName.equals(ctx.lVal().ident1().getText())) {
@@ -1228,6 +1224,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
             Calculator.getAns(exp, false);
             isGlobalVar = false;
             exp = "";
+            isValGetArray=true;
         } else if (ctx.children.size() == 2) {
             if (ctx.children.get(0).getText().equals("break")) {
                 System.out.println("\tbr label %while_block_end" + get);
@@ -1283,7 +1280,6 @@ public class Visitor extends minisysBaseVisitor<Void> {
 
     @Override
     public Void visitLVal(minisysParser.LValContext ctx) {
-        isValGetArray=true;
         if (ctx.children.size() == 1) {
             return null;
         } else if (ctx.children.size() == 4) {    //一维数组
@@ -1419,7 +1415,6 @@ public class Visitor extends minisysBaseVisitor<Void> {
             exp = "";
             exp = temp + "%" + (reg - 1);
         }
-        isValGetArray=false;
         return null;
     }
 
