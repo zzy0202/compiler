@@ -948,7 +948,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     wrongArraySizeAllow = true;
                     visit(ctx.funcRParams().exp(1));
                     Calculator.getAns(exp, true);
-                    mark2 = reg - 3;
+                    mark2 = reg -1;
                     wrongArraySizeAllow = false;
                     System.out.println("\tcall void @putarray(i32 %var" + mark1 + " , i32* %var" + mark2 + ")");
                     exp = "";
