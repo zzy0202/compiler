@@ -379,7 +379,8 @@ public class CalculatorIfExp {
                 else{
                     if(temp.charAt(i-1)=='('||temp.charAt(i-1)=='='||temp.charAt(i-1)=='~'
                             ||temp.charAt(i-1)=='>'||temp.charAt(i-1)=='<'||
-                            temp.charAt(i-1)=='&'||temp.charAt(i-1)=='|'||temp.charAt(i-1)=='@'||temp.charAt(i-1)=='$'){
+                            temp.charAt(i-1)=='&'||temp.charAt(i-1)=='|'||temp.charAt(i-1)=='!'||
+                            temp.charAt(i-1)=='@'||temp.charAt(i-1)=='$'){
                         temp.insert(i,"0");
                     }
                 }
