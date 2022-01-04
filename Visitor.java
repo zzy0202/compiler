@@ -919,11 +919,6 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     visit(ctx.funcRParams());
                     isGetArray=false;
                     wrongArraySizeAllow = false;
-                    for (int i = listVar.size()-1; i >=0; i--) {
-                        if(listVar.get(i).varName.equals(ctx.funcRParams().getText())){
-                            mark=listVar.get(i).regID;
-                        }
-                    }
                     System.out.println("\t%var" + reg + " = call i32 @getarray(i32* %var" + (reg - 2) + ")");
                     if(!getArrayIsGlobal){
                         if(isValGetArray){
