@@ -251,7 +251,6 @@ public class Visitor extends minisysBaseVisitor<Void> {
     @Override
     public Void visitConstDef(minisysParser.ConstDefContext ctx) {
         if (ctx.children.size() == 3) {     //普通变量的赋值
-            isValGetArray=true;
             Var var = new Var(ctx.ident1().getText(), true, 0, true, reg, currentStage,
                     isGlobal, false, false, 0, 0, false, false, false, 0);
             mark = reg;
@@ -278,7 +277,6 @@ public class Visitor extends minisysBaseVisitor<Void> {
             listVar.add(var);
             toStore = false;
             isConstDef = false;
-            isValGetArray=false;
         } else {          //代表是数组
             isConstDef = true;
             if (ctx.children.size() == 6) {         //一维数组
@@ -409,7 +407,6 @@ public class Visitor extends minisysBaseVisitor<Void> {
             reg++;
             saveArrayDefValue.clear();
         } else if (ctx.children.size() == 3) {
-            isValGetArray=true;
             if (!isGlobal) {
                 toStore = true;
                 System.out.println("\t%var" + reg + " = alloca i32 ");
@@ -440,7 +437,6 @@ public class Visitor extends minisysBaseVisitor<Void> {
             listVar.add(var);
             saveArrayDefValue.clear();
             toStore = false;
-            isValGetArray=false;
         } else if (ctx.children.size() == 4 || ctx.children.size() == 6) {    //都是一维数组，4是只定义没赋值，6是定义并且赋值了
             if (ctx.children.size() == 4) {                             //只定义了没有赋值
                 if (isGlobal) {
@@ -923,6 +919,11 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     visit(ctx.funcRParams());
                     isGetArray=false;
                     wrongArraySizeAllow = false;
+                    for (int i = listVar.size()-1; i >=0; i--) {
+                        if(listVar.get(i).varName.equals(ctx.funcRParams().getText())){
+                            mark=listVar.get(i).regID;
+                        }
+                    }
                     System.out.println("\t%var" + reg + " = call i32 @getarray(i32* %var" + (reg - 2) + ")");
                     if(!getArrayIsGlobal){
                         if(isValGetArray){
