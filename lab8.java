@@ -10,10 +10,10 @@ import java.io.PrintStream;
 
 public class lab8 {
     public static void main(String[] args) throws IOException {
-//        FileInputStream fileInputStream = new FileInputStream("C:\\Users\\yung\\IdeaProjects\\compiler8\\src\\input.txt");
-        FileInputStream fileInputStream = new FileInputStream(args[0]);
-        PrintStream printStream = new PrintStream(new FileOutputStream(args[1]));
-        System.setOut(printStream);
+        FileInputStream fileInputStream = new FileInputStream("C:\\Users\\yung\\IdeaProjects\\compiler8\\src\\input.txt");
+//        FileInputStream fileInputStream = new FileInputStream(args[0]);
+//        PrintStream printStream = new PrintStream(new FileOutputStream(args[1]));
+//        System.setOut(printStream);
         byte[] arr = new byte[100];
         String string = "";
         String finalString = "";    //没有注释的字符串变量

@@ -1,5 +1,7 @@
 
 
+import org.antlr.runtime.tree.ParseTree;
+
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -130,9 +132,6 @@ public class Calculator {
         }
         boolean exist=false;
         boolean isVar=false;
-//        for (Var var:Visitor.listVar){
-//            System.out.println(var.varName+"  "+var.isFunc+"  "+var.isGlobal);
-//        }
         for (int i = 0; i < list.size(); i++) {
             for (int j = 0; j < list.get(i).length(); j++) {
                 if(Character.isAlphabetic(list.get(i).charAt(j))||list.get(i).charAt(j)=='_'){
@@ -148,7 +147,7 @@ public class Calculator {
                             }
                             exist=true;
                             if(!Visitor.listVar.get(j).isFunc){
-                                System.out.println("\t%var"+Visitor.reg+" = load i32, i32* %var"+Visitor.listVar.get(j).regID);
+                                System.out.println("\t%var"+Visitor.reg+" 11= load i32, i32* %var"+Visitor.listVar.get(j).regID);
                                 list.set(i,"%"+Visitor.reg);
                                 Visitor.reg++;
                             }
@@ -168,9 +167,25 @@ public class Calculator {
                             if(!Visitor.listVar.get(j).isGlobal){
                                 if(!Visitor.getArrayLength&&!Visitor.isConstDef){
                                     if(!Visitor.listVar.get(j).isFunc){
-                                        System.out.println("\t%var"+Visitor.reg+" = load i32, i32* %var"+Visitor.listVar.get(j).regID);
-                                        list.set(i,"%"+Visitor.reg);
-                                        Visitor.reg++;
+                                        if((!Visitor.listVar.get(j).isFuncParam&&!Visitor.listVar.get(j).isArray)||(Visitor.listVar.get(j).isFuncParam&&!Visitor.listVar.get(j).isArray)){
+                                            System.out.println("\t%var"+Visitor.reg+" = load i32, i32* %var"+Visitor.listVar.get(j).regID);
+                                            list.set(i,"%"+Visitor.reg);
+                                            Visitor.reg++;
+                                        }
+                                        else{
+                                            if(Visitor.listVar.get(j).isFuncParam){
+                                                System.out.println("\t%var"+Visitor.reg+" = load i32*, i32* * %var"+Visitor.listVar.get(j).regID);
+                                                list.set(i,"%"+Visitor.reg);
+                                                Visitor.reg++;
+                                                return null;
+                                            }
+                                            else {
+                                                System.out.println("\t%var"+Visitor.reg+" = getelementptr ["+Visitor.listVar.get(j).arrayTotalSize+" x i32], ["+Visitor.listVar.get(j).arrayTotalSize
+                                                        +" x i32]* %var"+Visitor.listVar.get(j).regID+", i32 0 ,i32 0");
+                                                Visitor.reg++;
+                                                return null;
+                                            }
+                                        }
                                     }
                                     else {
                                         System.out.println("\t%var"+Visitor.reg+" = call i32 @"+list.get(i)+"()");
