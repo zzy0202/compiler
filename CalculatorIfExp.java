@@ -1,3 +1,4 @@
+import java.awt.datatransfer.ClipboardOwner;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -163,7 +164,6 @@ public class CalculatorIfExp {
             list.add(stack.peek().toString());
             stack.pop();
         }
-
         boolean exist=false;
         boolean isVar=false;
         for (int i = 0; i < list.size(); i++) {
@@ -188,17 +188,25 @@ public class CalculatorIfExp {
                 else{
                     for (int j = Visitor.listVar.size()-1; j >=0; j--) {
                         if(Visitor.listVar.get(j).varName.equals(list.get(i))){
-                            exist=true;
-                            if(!Visitor.listVar.get(j).isGlobal){
-                                System.out.println("\t%var"+Visitor.reg+" = load i32, i32* %var"+Visitor.listVar.get(j).regID);
-                            }
-                            else{
-                                System.out.println("\t%var"+Visitor.reg+" = load i32, i32* @global"+Visitor.listVar.get(j).regID);
+                            if(!Visitor.listVar.get(j).isFunc){
+                                exist=true;
+                                if(!Visitor.listVar.get(j).isGlobal){
+                                    System.out.println("\t%var"+Visitor.reg+" = load i32, i32* %var"+Visitor.listVar.get(j).regID);
+                                }
+                                else{
+                                    System.out.println("\t%var"+Visitor.reg+" = load i32, i32* @global"+Visitor.listVar.get(j).regID);
 
+                                }
+                                list.set(i,"%"+Visitor.reg);
+                                Visitor.reg++;
+                                break;
                             }
-                            list.set(i,"%"+Visitor.reg);
-                            Visitor.reg++;
-                            break;
+                            else {
+                                exist=true;
+                                System.out.println("\t%var"+Visitor.reg+" = call i32 @"+Visitor.listVar.get(j).varName+"()");
+                                list.set(i,"%"+Visitor.reg);
+                                Visitor.reg++;
+                            }
                         }
                     }
                 }
@@ -378,7 +386,9 @@ public class CalculatorIfExp {
                 }
                 else{
                     if(temp.charAt(i-1)=='('||temp.charAt(i-1)=='='||temp.charAt(i-1)=='~'
-                            ||temp.charAt(i-1)=='>'||temp.charAt(i-1)=='<'){
+                            ||temp.charAt(i-1)=='>'||temp.charAt(i-1)=='<'||
+                            temp.charAt(i-1)=='&'||temp.charAt(i-1)=='|'||temp.charAt(i-1)=='!'||
+                            temp.charAt(i-1)=='@'||temp.charAt(i-1)=='$'){
                         temp.insert(i,"0");
                     }
                 }

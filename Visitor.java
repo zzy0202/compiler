@@ -29,7 +29,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
     public static boolean isGetArray=false;
     public static boolean getArrayIsGlobal=false;
     public static boolean isValGetArray=false;
-    public static boolean isGlobalGetArray=false;
+    public static boolean isIfBlock=false;
     // done
     @Override
     public Void visitCompUnit(minisysParser.CompUnitContext ctx) {
@@ -956,6 +956,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
                     System.out.println("\tcall void @putarray(i32 %var" + mark1 + " , i32* %var" + mark2 + ")");
                     exp = "";
                 } else {
+                    if(isIfBlock){
+                        exp+=ctx.ident1().getText();
+                    }
                     if (ctx.funcRParams() != null) {
                         boolean defFunc = false;
                         for (Var var : listVar) {
@@ -1016,6 +1019,10 @@ public class Visitor extends minisysBaseVisitor<Void> {
                                     noNeedAddReturnExp=true;
                                     ArrayList<String> funcParam = new ArrayList<>();
                                     String temp = "";
+                                    if(isIfBlock){
+                                        exp+=ctx.ident1().getText();
+                                        System.out.println(ctx.ident1().getText());
+                                    }
                                     for (int i = 0; i < ctx.funcRParams().exp().size(); i++) {
                                         wrongArraySizeAllow = true;
                                         exp=temp;
@@ -1024,7 +1031,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                                         allowIsArray = false;
                                         Calculator.getAns(exp, true);
                                         exp = "";
-                                        //这里要循环listvar来判断是不是真正数组，不然判断不了，明天记得写!
+                                        //这里要循环listvar来判断是不是真正数组，不然判断不了，明天记得写
                                         if (i != ctx.funcRParams().exp().size() - 1) {
                                             boolean flag=false;     //这个是用来判断是不是数组的
                                             for (int j = listVar.size() - 1; j >= 0; j--) {
@@ -1078,9 +1085,19 @@ public class Visitor extends minisysBaseVisitor<Void> {
                         }
                     } else {
                         for (Var var : listVar) {
-                            if (ctx.ident1().getText().equals(var.varName) && var.isFunc) {
+                            if (ctx.ident1().getText().equals(var.varName) && var.isFunc&&var.isVoidFunc) {
                                 if(!isExp){
                                     System.out.println("\tcall void @" + var.varName + "()");
+                                }
+                                else {
+                                    System.exit(74);
+                                }
+                            }
+                            if (ctx.ident1().getText().equals(var.varName) && var.isFunc&&!var.isVoidFunc) {
+                                if(!isExp){
+                                    if(!isIfBlock){
+                                        System.out.println("\tcall i32 @" + var.varName + "()");
+                                    }
                                 }
                                 else {
                                     System.exit(74);
@@ -1244,6 +1261,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
                 }
             }
         } else if ((ctx.children.size() == 5 && ctx.children.get(0).getText().equals("if")) || ctx.children.size() == 7) {
+            isIfBlock=true;
             int mark;
             exp = "";
             visit(ctx.cond());
@@ -1260,6 +1278,7 @@ public class Visitor extends minisysBaseVisitor<Void> {
             }
             System.out.println("\tbr label %end_block" + (mark));
             System.out.println("end_block" + mark + ":");
+            isIfBlock=false;
         } else if (ctx.children.size() == 1) {
             if (ctx.block() != null) {
                 visit(ctx.block());
