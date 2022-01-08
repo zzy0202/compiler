@@ -1093,7 +1093,9 @@ public class Visitor extends minisysBaseVisitor<Void> {
                                 }
                             }
                             if (ctx.ident1().getText().equals(var.varName) && var.isFunc&&!var.isVoidFunc) {
-                                System.out.println("\tcall i32 @" + var.varName + "()");
+                                System.out.println("\t%var"+reg+" = call i32 @" + var.varName + "()");
+                                exp+='%'+Integer.toString(reg);
+                                reg++;
                             }
                         }
                     }
