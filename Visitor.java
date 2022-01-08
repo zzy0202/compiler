@@ -1088,9 +1088,6 @@ public class Visitor extends minisysBaseVisitor<Void> {
                                 if(!isExp){
                                     System.out.println("\tcall void @" + var.varName + "()");
                                 }
-                                else {
-                                    System.exit(74);
-                                }
                             }
                             if (ctx.ident1().getText().equals(var.varName) && var.isFunc&&!var.isVoidFunc) {
                                 if(!isExp){
