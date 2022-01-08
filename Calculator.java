@@ -139,6 +139,7 @@ public class Calculator {
                 }
             }
             if(isVar){
+                exist=true;
                 if(Visitor.isGlobal){
                     for (int j = 0; j < Visitor.listVar.size(); j++) {
                         if(Visitor.listVar.get(j).varName.equals(list.get(i))){
@@ -221,7 +222,6 @@ public class Calculator {
                     }
                 }
                 if(!exist){
-                    System.out.println(exp);
                     System.exit(102);
                 }
                 exist=false;
