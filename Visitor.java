@@ -1021,7 +1021,6 @@ public class Visitor extends minisysBaseVisitor<Void> {
                                     String temp = "";
                                     if(isIfBlock){
                                         exp+=ctx.ident1().getText();
-                                        System.out.println(ctx.ident1().getText());
                                     }
                                     for (int i = 0; i < ctx.funcRParams().exp().size(); i++) {
                                         wrongArraySizeAllow = true;
